@@ -78,6 +78,19 @@ package org.shoebox.utils.frak;
 			*/
 			override public function cancel( ) : Void {
 				Lib.current.stage.removeEventListener( KeyboardEvent.KEY_DOWN , _onKeyUp , false );
+				if( view != null )
+					if( cast( view , VFrak ).tfInput != null )
+						cast( view , VFrak ).tfInput.removeEventListener( KeyboardEvent.KEY_DOWN , _onValidate , false );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			override public function startUp( ) : Void {
+				cast( view , VFrak ).tfInput.addEventListener( KeyboardEvent.KEY_DOWN , _onValidate , false );
 			}
 		
 		// -------o protected
@@ -101,6 +114,22 @@ package org.shoebox.utils.frak;
 				}
 				#end
 
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _onValidate( e : KeyboardEvent ) : Void{
+
+				if( e.keyCode == Keyboard.ENTER || e.keyCode == Keyboard.NUMPAD_ENTER ){
+					cast( model , MFrak ).send( );
+					cast( view , VFrak ).tfInput.text = '';
+				}
+
+				
 			}
 
 		// -------o misc
