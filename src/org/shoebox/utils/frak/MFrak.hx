@@ -33,8 +33,11 @@ package org.shoebox.utils.frak;
 
 	import haxe.Log;
 	import haxe.PosInfos;
+	import nme.Lib;
+	import org.shoebox.patterns.commands.AbstractCommand;
 	import org.shoebox.patterns.mvc.abstracts.AModel;
 	import org.shoebox.patterns.mvc.interfaces.IModel;
+	import org.shoebox.utils.Perf;
 
 	/**
 	* 
@@ -43,7 +46,9 @@ package org.shoebox.utils.frak;
 	*/
 	class MFrak extends AModel , implements IModel {
 		
-		private var _aBuffer 			: Array<String>;
+		private var _aBuffer : Array<String>;
+		private var _hAlias  : Hash<Alias>;
+		private var _oPerf   : Perf;
 		
 		private static inline var BUFFER_LENGTH  : Int = 50;
 
@@ -69,6 +74,10 @@ package org.shoebox.utils.frak;
 			*/
 			override public function initialize( ) : Void {
 				_aBuffer = new Array<String>( );
+				_hAlias  = new Hash<Alias>( );
+				registerAlias( 'setfps' , _setFps , 'Change the stage frameRate' , true );
+				registerAlias( 'perf' 	, _perf , 'Add / Remove the perf monitor' , true );
+				registerAlias( 'help' 	, _help , 'Help !' , true );
 			}
 						
 			/**
@@ -88,9 +97,8 @@ package org.shoebox.utils.frak;
 			* @return	void
 			*/
 			override public function startUp( ) : Void {
-				//cast( view , VFrak ).
 				traceThis( "Frak is waiting for your frakkin' inputs !" , true );
-				Log.trace = _haxeTrace;
+				//Log.trace = _haxeTrace;
 			}
 
 			/**
@@ -118,6 +126,58 @@ package org.shoebox.utils.frak;
 			*/
 			public function traceThis( s : String , b : Bool = false ) : Void {
 				_trace( b ? '<b>'+s+'</b>' : s );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function registerAlias( sAlias : String , o : Dynamic , sHelp : String , b : Bool = false ) : Void {
+				_hAlias.set( sAlias , new Alias( sAlias , o , sHelp , b ) );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function send( ) : Void {
+				
+				var s : String = cast( view , VFrak ).tfInput.text;
+				
+				//
+					traceThis( '\n' + s );
+
+				//
+					var r = ~/(?<name>[a-zA-Z0-9.]*)/;
+						r.match( s );
+
+					var sComm : String = r.matched( 0 );
+					if( !_hAlias.exists( sComm ) ){
+						traceThis( '\n-Frak : Alias "' + sComm + '" not found.<br>Verify your syntax or if the command is registered.' , true );
+						return;
+					}
+				
+				//
+					var aArgs : Array<String> = s.split(' ' );
+						aArgs.shift( );
+				
+				//
+					
+					var oAlias : Alias = _hAlias.get( sComm );
+					/*
+					if( Std.is( oAlias.oTarget , Class<AbstractCommand> ) ){
+						trace('send abstract command');
+					}
+					*/
+
+				//
+					if( Reflect.isFunction( oAlias.oTarget ) ){
+						Reflect.callMethod( this , oAlias.oTarget , aArgs );
+					}
 			}
 			
 		// -------o protected
@@ -151,6 +211,86 @@ package org.shoebox.utils.frak;
 					traceThis( Std.string( v ) , true );
 			}
 
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _setFps( i : Int ) : Void{
+				Lib.current.stage.frameRate = i;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _help( ) : Void{
+
+				traceThis('-Frak -commands reference',true);
+				for ( a in _hAlias ){
+					traceThis( '\t'+a.sAlias+' \t\t = '+a.sHelp );
+				}
+
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _perf( ) : Void{
+				
+				if( _oPerf == null ){
+					_oPerf = new Perf( );
+					Lib.current.stage.addChild( _oPerf );
+					traceThis('-Frak : Perf module is not active' , true );
+				}else{
+					Lib.current.stage.removeChild( _oPerf );
+					_oPerf = null;
+					traceThis('-Frak : Perf module is not inactive' , true );
+				}
+
+			}
+
 		// -------o misc
 
+	}
+
+	/**
+	 * ...
+	 * @author shoe[box]
+	 */
+	
+	class Alias{
+		
+		public var bCustom : Bool;
+		public var oTarget : Dynamic;
+		public var sAlias  : String;
+		public var sHelp   : String;
+
+		// -------o constructor
+			
+			/**
+			* constructor
+			*
+			* @param	
+			* @return	void
+			*/
+			public function new( sAlias : String , oTarget : Dynamic , sHelp : String , bCustom : Bool = false ) {
+				this.sAlias  = sAlias;
+				this.sHelp   = sHelp;
+				this.oTarget = oTarget;
+				this.bCustom = bCustom;
+			}
+		
+		// -------o public
+		
+		// -------o protected
+		
+		// -------o misc
+		
 	}

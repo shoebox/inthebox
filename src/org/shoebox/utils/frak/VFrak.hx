@@ -49,7 +49,7 @@ package org.shoebox.utils.frak;
 		
 		public var fHeight       : Float;
 		public var tfInput       : TextField;
-		public var tfOutput       : TextField;
+		public var tfOutput      : TextField;
 		
 		private var _spContainer : Sprite;
 		private var _spBack      : Sprite;
@@ -105,6 +105,9 @@ package org.shoebox.utils.frak;
 			*/
 			public function open( ) : Void {
 				_spContainer.y = 0;
+
+				trace('open');
+				Lib.current.stage.focus = tfInput;
 			}
 
 			/**
@@ -115,6 +118,7 @@ package org.shoebox.utils.frak;
 			*/
 			public function close( ) : Void {
 				_spContainer.y = -fHeight;	
+
 			}
 
 			/**

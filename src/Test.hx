@@ -28,6 +28,7 @@ private var _iCount : Int;
 		public function new() {
 			super( );
 			trace('test');
+			Log.setColor( 0xFFFFFF );
 			Lib.current.stage.align = StageAlign.TOP_LEFT;
 			Lib.current.stage.scaleMode = nme.display.StageScaleMode.NO_SCALE;
 			addChild( Frak.getInstance( )) ;
