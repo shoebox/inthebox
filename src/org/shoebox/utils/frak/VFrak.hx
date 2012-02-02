@@ -51,6 +51,7 @@ package org.shoebox.utils.frak;
 		public var tfInput       : TextField;
 		public var tfOutput      : TextField;
 		
+		private var _oPerf       : Perf;
 		private var _spContainer : Sprite;
 		private var _spBack      : Sprite;
 
@@ -81,7 +82,7 @@ package org.shoebox.utils.frak;
 					addChild( _spContainer );
 
 				//
-					fHeight       = Lib.current.stage.stageHeight / 4;
+					fHeight       = Math.max( Lib.current.stage.stageHeight / 4 , 150 );
 					close( );
 					_onStaged( );				
 			}
@@ -105,8 +106,6 @@ package org.shoebox.utils.frak;
 			*/
 			public function open( ) : Void {
 				_spContainer.y = 0;
-
-				trace('open');
 				Lib.current.stage.focus = tfInput;
 			}
 
@@ -127,8 +126,34 @@ package org.shoebox.utils.frak;
 			* @public
 			* @return	void
 			*/
-			public function updateBuffer( s : String ) : Void {
-				tfOutput.htmlText = s;
+			public function updateBuffer( s : String , b : Bool = false ) : Void {
+				if( b ) 
+					tfOutput.htmlText = tfOutput.htmlText+s;
+				else
+					tfOutput.htmlText = s;
+					tfOutput.scrollV = tfOutput.maxScrollV;
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function addRemovePerf( ) : Bool {
+				
+				if( _oPerf == null ){
+					_oPerf = new Perf( );
+					_oPerf.y = fHeight;
+					_spContainer.addChild( _oPerf );
+					return true;
+				}else{
+					_spContainer.removeChild( _oPerf ); 
+					_oPerf = null;
+					return false;
+				}
+
+				return false;
 			}
 			
 		// -------o protected

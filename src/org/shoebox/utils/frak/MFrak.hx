@@ -48,9 +48,9 @@ package org.shoebox.utils.frak;
 		
 		private var _aBuffer : Array<String>;
 		private var _hAlias  : Hash<Alias>;
-		private var _oPerf   : Perf;
 		
-		private static inline var BUFFER_LENGTH  : Int = 50;
+		
+		private static inline var BUFFER_LENGTH  : Int = 150;
 
 		// -------o constructor
 		
@@ -98,7 +98,9 @@ package org.shoebox.utils.frak;
 			*/
 			override public function startUp( ) : Void {
 				traceThis( "Frak is waiting for your frakkin' inputs !" , true );
-				//Log.trace = _haxeTrace;
+				#if !flash
+				Log.trace = _haxeTrace;
+				#end
 			}
 
 			/**
@@ -135,7 +137,13 @@ package org.shoebox.utils.frak;
 			* @return	void
 			*/
 			public function registerAlias( sAlias : String , o : Dynamic , sHelp : String , b : Bool = false ) : Void {
-				_hAlias.set( sAlias , new Alias( sAlias , o , sHelp , b ) );
+				_hAlias.set( sAlias , { 
+											sAlias : sAlias ,
+											oTarget : o,
+											sHelp : sHelp ,
+											bCustom : b
+										});
+
 			}
 
 			/**
@@ -145,7 +153,6 @@ package org.shoebox.utils.frak;
 			* @return	void
 			*/
 			public function send( ) : Void {
-				
 				var s : String = cast( view , VFrak ).tfInput.text;
 				
 				//
@@ -191,10 +198,12 @@ package org.shoebox.utils.frak;
 			private function _trace( s : String ) : Void{
 				
 				_aBuffer.push( s );
-				if( _aBuffer.length > BUFFER_LENGTH )
-					_aBuffer.shift( );
 
-				cast( view , VFrak ).updateBuffer( _aBuffer.join('\n') );	
+				if( _aBuffer.length > BUFFER_LENGTH ){
+					_aBuffer.shift( );
+					cast( view , VFrak ).updateBuffer( _aBuffer.join('\n') , false );	
+				}else 
+					cast( view , VFrak ).updateBuffer( s , true );
 			}
 
 			/**
@@ -218,6 +227,7 @@ package org.shoebox.utils.frak;
 			* @return	void
 			*/
 			private function _setFps( i : Int ) : Void{
+				traceThis('-Frak set fps to '+i,true);
 				Lib.current.stage.frameRate = i;
 			}
 
@@ -244,15 +254,11 @@ package org.shoebox.utils.frak;
 			*/
 			private function _perf( ) : Void{
 				
-				if( _oPerf == null ){
-					_oPerf = new Perf( );
-					Lib.current.stage.addChild( _oPerf );
+				if( cast( view , VFrak ).addRemovePerf( ) )
 					traceThis('-Frak : Perf module is not active' , true );
-				}else{
-					Lib.current.stage.removeChild( _oPerf );
-					_oPerf = null;
+				else
 					traceThis('-Frak : Perf module is not inactive' , true );
-				}
+
 
 			}
 
@@ -260,37 +266,11 @@ package org.shoebox.utils.frak;
 
 	}
 
-	/**
-	 * ...
-	 * @author shoe[box]
-	 */
-	
-	class Alias{
+	typedef Alias={
 		
-		public var bCustom : Bool;
-		public var oTarget : Dynamic;
-		public var sAlias  : String;
-		public var sHelp   : String;
+		var bCustom : Bool;
+		var oTarget : Dynamic;
+		var sAlias  : String;
+		var sHelp   : String;
 
-		// -------o constructor
-			
-			/**
-			* constructor
-			*
-			* @param	
-			* @return	void
-			*/
-			public function new( sAlias : String , oTarget : Dynamic , sHelp : String , bCustom : Bool = false ) {
-				this.sAlias  = sAlias;
-				this.sHelp   = sHelp;
-				this.oTarget = oTarget;
-				this.bCustom = bCustom;
-			}
-		
-		// -------o public
-		
-		// -------o protected
-		
-		// -------o misc
-		
 	}
