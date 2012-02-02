@@ -1,0 +1,1 @@
+package org.shoebox.patterns.mvc.interfaces; 	/**	 * @author shoe[box]	 */	interface IView {				function cancel( ):Void;		function initialize():Void;			}

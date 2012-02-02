@@ -1,0 +1,49 @@
+/**
+* This is about <code>fr.hyperfiction.touchsandbox.core.Wait</code>.
+* {@link www.hyperfiction.fr}
+* @author shoe[box]
+*/
+package org.shoebox.events.sequence {
+
+	import org.shoebox.utils.logger.Logger;
+	import org.shoebox.utils.system.Signal;
+	import org.shoebox.utils.system.SignalFromEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	/**
+	* fr.hyperfiction.touchsandbox.core.Wait
+	* @author shoebox
+	*/
+	public class Wait extends Timer {
+		
+		public var sgTick			: SignalFromEvent;
+		
+		protected var _oSignal			: Signal;
+		
+		// -------o constructor
+		
+			/**
+			* Constructor of the Wait class
+			*
+			* @public
+			* @return	void
+			*/
+			public function Wait( i : int ) : void {
+				super( i , 1 );
+				
+				_oSignal = new Signal( );
+				sgTick = _oSignal.connectEvent( this , TimerEvent.TIMER , 'tickDelayer' , false );
+			}
+
+		// -------o public
+		
+		// -------o protected
+
+		// -------o misc
+
+			public static function trc(...args : *) : void {
+				Logger.log(Wait, args);
+			}
+	}
+}

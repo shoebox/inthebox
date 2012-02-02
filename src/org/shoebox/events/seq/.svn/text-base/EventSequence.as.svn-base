@@ -1,0 +1,226 @@
+/**
+* This is about <code>fr.hyperfiction.touchsandbox.core.EventSequence</code>.
+* {@link www.hyperfiction.fr}
+* @author shoe[box]
+*/
+package org.shoebox.events.sequence {
+
+	import org.shoebox.utils.logger.Logger;
+	import org.shoebox.utils.system.Signal;
+	import org.shoebox.utils.system.SignalFromEvent;
+	import flash.events.Event;
+	import flash.events.TouchEvent;
+	
+	/**
+	* fr.hyperfiction.touchsandbox.core.EventSequence
+	* @author shoebox
+	*/
+	public class EventSequence extends Signal{
+		
+		public var broadcastLastEvent	: Boolean = false;
+		
+		protected var _oDelayer		: Delayer;
+		protected var _iTouchId		: int;
+		protected var _oEvent			: Event;
+		protected var _oSignal			: SignalFromEvent;
+		protected var _vArgs			: Vector.<*>;
+		protected var _oWait			: Wait;
+		
+		internal var i : int , l : int , next : * ;
+		
+		// -------o constructor
+		
+			/**
+			* Constructor of the EventSequence class
+			*
+			* @public
+			* @return	void
+			*/
+			public function EventSequence( ...args : Array ) : void {
+			
+				_vArgs = Vector.<*>( args );
+				reset( );
+			}
+
+		// -------o public
+			
+			/**
+			* reset function
+			* @public
+			* @param 
+			* @return
+			*/
+			final public function reset() : void {
+				
+				_iTouchId = -1;
+				l = _vArgs.length;
+				i = -1;
+				_cancelAll( );
+				_next( );
+			}
+			
+			/**
+			* cancel function
+			* @public
+			* @param 
+			* @return
+			*/
+			final public function cancel() : void {
+				_cancelAll( );
+				//_vArgs = null;
+			}
+			
+		// -------o protected
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _next() : void {
+				
+				i++;
+				if( i >= l ){
+					emit( Event.COMPLETE , _oEvent );
+					reset( );
+					return;
+				}
+				
+				next = _vArgs[ i ];
+				
+				if( next is SignalFromEvent ){
+					
+					_oSignal = next as SignalFromEvent;
+					_oSignal.add( _onSignal );
+					
+				}else if( next is Delayer ){
+					
+					_oDelayer = next as Delayer;
+					_oDelayer.reset( );
+					_oDelayer.sgTick.add( _onDelayerTick , true );
+					_oDelayer.start( );
+					_next( );
+					
+				}else if( next is Wait ){
+					
+					_oWait = next as Wait;
+					_oWait.reset( );
+					_oWait.start( );
+					_next( );
+					
+				}
+				
+			}
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _onSignal( e : Event = null ) : void { 
+				
+				if( e ){	
+					if( e is TouchEvent ){
+						
+						if( _iTouchId !== -1 && ( e as TouchEvent ).touchPointID !== _iTouchId ) 
+							return;
+						
+						if( e.type == TouchEvent.TOUCH_END )	
+							_iTouchId = -1;
+						
+						if( e.type == TouchEvent.TOUCH_BEGIN )	
+							_iTouchId = ( e as TouchEvent ).touchPointID;
+							
+						
+					}
+					
+					_oEvent = e;
+				}
+				
+				
+				if( _oWait ){
+					if( _oWait.running ){
+						reset( );		
+						return;
+					}
+				}	
+				
+				if( _oSignal )
+					_oSignal.remove( _onSignal );
+				
+				
+				_cancelDelayer( );
+				_next( );
+			}
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _onDelayerTick( ) : void {
+				reset( );
+			}
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _cancelAll() : void {
+				_cancelSignal( );
+				_cancelDelayer( );
+				_cancelWaiter( );
+			}
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _cancelSignal() : void {
+				if( _oSignal )
+					_oSignal.remove( _onSignal );
+			}
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _cancelDelayer() : void {
+				
+				if( _oDelayer )
+					_oDelayer.sgTick.remove( _onDelayerTick );
+				
+			}
+			
+			/**
+			* 
+			*
+			* @param 
+			* @return
+			*/
+			final protected function _cancelWaiter() : void {
+				
+				if( _oWait )
+					if( _oWait.running )
+						_oWait.stop( );
+						_oWait = null;
+					
+				
+			}
+			
+		// -------o misc
+
+			public static function trc(...args : *) : void {
+				Logger.log(EventSequence, args);
+			}
+	}
+}
