@@ -25,17 +25,59 @@ class Frak extends AApplication{
 		* @return	void
 		*/
 		public function new( e : SingletonEnforcer = null ) {
+			
 			super( );
 			
 			if( e == null )
 				throw new nme.errors.Error( );
 			
-			addEventListener( Event.ADDED_TO_STAGE , _onStaged , false );	
+			_oComm = new MVCCommand( MFrak , VFrak , CFrak , this , null );
+			_oComm.prepare( );
+			_oComm.execute( );
+			
 		}
 	
 	// -------o public
 				
-				
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function registerAlias( sAlias : String , o : Dynamic , sHelp : String , b : Bool = false ) : Void {
+			return _getModel( ).registerAlias( sAlias , o , sHelp , b );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function unRegisterAlias( sAlias : String , o : Dynamic ) : Bool {
+			return _getModel( ).unRegisterAlias( sAlias , o );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function registerVariable( s : String , target : Dynamic , prop : String ) : Bool {
+			return _getModel( ).registerVariable( s , target , prop );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function unRegisterVariable( s : String ) : Bool {
+			return _getModel( ).unRegisterVariable( s );
+		}
 
 	// -------o protected
 	
@@ -45,27 +87,8 @@ class Frak extends AApplication{
 		* @private
 		* @return	void
 		*/
-		private function _onStaged( e : Event ) : Void{
-			
-			//
-				removeEventListener( Event.ADDED_TO_STAGE , _onStaged , false );	
-				addEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );
-			
-			//
-				_oComm = new MVCCommand( MFrak , VFrak , CFrak , this , null );
-				_oComm.prepare( );
-				_oComm.execute( );
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _onRemoved( e : Event ) : Void{
-			removeEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );	
-			addEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
+		static private function _getModel( ) : MFrak{
+			return cast( getInstance( )._oComm.model , MFrak );
 		}
 
 	// -------o misc

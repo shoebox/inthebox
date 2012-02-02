@@ -15,7 +15,9 @@ import org.shoebox.utils.frak.Frak;
 
 class Test extends Sprite{
 
-private var _iCount : Int;
+	public var iValue : Int;
+
+	private var _iCount : Int;
 
 	// -------o constructor
 		
@@ -27,13 +29,16 @@ private var _iCount : Int;
 		*/
 		public function new() {
 			super( );
-			
+			iValue = 10;
 			Log.setColor( 0xFFFFFF );
 			Lib.current.stage.align = StageAlign.TOP_LEFT;
 			Lib.current.stage.scaleMode = nme.display.StageScaleMode.NO_SCALE;
-			addChild( Frak.getInstance( )) ;
 
-			Lib.current.stage.addEventListener( Event.ENTER_FRAME , _onFrame , false );
+			addChild( Frak.getInstance( ) ) ;
+
+			Frak.registerAlias( 'Test' , TestCommand , 'test command' , false );
+			Frak.registerVariable( 'varname' , this , 'iValue' );
+			Frak.unRegisterVariable( 'varname' );
 		}
 	
 	// -------o public
@@ -49,7 +54,7 @@ private var _iCount : Int;
 		* @return	void
 		*/
 		private function _onFrame( e : Event ) : Void{
-			//trace('toto'+Lib.getTimer( ) );
+			trace( iValue  );
 		}
 
 	// -------o misc

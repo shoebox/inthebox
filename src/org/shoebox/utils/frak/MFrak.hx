@@ -46,9 +46,9 @@ package org.shoebox.utils.frak;
 	*/
 	class MFrak extends AModel , implements IModel {
 		
-		private var _aBuffer : Array<String>;
-		private var _hAlias  : Hash<Alias>;
-		
+		private var _aBuffer    : Array<String>;
+		private var _hAlias     : Hash<Alias>;
+		private var _hVariables : Hash<Variable>;		
 		
 		private static inline var BUFFER_LENGTH  : Int = 150;
 
@@ -67,31 +67,36 @@ package org.shoebox.utils.frak;
 		// -------o public
 			
 			/**
-			* Model initialization 
+			* Frak model initialisation
 			* 
-			* @public
 			* @return	Void
 			*/
 			override public function initialize( ) : Void {
-				_aBuffer = new Array<String>( );
-				_hAlias  = new Hash<Alias>( );
-				registerAlias( 'setfps' , _setFps , 'Change the stage frameRate' , true );
-				registerAlias( 'perf' 	, _perf , 'Add / Remove the perf monitor' , true );
-				registerAlias( 'help' 	, _help , 'Help !' , true );
+
+				_aBuffer    = new Array<String>( );
+				_hAlias     = new Hash<Alias>( );
+				_hVariables = new Hash<Variable>( );
+
+				registerAlias( 'setfps' , _setFps 		, 'Change the stage frameRate' , true );
+				registerAlias( 'perf' 	, _perf 		, 'Add / Remove the perf monitor' , true );
+				registerAlias( 'set' 	, _setVar 		, 'Set variable value - ( ex : set toto 10 )' , true );
+				registerAlias( 'vars' 	, _traceVars 	, 'Trace all the registered variables' , true );
+				registerAlias( 'help' 	, _help 		, 'Help !' , true );
+
 			}
 						
 			/**
-			* When the model and the triad is canceled
+			* When model is canceled
 			* 
 			* @public
-			* @return	void
+			* @return	Void
 			*/
 			override public function cancel( ) : Void {
 						
 			}
 
 			/**
-			* 
+			* Model startUp 
 			* 
 			* @public
 			* @return	void
@@ -104,9 +109,11 @@ package org.shoebox.utils.frak;
 			}
 
 			/**
-			* 
-			* 
+			* Log a message
+			*  
 			* @public
+			* @param 	s : Message to log			( String )
+			* @param 	b : Bold or not				( Bool )
 			* @return	void
 			*/
 			public function log( s : String , b : Bool = false ) : Void {
@@ -121,9 +128,11 @@ package org.shoebox.utils.frak;
 			}
 
 			/**
-			* 
+			* Simple trace
 			* 
 			* @public
+			* @param	s : Trace message			( String )
+			* @param 	b : Bold or not				( Bool )
 			* @return	void
 			*/
 			public function traceThis( s : String , b : Bool = false ) : Void {
@@ -131,12 +140,18 @@ package org.shoebox.utils.frak;
 			}
 
 			/**
-			* 
+			* Register an alias link with the specified Function / Command...
 			* 
 			* @public
-			* @return	void
+			* @param	sAlias 	: Alias code name 			( String )
+			* @param	o 		: Target 					( Dynamic )
+			* @param	sHelp	: Help text					( String )
+			* @param	sAlias 	: Alias code name 			( String )
+			* @param 	bCustom : Custom alias or default 	( Bool )
+			* @return	Void
 			*/
 			public function registerAlias( sAlias : String , o : Dynamic , sHelp : String , b : Bool = false ) : Void {
+			
 				_hAlias.set( sAlias , { 
 											sAlias : sAlias ,
 											oTarget : o,
@@ -147,9 +162,27 @@ package org.shoebox.utils.frak;
 			}
 
 			/**
-			* 
+			* Register an alias
 			* 
 			* @public
+			* @param	sAlias 	: Alias code name 			( String )
+			* @param	o 		: Target 					( Dynamic )
+			* @return	Void
+			*/
+			public function unRegisterAlias( sAlias : String , o : Dynamic ) : Bool {
+				
+				if( !_hAlias.exists( sAlias ) )
+					return false;
+				
+				_hAlias.remove( sAlias );
+				
+				return true;
+			}
+
+			/**
+			* Parse the content of the input field and generate the actions
+			* 
+			* @public	
 			* @return	void
 			*/
 			public function send( ) : Void {
@@ -173,18 +206,55 @@ package org.shoebox.utils.frak;
 						aArgs.shift( );
 				
 				//
-					
 					var oAlias : Alias = _hAlias.get( sComm );
-					/*
-					if( Std.is( oAlias.oTarget , Class<AbstractCommand> ) ){
-						trace('send abstract command');
-					}
-					*/
-
-				//
 					if( Reflect.isFunction( oAlias.oTarget ) ){
 						Reflect.callMethod( this , oAlias.oTarget , aArgs );
+						return;
 					}
+
+				//
+					if( Std.is( oAlias.oTarget , Class ) ){
+						var o : Dynamic = Type.createInstance( oAlias.oTarget , [ ] );
+						if( Std.is( o , AbstractCommand ) ){
+							var com : AbstractCommand = cast( o , AbstractCommand );
+								com.execute( );
+						}
+					}
+					
+			}
+
+			/**
+			* Register a variable to be watch by Frak
+			* 
+			* @public
+			* @param 	sVarName 	: Variable Name 	( String )
+			* @param 	target 		: Target object 	( Dynamic )
+			* @param 	prop 		: Target prop name 	( String )
+			* @return	Void
+			*/
+			public function registerVariable( sVarName : String , target : Dynamic , prop : String) : Bool {
+				
+				if( _hVariables.exists( sVarName ) )
+					return false;
+				
+				_hVariables.set( sVarName , { sVarName : sVarName , target : target , prop : prop } );
+				return true;
+			}
+
+			/**
+			* Unregister a variable watched by Frak
+			* 
+			* @public
+			* @param 	sVarName 	: Variable Name 	( String )
+			* @return	Void
+			*/
+			public function unRegisterVariable( sVarName : String ) : Bool {
+
+				if( !_hVariables.exists( sVarName ) )
+					return false;
+
+				_hVariables.remove( sVarName );
+				return true;
 			}
 			
 		// -------o protected
@@ -262,6 +332,38 @@ package org.shoebox.utils.frak;
 
 			}
 
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _setVar( sVarName : String , value : Dynamic ) : Bool{
+
+				if( !_hVariables.exists( sVarName ) ){
+					traceThis( '\n-Frak : Variable "' + sVarName + '" is not registered.' , true );
+					return false;
+				}
+				
+				var v : Variable = _hVariables.get( sVarName );	
+				Reflect.setField( v.target , v.prop , value );
+				return true;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _traceVars( ) : Void{
+
+				for( v in _hVariables ){
+					traceThis( '\tVariable : <b>'+v.sVarName+'</b> \t = \t '+Reflect.field( v.target , v.prop ) );
+				}
+
+			}
+
 		// -------o misc
 
 	}
@@ -273,4 +375,10 @@ package org.shoebox.utils.frak;
 		var sAlias  : String;
 		var sHelp   : String;
 
+	}
+
+	typedef Variable={
+		var target   : Dynamic;
+		var sVarName : String;
+		var prop     : String;
 	}
