@@ -26,7 +26,7 @@ class Frak extends AApplication{
 		*/
 		public function new( e : SingletonEnforcer = null ) {
 			super( );
-			trace('constructor---');
+			
 			if( e == null )
 				throw new nme.errors.Error( );
 			
