@@ -30,7 +30,9 @@ class Test extends Sprite{
 		public function new() {
 			super( );
 			iValue = 10;
+			#if flash
 			Log.setColor( 0xFFFFFF );
+			#end
 			Lib.current.stage.align = StageAlign.TOP_LEFT;
 			Lib.current.stage.scaleMode = nme.display.StageScaleMode.NO_SCALE;
 
