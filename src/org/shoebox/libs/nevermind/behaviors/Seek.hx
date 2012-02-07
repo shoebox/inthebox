@@ -40,7 +40,8 @@ package org.shoebox.libs.nevermind.behaviors;
 	*/
 	class Seek extends ABehavior {
 		
-		private var _vTargetPos			:Vector2D;
+		private var _oEntity    : SteeringEntity;
+		private var _vTargetPos : Vector2D;
 		
 		// -------o constructor
 		
@@ -65,6 +66,16 @@ package org.shoebox.libs.nevermind.behaviors;
 			public function toPosition( v : Vector2D ) : Void {
 				_vTargetPos = v;
 			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function toEntity( e : SteeringEntity ) : Void {
+				_oEntity = e;
+			}
 			
 			/**
 			* calculate function
@@ -74,8 +85,10 @@ package org.shoebox.libs.nevermind.behaviors;
 			*/
 			override public function calculate(  ) : Vector2D {
 				
-				var 	vVel : Vector2D = _vTargetPos.sub( entity.position );				
-						vVel.normalize();
+				if( _oEntity != null )
+					_vTargetPos = _oEntity.position;
+
+				var 	vVel : Vector2D = _vTargetPos.sub( entity.position );				vVel.normalize();
 						vVel.scaleBy( entity.maxSpeed );
 				
 				return vVel.sub(entity.velocity );
