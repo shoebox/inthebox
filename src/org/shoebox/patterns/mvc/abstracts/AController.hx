@@ -70,7 +70,7 @@
 			* @return
 			*/
 			public function onCancel( ) : Void {
-				cancelAllEvents( );
+				//cancelAllEvents( );
 				cancel( );
 			}
 			

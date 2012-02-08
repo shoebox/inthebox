@@ -12,6 +12,7 @@ import nme.display.Sprite;
 import org.shoebox.display.particles.ParticleEmitter;
 import org.shoebox.utils.frak.Frak;
 import org.shoebox.utils.Perf;
+import org.shoebox.utils.system.Signal;
 
 /**
  * ...
@@ -25,6 +26,7 @@ class Test extends Sprite{
 	private var _oParticle : ParticleEmitter;
 	private var _iCount : Int;
 	private var _iPrevTimer : Int;
+	private var _oSignal : Signal;
 
 	// -------o constructor
 		
@@ -42,12 +44,64 @@ class Test extends Sprite{
 			#end
 			Lib.current.stage.align = StageAlign.TOP_LEFT;
 			Lib.current.stage.scaleMode = nme.display.StageScaleMode.NO_SCALE;
-			_run( );
+			//_run( );
+
+			_oSignal = new Signal( );
+			_oSignal.connect( _onSignal4 , 'toto' , 20 , false );
+			_oSignal.connect( _onSignal3 , 'toto' , 20 , false );
+			_oSignal.connect( _onSignal2 , 'toto' , 10 , false );
+			_oSignal.connect( _onSignal1 , 'toto' , 30 , true );
+			_oSignal.disconnect( _onSignal4 , 'toto');
+			trace('----- true : '+_oSignal.isRegistered( _onSignal1 , 'toto'));
+			trace('emit');
+			trace('---------------- 1 - 3 - 2');
+			_oSignal.emit( 'toto' , ['toto'] );
+			trace('----- false : '+_oSignal.isRegistered( _onSignal1 , 'toto'));
+			trace('---------------- 3 - 2');
+			_oSignal.emit( 'toto' , ['toto'] );
 		}
 	
 	// -------o public
-				
 			
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onSignal4( s : String ) : Void{
+			trace('onSignal4'+s);
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onSignal1( s : String ) : Void{
+			trace('_onSignal1 ::: '+s);
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onSignal2( s : String ) : Void{
+			trace('_onSignal2 ::: '+s);
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onSignal3( s : String ) : Void{
+			trace('_onSignal3 ::: '+s);
+		}
 
 	// -------o protected
 		
