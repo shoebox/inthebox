@@ -55,7 +55,17 @@ package org.shoebox.libs.nevermind.behaviors;
 			}
 
 		// -------o public
-		
+			
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function setValue( f : Float ) : Void {
+				_fWander = f;
+			}
+
 			/**
 			* calculate function
 			* @public

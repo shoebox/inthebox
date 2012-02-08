@@ -1,8 +1,11 @@
 package;
 
 import haxe.Log;
+import nme.display.Tilesheet;
 import nme.display.StageAlign;
 import nme.events.Event;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import nme.Lib;
 import nme.display.Sprite;
 
@@ -19,7 +22,7 @@ class Test extends Sprite{
 
 	public var iValue : Int;
 
-	private var _oParticle : ParticleEmitter<SmokeParticle>;
+	private var _oParticle : ParticleEmitter;
 	private var _iCount : Int;
 	private var _iPrevTimer : Int;
 
@@ -55,11 +58,15 @@ class Test extends Sprite{
 		* @return	void
 		*/
 		private function _run( ) : Void{
-			_oParticle = new ParticleEmitter<SmokeParticle>( SmokeParticle , 100 , this , 3000 / 30 , true );
-			_oParticle.setPosition( 200 , 200 );
-			_oParticle.setVelocity( 2 , 0 );
-			_oParticle.setWander( 0.5 );
-			_oParticle.setTTL( 2000 );
+			
+			var p : Tilesheet = new Tilesheet( ApplicationMain.getAsset( 'assets/smoke.png' ) );
+				p.addTileRect( new Rectangle( 0 , 0 , 32 , 32  ) , new Point( 16 , 16 ) );
+
+			_oParticle = new ParticleEmitter( p , this.graphics );
+			
+			scrollRect = new Rectangle( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
+			
+
 			Lib.current.stage.addEventListener( Event.ENTER_FRAME , _onFrame , false );
 			_iPrevTimer = Lib.getTimer( );
 
@@ -73,6 +80,9 @@ class Test extends Sprite{
 		* @return	void
 		*/
 		private function _onFrame( e : Event ) : Void {
+			
+			_oParticle.emit( 0 , 400 , 300 , 0.1 , 0.0 , 2500 , 4.0 , Math.random( ) * 360 , Math.random( ) * 2 + 0.5 , 0 );
+			
 			var iDelay : Int = Lib.getTimer( ) - _iPrevTimer;
 			_oParticle.update( iDelay );
 			_iPrevTimer = Lib.getTimer( );

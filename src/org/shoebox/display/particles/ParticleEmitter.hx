@@ -1,34 +1,24 @@
 package org.shoebox.display.particles;
 
-import nme.display.DisplayObjectContainer;
-import org.shoebox.collections.ObjectPool;
-import org.shoebox.core.BoxMath;
-import org.shoebox.display.particles.Particle;
+import nme.display.Sprite;
+import nme.display.Sprite;
+import nme.display.Tilesheet;
+import nme.display.Graphics;
 import org.shoebox.libs.nevermind.behaviors.Wander;
+import org.shoebox.libs.nevermind.entity.SteeringEntity;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class ParticleEmitter<T:Particle>{
+class ParticleEmitter{
 
-	private var _aParticles   : Array<T>;
-	private var _cClass       : Class<T>;
-	private var _bAlign       : Bool;
-	private var _oContainer   : DisplayObjectContainer ;
-	private var _fDelay       : Float;
-	private var _fPosX        : Float;
-	private var _fPosY        : Float;
-	private var _fVelX        : Float;
-	private var _fVelY        : Float;
-	private var _fElapsed     : Float;
-	private var _fTTL         : Float;
-	private var _fWander      : Float;
-	private var _bAlpha       : Bool;
-	private var _iMaxParticle : Int;
-	private var _iCount       : Int;
-	private var _oPool        : ObjectPool<T>;
+	private var _aParticles : Array<Particle>;
+	private var _gDefault : Graphics;
+	private var _oEntity    : SteeringEntity;
+	private var _oSheet     : Tilesheet;
+	private var _oWander    : Wander;
 
 	// -------o constructor
 		
@@ -38,96 +28,122 @@ class ParticleEmitter<T:Particle>{
 		* @param	
 		* @return	void
 		*/
-		public function new( cClass : Class<T> , maxParticles : Int , container : DisplayObjectContainer , fDelay : Float , bAlpha : Bool = false ) {
-			_aParticles   = new Array<T>( );
-			_oPool        = new ObjectPool<T>( cClass , 100 );
-			_iMaxParticle = maxParticles;
-			_iCount       = 0;
-			_oContainer   = container;
-			_fDelay       = fDelay;
-			_fElapsed     = 0;
-			_bAlpha       = bAlpha;
-			_fTTL         = 1000;
-			_cClass       = cClass;
+		public function new( s : Tilesheet , gDefault : Graphics = null ) {
+			
+			_oSheet     = s;
+			_aParticles = new Array<Particle>( );
+			_oWander    = new Wander( 0 );
+			_oEntity    = new SteeringEntity( );
+			_gDefault   = gDefault;
+
+			_oEntity.addBehavior( _oWander );
 		}
 	
 	// -------o public
-
-
+		
 		/**
 		* 
 		* 
 		* @public
 		* @return	void
 		*/
-		public function setPosition( dx : Float , dy : Float ) : Void {
-			_fPosX = dx;
-			_fPosY = dy;		
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function setVelocity( vx : Float , vy : Float ) : Void {
-			_fVelX = vx;
-			_fVelY = vy;	
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function setWander( f : Float ) : Void {
-			_fWander = f;
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function setTTL( f : Float ) : Void {
-			_fTTL = f;				
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function update( fDelay : Float ) : Void {
+		public function emitAt( g : Graphics , id : Int , fScl : Float , posX : Float , posY : Float , fRot : Float = 0.0 , fTtl : Float = 10.0 , velX : Float = 0.0 , velY : Float = 0.0 , fWander:  Float = 0.0 , fEndAlpha : Float = 1.0  ) : Void {
 			
-			_fElapsed += fDelay;
+			_aParticles.unshift( { g : g , fRot : fRot , fScl : fScl , fTime : 0.0 , fTtl : fTtl , tileId : id , posX : posX , posY : posY , velX : velX , velY : velY , fWander : fWander , fEndAlpha : fEndAlpha  } );
+				
+		}
 
-			if( _fElapsed > _fDelay ){
-				_fElapsed -= _fDelay;
-				_emit( );
-			}
-
-
+		/**
+		* x, y , velX , velY , duration , rotation , scale , alpha
+		* 
+		* @public
+		* @return	void
+		*/
+		public function emit( 
+								tileId   : Int , 
+								posX     : Float, 
+								posY     : Float , 
+								velX     : Float, 
+								velY     : Float , 
+								duration : Float , 
+								fWander  : Float = 0.0,
+								fRot     : Float = 0.0, 
+								fScale   : Float = 1.0, 
+								fAlpha   : Float = 1.0								
+							 ) : Void {
+			
+			var p : Particle = { 
+									g         : _gDefault,
+									posX      : posX,
+									posY      : posY,
+									velX      : velX,
+									velY      : velY,
+									fTtl      : duration,	
+									fRot      : fRot,
+									fScl      : fScale,
+									fEndAlpha : fAlpha,
+									fTime     : 0.0,								
+									fWander   : fWander,
+									tileId    : tileId
+								}
+			_aParticles.unshift( p );
+		}
+			
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function update( iDelay : Int ) : Void {
+			
+			var aF : Array<Float> = new Array<Float>( );
+			var oG : Graphics = null;			
 			for( p in _aParticles ){
-				p.update( fDelay );
+						
+				if( oG != null && oG != p.g ){
+					_drawTiles( oG , aF );
+					aF = new Array<Float>( );
+				}
+
+				if( oG == null ){
+					oG = p.g;
+					aF = new Array<Float>( );
+				}
+
+				_oWander.setValue( p.fWander );
+
+				_oEntity.position.x = p.posX;
+				_oEntity.position.y = p.posY;
+				_oEntity.velocity.x = p.velX;
+				_oEntity.velocity.y = p.velY;
+				_oEntity.update( );
+
+
+				p.velX = _oEntity.velocity.x;
+				p.velY = _oEntity.velocity.y;
+				p.posX = _oEntity.position.x;
+				p.posY = _oEntity.position.y;
+
+				aF.push( _oEntity.position.x );
+				aF.push( _oEntity.position.y );
+				aF.push( p.tileId );
+				aF.push( p.fScl );
+				aF.push( p.fRot );
+
+				if( p.fEndAlpha == 1 )
+					aF.push( 1.0 );
+				else if( p.fEndAlpha == 0.0 ){
+					aF.push( 1 - p.fTime / p.fTtl );
+				}
 				
-				//
-					if( _bAlign )
-						p.rotation = BoxMath.RAD_TO_DEG * p.oEntity.getRotation( );
-			
-				//
-					if( _bAlpha )
-						p.alpha =  p.fTimeToLive / _fTTL;
-				
-				//
-					if( p.fTimeToLive < 0 )
-						_fKill( p );
+				p.fTime += iDelay;
+				if( p.fTime > p.fTtl )
+					_aParticles.remove( p );
 			}
-		}	
+
+			_drawTiles( oG , aF );
+		}
 
 	// -------o protected
 	
@@ -137,38 +153,25 @@ class ParticleEmitter<T:Particle>{
 		* @private
 		* @return	void
 		*/
-		private function _emit( ) : Void{
-			
-			if( _iCount >= _iMaxParticle )
-				return;
-
-			var p : T = _oPool.get( );
-				p.init( _fPosX , _fPosY , _fTTL );
-				p.oEntity.velocity.x = _fVelX ;
-				p.oEntity.velocity.y = _fVelY ;
-			
-			if( _fWander > 0.0 )
-				p.oEntity.addBehavior( new Wander( _fWander ) );
-
-			_aParticles.push( p );
-			_oContainer.addChild( p );
-
-			_iCount++;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _fKill( p : T ) : Void {
-			_oContainer.removeChild( p );
-			_aParticles.remove( p );
-			_iCount--;
-			_oPool.put( p );
+		private function _drawTiles( g : Graphics , aF : Array<Float> ) : Void{
+			_gDefault.clear( );
+			_oSheet.drawTiles( _gDefault , aF , false , Tilesheet.TILE_SCALE | Tilesheet.TILE_ROTATION | Tilesheet.TILE_ALPHA );
 		}
 
 	// -------o misc
 	
+}
+private typedef Particle = {
+	public var g : Graphics;
+	public var posX    : Float;
+	public var posY    : Float;
+	public var velX    : Float;
+	public var velY    : Float;
+	public var fTtl    : Float;
+	public var fRot : Float;
+	public var fScl : Float;
+	public var fEndAlpha : Float;
+	public var fTime   : Float;
+	public var fWander : Float;
+	public var tileId  : Int;
 }
