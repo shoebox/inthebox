@@ -9,6 +9,8 @@ import nme.geom.Rectangle;
 import nme.Lib;
 import nme.display.Sprite;
 
+import org.shoebox.collections.QuadTree;
+import org.shoebox.display.AABB;
 import org.shoebox.display.particles.ParticleEmitter;
 import org.shoebox.utils.frak.Frak;
 import org.shoebox.utils.Perf;
@@ -27,6 +29,7 @@ class Test extends Sprite{
 	private var _iCount : Int;
 	private var _iPrevTimer : Int;
 	private var _oSignal : Signal;
+	private var _oTree : QuadTree<Int>;
 
 	// -------o constructor
 		
@@ -46,19 +49,22 @@ class Test extends Sprite{
 			Lib.current.stage.scaleMode = nme.display.StageScaleMode.NO_SCALE;
 			//_run( );
 
-			_oSignal = new Signal( );
-			_oSignal.connect( _onSignal4 , 'toto' , 20 , false );
-			_oSignal.connect( _onSignal3 , 'toto' , 20 , false );
-			_oSignal.connect( _onSignal2 , 'toto' , 10 , false );
-			_oSignal.connect( _onSignal1 , 'toto' , 30 , true );
-			_oSignal.disconnect( _onSignal4 , 'toto');
-			trace('----- true : '+_oSignal.isRegistered( _onSignal1 , 'toto'));
-			trace('emit');
-			trace('---------------- 1 - 3 - 2');
-			_oSignal.emit( 'toto' , ['toto'] );
-			trace('----- false : '+_oSignal.isRegistered( _onSignal1 , 'toto'));
-			trace('---------------- 3 - 2');
-			_oSignal.emit( 'toto' , ['toto'] );
+			var sp : Sprite = new Sprite( );
+				sp.graphics.lineStyle( 1 , 0x0000FF , 1.0 );
+				sp.graphics.drawRect( 0 , 0 , 600 , 400 );
+			//
+				sp.graphics.lineStyle( 0.1 , 0x00FF00 , 1.0 );
+				sp.graphics.drawRect( 10 , 100 , 100 , 100 );
+				sp.graphics.drawRect( 10 , 390 , 100 , 100 );
+				sp.graphics.drawRect( 10 , 401 , 100 , 100 );
+			addChild( sp );
+			
+			_oTree = new QuadTree<Int>( 0 , 0 , 600, 400 , 10 , sp.graphics );
+			trace( _oTree.put( 0 , 10 , 100 , 100 , 100 ) );
+			return;
+			trace( _oTree.put( 0 , 10 , 390 , 100 , 100 ) );
+			trace( _oTree.put( 0 , 10 , 401 , 100 , 100 ) );
+		
 		}
 	
 	// -------o public
