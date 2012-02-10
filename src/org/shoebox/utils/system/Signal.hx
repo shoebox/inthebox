@@ -49,6 +49,7 @@ class Signal extends EventDispatcher{
 		* @return	void
 		*/
 		public function new( ) {
+			trace('constructor');
 			super( );
 			_hChannels = new Hash<Array<SignalListener>>( );
 		}
