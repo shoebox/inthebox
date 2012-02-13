@@ -48,7 +48,7 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function contains( dx : Float , dy : Float ) : Bool {
+		public function containPoint( dx : Float , dy : Float ) : Bool {
 			return ( dx >= min.x && dx <= max.x && dy >= min.y && dy <= max.y );
 		}
 
@@ -70,7 +70,7 @@ class AABB{
 		* @return	void
 		*/
 		public function toString( ) : String {
-			return '[ AABB > \t[ min : '+min.x+'\t'+min.y+'  \t| max '+max.x+'\t'+max.y+' ]]';
+			return '[ AABB > [ min : '+min.x+' '+min.y+' | max '+max.x+' '+max.y+' ]]';
 		}
 
 		/**
@@ -80,9 +80,17 @@ class AABB{
 		* @return	void
 		*/
 		public function debug( g : Graphics ) : Void {
-			
-			g.lineStyle( 0.1 , 0xFF0000 , 0.1 );
 			g.drawRect( min.x , min.y , max.x - min.x , max.y - min.y );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function containAABB( aabb : AABB ) : Bool {
+			return ( aabb.max.x <= max.x && aabb.max.y <= max.y && aabb.min.x >= min.x && aabb.min.y >= min.y );
 		}
 
 	// -------o protected

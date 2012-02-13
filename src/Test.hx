@@ -29,7 +29,7 @@ class Test extends Sprite{
 	private var _iCount : Int;
 	private var _iPrevTimer : Int;
 	private var _oSignal : Signal;
-	private var _oTree : QuadTree<Int>;
+	private var _oTree : QuadTree<Sprite>;
 
 	// -------o constructor
 		
@@ -50,21 +50,41 @@ class Test extends Sprite{
 			//_run( );
 
 			var sp : Sprite = new Sprite( );
-				sp.graphics.lineStyle( 1 , 0x0000FF , 1.0 );
-				sp.graphics.drawRect( 0 , 0 , 600 , 400 );
-			//
-				sp.graphics.lineStyle( 0.1 , 0x00FF00 , 1.0 );
-				sp.graphics.drawRect( 10 , 100 , 100 , 100 );
-				sp.graphics.drawRect( 10 , 390 , 100 , 100 );
-				sp.graphics.drawRect( 10 , 401 , 100 , 100 );
+				sp.graphics.clear( );
+				sp.graphics.lineStyle( 0.1 , 0xFFFFFF , 0.2 );
+				
 			addChild( sp );
 			
-			_oTree = new QuadTree<Int>( 0 , 0 , 600, 400 , 10 , sp.graphics );
-			trace( _oTree.put( 0 , 10 , 100 , 100 , 100 ) );
-			return;
-			trace( _oTree.put( 0 , 10 , 390 , 100 , 100 ) );
-			trace( _oTree.put( 0 , 10 , 401 , 100 , 100 ) );
-		
+			_oTree = new QuadTree<Sprite>( new AABB( 0 , 0 , 800 , 600 ) , 10 , sp.graphics );
+			
+			var o : AABB;
+			var dx : Float;
+			var dy : Float;
+			var item : Sprite;
+			for( i in 0...400 ){
+				dx = Math.random( ) * 800;
+				dy = Math.random( ) * 600;
+
+				item = new Sprite( );
+				item.graphics.beginFill( 0x00FF00 );
+				item.graphics.drawRect( dx , dy , 10 , 10 );
+				item.graphics.endFill( );
+				item.alpha = 0.25;
+				sp.addChild( item );
+
+				o = new AABB( dx , dy , dx + 10 , dy + 10 );
+				_oTree.putArray( [ item , item , item ] , o );
+			}
+
+			sp.graphics.lineStyle( 1 , 0xFF0000 , 0.5 );
+			sp.graphics.drawRect( 500 , 100 , 200 , 200 );
+			
+			var n : Int = Lib.getTimer( );
+			var res : Array<Sprite> = _oTree.get( new AABB( 500 , 100 , 700 , 300 ) );
+			for( item in res ){
+				item.alpha = 1;
+			}
+
 		}
 	
 	// -------o public

@@ -37,37 +37,21 @@ class QuadTree<T> extends QuadTreeNode<T>{
 	// -------o constructor
 		
 		/**
-		* constructor
-		*
-		* @param	
-		* @return	void
-		*/
-		public function new( x : Float , y : Float , w : Float , h : Float , iMaxDepth : Int = 10 , gDebug : Graphics = null  ) {
-			super( x , y , w , h , 0 , iMaxDepth , gDebug );
-		}
-	
-	// -------o public
-				
-		/**
 		* 
 		* 
 		* @public
+		* @param maxDepth : Max tree depth ( Int )
 		* @return	void
 		*/
-		public function put( t : T , x : Float , y : Float , w : Float , h : Float ) : Bool {
-			
-			var o : Quad = new Quad( x , y , w , h );
-				
-			if( !bounds.intersect( o ) )
-				return false;
-			
-			return addAt( t , o );
+		public function new( bounds : AABB , maxDepth : Int = 5 , gDebug : Graphics = null ) : Void {
+			super( bounds , 0 , maxDepth , gDebug );
 		}
+	
+	// -------o public
+		
 
 	// -------o protected
 	
-		
-
 	// -------o misc
 		
 }
@@ -79,16 +63,20 @@ class QuadTree<T> extends QuadTreeNode<T>{
 
 class QuadTreeNode<T>{
 
-	public var bounds : Quad;
-
-	private var _aChilds      : Array<QuadTreeNode<T>>;
-	private var _aContent     : Array<T>;
-	private var _bInitialized : Bool;
-	private var _bMaxDepth    : Bool;
-	private var _gDebug       : Graphics;
-	private var _iDepth       : Int ;
-	private var _iMaxDepth    : Int;
-
+	private var _bBounds     : AABB;
+	private var _aContent    : Array<T>;
+	private var _bMaxDepth   : Bool;
+	private var _bInitialize : Bool;
+	private var _fHalfX      : Float;
+	private var _fHalfY      : Float;
+	private var _gDebug      : Graphics;
+	private var _iDepth      : Int;
+	private var _iMaxDepth   : Int;
+	private var _qTopL       : QuadTreeNode<T>;
+	private var _qTopR       : QuadTreeNode<T>;
+	private var _qBotL       : QuadTreeNode<T>;
+	private var _qBotR       : QuadTreeNode<T>;
+	
 	// -------o constructor
 		
 		/**
@@ -97,16 +85,18 @@ class QuadTreeNode<T>{
 		* @param	
 		* @return	void
 		*/
-		public function new( x : Float , y : Float , w : Float , h : Float , iDepth : Int , iMaxDepth : Int , gDebug : Graphics = null ) {
-			
-			bounds        = new Quad( );
-			bounds.fromRec( x , y , w , h );
-			
-			_gDebug       = gDebug;
-			_iDepth       = iDepth;
-			_iMaxDepth    = iMaxDepth;
-			_bMaxDepth    = _iDepth > _iMaxDepth;
-			_bInitialized = false;
+		public function new( bounds : AABB , depth : Int , maxDepth : Int = 10 , gDebug : Graphics = null ) {
+			_bBounds   = bounds;
+			_iDepth    = depth;
+			_iMaxDepth = maxDepth;	
+			_gDebug    = gDebug;
+			_fHalfX    = (bounds.max.x - bounds.min.x ) / 2 ;
+			_fHalfY    = (bounds.max.y - bounds.min.y ) / 2 ;
+			_bMaxDepth = depth >= maxDepth;
+		
+			if( _gDebug != null ){
+				bounds.debug( gDebug );
+			}
 		}
 	
 	// -------o public
@@ -117,12 +107,39 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function hasContent( ) : Bool {
+		public function put( t : T , bounds : AABB ) : Bool {
 			
-			if( _aContent == null )
+			if( !_bBounds.intersect( bounds ) )
 				return false;
+			
+			if( _bMaxDepth ){
+				_addContent( t );
+				return false;
+			}
+			
+			if( !_bInitialize )
+				_init( );
+			
 
-			return _aContent.length > 0;
+			var q : QuadTreeNode<T> = _getQuad( _getQuadAt( bounds.min.x , bounds.min.y ) );
+			var b : Bool = q.put( t , bounds );
+			if( !b ){
+				_addContent( t );
+				b = true;
+			}
+			return b;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function putArray( a : Array<T> , bounds : AABB ) : Void {
+			
+			for( t in a )
+				put( t , bounds );
 
 		}
 
@@ -132,32 +149,32 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function addAt( value : T , a : Quad ) : Bool {
+		public function get( bounds : AABB , res : Array<T> = null ) : Array<T> {
 			
+			//
+				if( res == null )
+					res = new Array<T>( );
 
-			if( !bounds.intersect( a ) )
-				return false;
+			//
+				if( !_bBounds.intersect( bounds ) )
+					return res;
 			
-			if( !_bInitialized )
-				_init( );
-
-			if( _bMaxDepth ){
-				trace('_bMaxDepth');
-				return true;
-			}
-			var s = '';
-			for( i in 0..._iDepth )
-				s+='\t';
-
-			trace(s+'addAtt ::: '+_aChilds);
-			for( c in _aChilds ){
-				trace(s+_iDepth+' c ::: '+c.addAt( value , a )+' ==== '+c.bounds);
-				if( c.addAt( value , a ) ){
-					//return true;
+			//
+				if( _aContent != null ){
+					
+					res = res.concat( _aContent );
 				}
-			}
 
-			return true;
+			//
+				if( _bInitialize ){
+					res = _qTopL.get( bounds , res );
+					res = _qTopR.get( bounds , res );
+					res = _qBotL.get( bounds , res );
+					res = _qBotR.get( bounds , res );
+				}
+
+			return res;
+			
 		}
 
 	// -------o protected
@@ -168,92 +185,136 @@ class QuadTreeNode<T>{
 		* @private
 		* @return	void
 		*/
-		private function _init( ) : Void{
+		private function _addContent( t : T ) : Void{
 			
-			if( !_bMaxDepth ){
-				
-				var fHalfW : Float = bounds.w / 2;
-				var fHalfH : Float = bounds.h / 2;
-				
-				var s = '';
-			for( i in 0..._iDepth )
-				s+='\t';
-
-				var child : QuadTreeNode<T>;
-				_aChilds = new Array<QuadTreeNode<T>>( );
-				trace(s+'init ::: '+bounds);
-				for( i in 0...4 ){
-					
-					child = new QuadTreeNode<T>( 
-															( i % 2 ) * fHalfW , 
-															( i - i % 2 ) / 2 * fHalfH , 
-															fHalfW , 
-															fHalfH , 
-															_iDepth + 1, 
-															_iMaxDepth ,
-															_gDebug
-														);
-					
-					if( _gDebug != null )
-						child.bounds.debug( _gDebug );
-
-					_aChilds.push( child );					
-				}
-				
-
-			}
-
-			_bInitialized = true;
-			
+			if( _aContent == null )
+				_aContent = new Array<T>( );
+				_aContent.push( t );
 		}
 
-	// -------o misc
-	
-}
-
-/**
- * ...
- * @author shoe[box]
- */
-
-class Quad extends org.shoebox.display.AABB{
-
-	public var w  : Float;
-	public var h : Float;
-
-	// -------o constructor
-		
 		/**
-		* constructor
-		*
-		* @param	
+		* 
+		* 
+		* @private
 		* @return	void
 		*/
-		public function new( x : Float = 0.0 , y : Float = 0.0 , w : Float = 0.0 , h : Float = 0.0 ) {
-			this.w = w;
-			this.h = h;
-			super( );
-			fromRec( x , y , w , h );
+		private function _init( ) : Void{
+			
+			_qTopL = new QuadTreeNode<T>( 	new AABB( 
+														_bBounds.min.x , 
+														_bBounds.min.y , 
+														_bBounds.min.x + _fHalfX , 
+														_bBounds.min.y + _fHalfY 
+													) , _iDepth + 1 , _iMaxDepth , _gDebug );
+			
+			_qTopR = new QuadTreeNode<T>( 
+											new AABB( 
+														_bBounds.min.x + _fHalfX , 
+														_bBounds.min.y , 
+														_bBounds.max.x , 
+														_bBounds.min.y + _fHalfY
+													) , _iDepth + 1 , _iMaxDepth , _gDebug );									
+			
+			_qBotL = new QuadTreeNode<T>( 	new AABB( 
+														_bBounds.min.x , 
+														_bBounds.min.y + _fHalfY , 
+														_bBounds.min.x + _fHalfX , 
+														_bBounds.max.y
+													) , _iDepth + 1 , _iMaxDepth , _gDebug );
+			
+			_qBotR = new QuadTreeNode<T>( 	new AABB( 
+														_bBounds.min.x + _fHalfX , 
+														_bBounds.min.y + _fHalfY , 
+														_bBounds.max.x , 
+														_bBounds.max.y
+													) , _iDepth + 1 , _iMaxDepth , _gDebug );
+			
+			_bInitialize = true;
 		}
-	
-	// -------o public
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _getQuad( q : Quad ) : QuadTreeNode<T>{
+			
+			return switch( q ){
+
+				case TL : _qTopL;
+					
+				case TR : _qTopR;
 				
+				case BL : _qBotL;
+				
+				case BR : _qBotR;
+				
+			}
+
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _getQuadAt( x : Float , y : Float ) : Quad{
+
+			var iMiddleX : Float = _bBounds.min.x + _fHalfX;
+			var iMiddleY : Float = _bBounds.min.y + _fHalfY;
+			return if( y <= iMiddleY){
+						
+						if( x <= iMiddleX )
+							Quad.TL;
+						else
+							Quad.TR;
+
+					}else{
+
+						if( x <= iMiddleX )
+							Quad.BL;
+						else
+							Quad.BR;	
+												
+					}
+
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _getIndent( ) : String{
+			var s = '';
+			for( i in 0..._iDepth ){
+				s += '\t';
+				
+			}
+
+			return s;
+		}
+
 		/**
 		* 
 		* 
 		* @public
 		* @return	void
 		*/
-		override public function fromRec( x : Float , y : Float , w : Float , h : Float ) : Void {
-			super.fromRec( x , y , w , h );
-			this.w = w;
-			this.h = h;
+		public function toString( ) : String {
+			return 'QuadTreeNode ::: '+_bBounds;
 		}
-
-	// -------o protected
-	
-		
 
 	// -------o misc
 	
+}
+
+enum Quad{
+	TL;
+	TR;
+	BL;
+	BR;
 }
