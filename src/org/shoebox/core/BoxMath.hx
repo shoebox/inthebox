@@ -47,8 +47,8 @@ class BoxMath
 	* @param 
 	* @return
 	*/
-	static public function clamp( a : Float , min : Float , max : Float ) : Float{
-		return a < min ? min : a > max ? max : a;
+	inline static public function clamp( f : Float , fMin : Float , fMax : Float ) : Float{
+		return ( f < fMin) ? fMin : ( f > fMax) ? fMax : f;
 	}
 	
 	/**

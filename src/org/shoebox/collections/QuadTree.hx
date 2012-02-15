@@ -156,7 +156,7 @@ class QuadTreeNode<T>{
 					res = new Array<T>( );
 
 			//
-				if( !_bBounds.intersect( bounds ) )
+				if( !bounds.intersect( _bBounds ) )
 					return res;
 			
 			//
