@@ -1,11 +1,15 @@
 package org.shoebox.utils;
 
+import haxe.Timer;
 import nme.Assets;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
 import nme.events.Event;
 import nme.Lib;
 import nme.display.Sprite;
 import nme.system.System;
 import nme.text.TextField;
+import nme.text.TextFieldAutoSize;
 import nme.text.TextFormat;
 
 /**
@@ -15,22 +19,20 @@ import nme.text.TextFormat;
 
 class Perf extends Sprite{
 	
-	public var iFps 				: Int;
-	public var iMem 				: Int;
-	public var iTimer 				: Int;
-	public var fps	 				: Int;
-	public var iMs	 				: Int;
+	public var iTimer : Int;
+	public var iMs    : Int;
 	
-	private var _nMemory			: Float;
-	private var _iPrevDelay			: Int;
-	private var _iStart				: Int;
-	private var _tfMemory 			: TextField;
-	private var _tfMs 				: TextField;
-	private var _tfFps 				: TextField;
-	private var _oFormat 			: TextFormat;
+	private var _aTimes     : Array<Float>;
+	private var _bmpBack    : Bitmap;
+	private var _nMemory    : Float;
+	private var _iPrevDelay : Int;
+	private var _iStart     : Int;
+	private var _tfMs       : TextField;
+	private var _tfFps      : TextField;
+	private var _oFormat    : TextFormat;
 	
 	private static var WIDTH			: Int = 100;
-	private static var HEIGHT			: Int = 50;	
+	private static var HEIGHT			: Int = 40;	
 	
 	// -------o constructor
 		
@@ -44,7 +46,9 @@ class Perf extends Sprite{
 		public function new() {
 			super( );
 			_iStart = System.totalMemory;
+			mouseChildren = mouseEnabled = false;
 			addEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
+			_aTimes = [ ];
 		}
 	
 	// -------o public
@@ -52,35 +56,53 @@ class Perf extends Sprite{
 				
 
 	// -------o protected
-	
+		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _onStaged( e : Event ) : Void {
+			x = Lib.current.stage.stageWidth - WIDTH;
 			removeEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
 			addEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );
 			addEventListener( Event.ENTER_FRAME , _onUpdate , false );
 			_draw( );
 		}
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _draw( ) : Void {
-			graphics.beginFill( 0x2A2A2A );
-			graphics.drawRect( 0 , 0 , WIDTH , HEIGHT );
-			graphics.endFill( );
+			_bmpBack = new Bitmap( new BitmapData( WIDTH , HEIGHT , false , 0x2A2A2A ) );
+			addChild( _bmpBack );
 			_textFields( );
 		}
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _textFields( ) : Void {
 			
 			//
 				_tfFps = new TextField ();
 				_tfMs = new TextField ();
-				_tfMemory = new TextField ();
-				_oFormat = new TextFormat ( null , 10 );
+				_oFormat = new TextFormat ( null , 14 );
 	
 			//
-				_tfFps.defaultTextFormat = _tfMs.defaultTextFormat = _tfMemory.defaultTextFormat = _oFormat;
-				_tfFps.width = _tfMs.width = _tfMemory.width = WIDTH;
-				_tfFps.selectable = _tfMs.selectable = _tfMemory.selectable = false;
-				_tfFps.textColor = 0xFFFF00;
-				_tfFps.text = "FPS: ";
+				_tfFps.defaultTextFormat = _tfMs.defaultTextFormat = _oFormat;
+				_tfMs.autoSize           = _tfFps.autoSize = TextFieldAutoSize.NONE;
+				_tfFps.width             = _tfMs.width = WIDTH;
+				_tfFps.selectable        = _tfMs.selectable = false;
+				_tfFps.textColor         = 0xFFFF00;
+				_tfFps.text              = "FPS: ";
 				addChild ( _tfFps );
 			
 			//
@@ -88,37 +110,36 @@ class Perf extends Sprite{
 				_tfMs.textColor = 0x00FF00;
 				_tfMs.text = "MS: ";
 				addChild ( _tfMs );
-	
-			//
-				_tfMemory.y = 30;
-				_tfMemory.textColor = 0x00FFFF;
-				_tfMemory.text = "MEM: ";
-				addChild ( _tfMemory );
+		
 		}
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _onUpdate( e : Event ) : Void {
 			
+			var now = Timer.stamp();
+			_aTimes.push(now);
+			
+			while( _aTimes[ 0 ] < now - 1)
+				_aTimes.shift();
+			
 			iTimer = Lib.getTimer();
-			fps++;
-				
-			if ( iTimer - 1000 > _iPrevDelay ) {
-					
-				_iPrevDelay = iTimer;
-				_nMemory = Math.round( System.totalMemory * 0.000000954 * 100 ) / 100;// .toFixed ( 3 ) 
-	
-				iFps = Std.int( Math.min ( 50 , 50 / Lib.current.stage.frameRate * fps ) );
-				iMem = Std.int( Math.min ( 50 , Math.sqrt ( Math.sqrt ( _nMemory * 5000 ) ) ) - 2 );
-	
-				_tfFps.text = "FPS: " + fps + " / " + stage.frameRate;
-				_tfMemory.text = "MEM: " + _nMemory;
-	
-				fps = 0;
-			}
-				
+			
+			_tfFps.text = "FPS: " + _aTimes.length + " / " + stage.frameRate;
 			_tfMs.text = "MS: " + (iTimer - iMs);
 			iMs = iTimer;
 		}
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _onRemoved( e : Event ) : Void {
 			trace('onRemoved');
 			removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
@@ -127,8 +148,5 @@ class Perf extends Sprite{
 
 	// -------o misc
 	
-		public static function main () {
-			Lib.current.addChild ( new Perf() );		
-		}
 	
 }

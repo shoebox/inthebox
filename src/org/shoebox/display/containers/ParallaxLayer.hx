@@ -40,7 +40,10 @@ package org.shoebox.display.containers;
 	import nme.geom.Rectangle;
 	import nme.Lib;
 	
+	import org.shoebox.geom.AABB;
+	import org.shoebox.core.BoxMath;
 	import org.shoebox.core.Vector2D;
+	import org.shoebox.geom.FPoint;
 	
 	/**
 	* ParallaxLayer
@@ -50,14 +53,16 @@ package org.shoebox.display.containers;
 		
 		public var bLoop				: Bool;
 		public var position			: Vector2D;
-		
-		private var _bmpPattern		: BitmapData;
-		private var _fDx				: Float;
-		private var _fDy				: Float;
-		private var _fRefWidth			: Float;
-		private var _fRefHeight		: Float;
-		private var _fSpeed			: Float;
-		
+
+		private var _oLimits    : AABB;
+		private var _bmpPattern : BitmapData;
+		private var _fDx        : Float;
+		private var _fDy        : Float;
+		private var _fRefWidth  : Float;
+		private var _fRefHeight : Float;
+		private var _fSpeed     : Float;
+		private var _tmpPos     : FPoint;
+
 		// -------o constructor
 		
 			/**
@@ -67,17 +72,22 @@ package org.shoebox.display.containers;
 			* @return	void
 			*/
 			public function new( 
-												bRef		: BitmapData,
-												fSpeed	 	: Float = 1.0, 
-												bLoop		: Bool 	= true												
-											) : Void {
+									bRef   : BitmapData,
+									fSpeed : Float = 1.0, 
+									bLoop  : Bool 	= true,
+									limits : AABB	= null								
+								) : Void {
 				super( );
 				this.bLoop = bLoop;
 				
-				_fSpeed		= fSpeed;
-				_fRefWidth 	= bRef.width;
+				_fSpeed     = fSpeed;
+				_fRefWidth  = bRef.width;
 				_fRefHeight = bRef.height;
-				
+				if( limits != null ){
+					_oLimits = limits;
+					_tmpPos  = { x : 0.0 , y : 0.0 };
+				}
+
 				if( bLoop ){
 					bitmapData = _updatePattern( bRef );
 					bRef.dispose( );
@@ -113,20 +123,28 @@ package org.shoebox.display.containers;
 			* @param 
 			* @return
 			*/
-			public function translate( dx : Float , dy : Float ) : Void{
+			public function translate( dx : Float , dy : Float ) : Bool{
+				
+				if( _oLimits != null ){
+					_tmpPos.x = position.x + dx * _fSpeed;
+					_tmpPos.y = position.y + dy * _fSpeed;
+					
+					if( !_oLimits.containPoint( _tmpPos.x , _tmpPos.y ) )
+						return false;
+				}
+
 				position.x += dx * _fSpeed;
 				position.y += dy * _fSpeed;
 				
 				
 				if( bLoop ){
-					//trace( position.x+' - '+_fRefWidth+'  === '+_modulate( position.x , _fRefWidth ) );
 					position.x = _modulate( position.x , _fRefWidth );
 					position.y = _modulate( position.y , _fRefHeight );
 				}
 				
-				
 				x = position.x + _fDx;
 				y = position.y + _fDy;
+				return true;
 			}
 			
 		// -------o protected

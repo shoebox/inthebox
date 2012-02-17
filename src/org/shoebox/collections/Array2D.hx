@@ -31,6 +31,7 @@ package org.shoebox.collections;
 
 import nme.Lib;
 import nme.display.Sprite;
+import org.shoebox.geom.IPosition;
 
 /**
  * ...
@@ -38,9 +39,9 @@ import nme.display.Sprite;
  */
 
 private typedef Array2DDef<T> = {
-	private var _aContent	:Array<T>;
-	private var _iWidth		:Int;
-	private var _iHeight	:Int;
+	private var _aContent : Array<T>;
+	private var _iWidth   : Int;
+	private var _iHeight  : Int;
 }
 
 class Array2D<T>{
@@ -84,7 +85,7 @@ class Array2D<T>{
 		* @public
 		* @return	void
 		*/
-		public function set( dx : Int , dy : Int , value : T ) : Bool{
+		inline public function set( dx : Int , dy : Int , value : T ) : Bool{
 			return _set( dx , dy , value );
 		}
 		
@@ -94,10 +95,10 @@ class Array2D<T>{
 		* @public
 		* @return	void
 		*/
-		public function get( dx : Int , dy : Int ) : T{
+		inline public function get( dx : Int , dy : Int ) : T{
 			return _get( dx , dy );
 		}
-		
+
 		/**
 		* 
 		* 
@@ -107,6 +108,46 @@ class Array2D<T>{
 		public function iterator() : Array2DIterator<T>{
 			return new Array2DIterator<T>( this );
 		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		inline public function hasContentAt( dx : Int , dy : Int ) : Bool {
+			return _aContent[getIndex( dx , dy )] != null;
+		}
+
+		/**
+		* Getting a region of the Array with the default concat
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getRegion( min : IPosition , max : IPosition , res : Array<T> = null ) : Array<T> {
+
+			var res : Array<T> = res!=null ? res : new Array<T>( );
+			for( dy in min.y...max.y ){
+				res = res.concat( _aContent.slice( getIndex( min.x , dy ) , getIndex( max.x , dy ) ) );
+			}
+
+			return res;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getRegionCustom<B>( min : IPosition , max : IPosition , res : Array<B> , fConcat : Array<T> -> Array<B> -> Array<B> = null ) : Array<B> {
+			
+			for( dy in min.y...max.y )
+				res = fConcat( _aContent.slice( getIndex( min.x , dy ) , getIndex( max.x , dy ) ) , res );
+			
+			return res;
+		}	
 	
 	// -------o protected
 		
@@ -116,7 +157,7 @@ class Array2D<T>{
 		* @private
 		* @return	void
 		*/
-		private function _getLength( ) : Int{
+		inline private function _getLength( ) : Int{
 			return _iWidth * _iHeight;
 		}
 	

@@ -27,9 +27,55 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.geom;
+package org.shoebox.core;
 
-typedef FPosition={
-	public var x : Float;
-	public var y : Float;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.geom.Matrix;
+
+class BoxBitmapdata {
+
+	/**
+	* Resize a bitmapdata to fit in the w/h size
+	*	
+	* @param 	oSOURCE	: BitmapData source 		(BITMAPDATA)
+	* @param	w		: Desired width		(NUMBER) 
+	* @param	h		: Desired height		(NUMBER) 
+	* @return	result	: Cropeed bitmapdata		(BITMAPDATA)
+	*/
+	static public function resize( source : BitmapData , w : Float , h : Float , bMax : Bool = false , bZoom : Bool = false , bSmooth : Bool = false ) : BitmapData {
+		
+		var nRatio : Float = getRatio ( source , w , h , bMax , bZoom );
+
+		if ( nRatio >= 1 )
+			return source;
+
+		var mat : Matrix = new Matrix ();
+			mat.scale ( nRatio , nRatio );
+
+		var oB : BitmapData = new BitmapData ( Std.int( source.width * nRatio ) , Std.int( source.height * nRatio ) , source.transparent , 0 );
+			oB.draw ( source , mat , null , null , null , bSmooth );
+
+		return oB;
+	}	
+	
+	/**
+	* 
+	*
+	* @param 
+	* @return
+	*/
+	static public function getRatio( source : BitmapData , w : Float , h : Float , bMax : Bool = false , bZoom : Bool = false) : Float {
+		
+		var fRatio : Float;
+		if( bMax )
+			fRatio = Math.max( w / source.width , h  / source.height );
+		else
+			fRatio = Math.min( w / source.width , h / source.height );
+		
+		if( !bZoom )
+			fRatio = Math.min( fRatio , 1 ) ;
+			
+		return fRatio;	
+	}
 }

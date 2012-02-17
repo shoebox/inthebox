@@ -40,7 +40,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @param
 			* @return
 			*/
-			public function init(?m:Class<Dynamic>=null, ?v:Class<Dynamic>=null , ?c:Class<Dynamic>=null , ?mcContainer:DisplayObjectContainer=null):AApplication{
+			public function init(?m:Class<AModel>=null, ?v:Class<AView>=null , ?c:Class<AController>=null , ?mcContainer:DisplayObjectContainer=null):AApplication{
 				
 				mouseEnabled = false;
 				

@@ -1,5 +1,6 @@
 package org.shoebox.patterns.mvc.abstracts; 
 
+	import org.shoebox.core.interfaces.IDispose;
 	import org.shoebox.patterns.frontcontroller.FrontController;
 	import org.shoebox.patterns.mvc.interfaces.IView;
 	import nme.display.Bitmap;
@@ -165,6 +166,10 @@ package org.shoebox.patterns.mvc.abstracts;
 					if( d == null )
 						continue;
 					
+					if( Std.is( d , IDispose ) ){
+						cast( d , IDispose ).dispose( );
+					}
+
 					if( Std.is( d, Bitmap) ){
 						
 						if( ( cast( d, Bitmap) ).bitmapData != null ){

@@ -27,58 +27,9 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.display;
-import nme.display.DisplayObject;
-import nme.display.StageAlign;
-import nme.geom.Rectangle;
-import org.shoebox.geom.AABB;
+package org.shoebox.geom;
 
-/**
- * ...
- * @author shoe[box]
- */
-
-class DisplayFuncs{
-
-	// -------o constructor
-	
-	// -------o public
-		
-		/**
-		* 
-		*
-		* @param 
-		* @return
-		*/
-		static public function align( o : DisplayObject , aabb : AABB , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
-			
-			//
-				if( sAlign == StageAlign.RIGHT || sAlign == StageAlign.TOP_RIGHT || sAlign == StageAlign.BOTTOM_RIGHT ){
-					o.x = aabb.max.x - o.width;
-				}else if( sAlign == StageAlign.TOP || sAlign == StageAlign.LEFT || sAlign == StageAlign.TOP_LEFT  || sAlign == StageAlign.BOTTOM_LEFT ){
-					o.x = aabb.min.x;
-				}else{
-					o.x = aabb.min.x + ( aabb.max.x - aabb.min.x - o.width ) / 2;
-				}
-			
-			//
-				if( sAlign == StageAlign.BOTTOM || sAlign == StageAlign.BOTTOM_RIGHT || sAlign == StageAlign.BOTTOM_LEFT ){
-					o.y = aabb.max.y - o.height;
-				}else if( sAlign == StageAlign.TOP || sAlign == StageAlign.TOP_LEFT || sAlign == StageAlign.TOP_RIGHT )
-					o.y = aabb.min.y;
-				else
-					o.y = aabb.min.y + ( aabb.max.y - aabb.min.y - o.height )/ 2;
-
-
-			
-			o.x += dx;
-			o.y += dy;
-			
-		}
-	
-	// -------o protected
-
-	// -------o misc
-	
-	
+typedef IPosition={
+	public var x : Int;
+	public var y : Int;
 }

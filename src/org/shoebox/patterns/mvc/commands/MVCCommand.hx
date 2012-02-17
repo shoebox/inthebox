@@ -27,35 +27,35 @@
 		
 		public var controller(getController, null) : AController ;
 		
-		public var controllerClass(null, setControllerClass) : Class<Dynamic>;
+		public var controllerClass(null, setControllerClass) : Class<AController>;
 		
 		public var model(getModel, null) : AModel ;
 		
-		public var modelClass(null, setModelClass) : Class<Dynamic>;
+		public var modelClass(null, setModelClass) : Class<AModel>;
 		
 		public var view(getView, null) : AView ;
 		
-		public var viewClass(null, setViewClass) : Class<Dynamic>;
+		public var viewClass(null, setViewClass) : Class<AView>;
 		
 		public var container       : DisplayObjectContainer ;
 		public var containerBackup : DisplayObjectContainer ;
 		
-		var _oAPP                  : AApplication;
-		var _oController           : AController;
-		var _oModel                : AModel;
-		var _oView                 : AView;
-		var _cController           : Class<Dynamic>;
-		var _cModel                : Class<Dynamic>;
-		var _cView                 : Class<Dynamic>;
-		var _oVars                 : Dynamic;
-		var _oFrontController      : FrontController;
+		var _oAPP             : AApplication;
+		var _oController      : AController;
+		var _oModel           : AModel;
+		var _oView            : AView;
+		var _cController      : Class<AController>;
+		var _cModel           : Class<AModel>;
+		var _cView            : Class<AView>;
+		var _oVars            : Dynamic;
+		var _oFrontController : FrontController;
 		
 		// -------o constructor
 			/**
 			* contructor
 			* @return void
 			*/
-			public function new( ?m : Class<Dynamic> = null , ?v : Class<Dynamic> = null , ?c : Class<Dynamic> = null , oContainer : DisplayObjectContainer = null , ?fC : FrontController = null ){
+			public function new( ?m : Class<AModel> = null , ?v : Class<AView> = null , ?c : Class<AController> = null , oContainer : DisplayObjectContainer = null , ?fC : FrontController = null ){
 
 				super( );
 				container         = null ;
@@ -126,7 +126,7 @@
 			* @param
 			* @return
 			*/
-			public function setModelClass(c:Class<Dynamic>):Class<Dynamic>{
+			public function setModelClass(c:Class<AModel>):Class<AModel>{
 				_cModel = c;				
 				return c;
 			}
@@ -136,7 +136,7 @@
 			* @param
 			* @return
 			*/
-			public function setViewClass(c:Class<Dynamic>):Class<Dynamic>{
+			public function setViewClass(c:Class<AView>):Class<AView>{
 				_cView = c;
 				return c;
 			}
@@ -146,7 +146,7 @@
 			* @param
 			* @return
 			*/
-			public function setControllerClass(c:Class<Dynamic>):Class<Dynamic>{
+			public function setControllerClass(c:Class<AController>):Class<AController>{
 				_cController = c;
 				return c;
 			}

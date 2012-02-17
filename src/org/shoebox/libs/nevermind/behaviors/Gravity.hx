@@ -38,6 +38,8 @@ package org.shoebox.libs.nevermind.behaviors ;
 	*/
 	class Gravity extends ABehavior{
 		
+		static public var DEFAULT : Gravity = new Gravity( );
+
 		private var _vGravity			: Vector2D;
 		
 		// -------o constructor

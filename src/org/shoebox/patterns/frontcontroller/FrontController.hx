@@ -103,7 +103,7 @@ package org.shoebox.patterns.frontcontroller;
 											c 			: Class<AController> 		= null ,
 											?container	: DisplayObjectContainer 	= null
 										) : Bool {
-				
+			
 				if( _hTriads.exists( sName ) )
 					throw new IllegalOperationError('A triad with the code name '+sName+' is already registered');
 				
@@ -338,7 +338,6 @@ package org.shoebox.patterns.frontcontroller;
 				
 				if ( _sState == s )
 					return;
-				
 				//
 					if ( !_aExcludeHistory.copy( ).remove( s ) ) {
 						
@@ -349,7 +348,7 @@ package org.shoebox.patterns.frontcontroller;
 					
 				//
 					var aCodes : Array<String> = _hStates.get( s );
-					
+					trace('drawState ::: '+s+' - '+aCodes);
 				
 				//
 					if ( _sState != null ) {
@@ -365,8 +364,10 @@ package org.shoebox.patterns.frontcontroller;
 					}
 					
 				// Execute triads
-					for ( s in aCodes ) {
-						_executeTriad( s );
+					if( aCodes != null ){
+						for ( s in aCodes ) {
+							_executeTriad( s );
+						}
 					}
 				
 				_sState = s;

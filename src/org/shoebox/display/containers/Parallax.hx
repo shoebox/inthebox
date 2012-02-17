@@ -29,6 +29,8 @@
 */
 package org.shoebox.display.containers;
 
+	import org.shoebox.geom.AABB;
+
 	import nme.display.BitmapData;
 	import nme.display.IBitmapDrawable;
 	import nme.display.Sprite;
@@ -72,20 +74,27 @@ package org.shoebox.display.containers;
 			* @return
 			*/
 			public function addLayer( 
-										bLoop		: Bool				= false ,
-										display		: BitmapData		,
-										speedFactor : Float				= 1.0,
-										dx 			: Int		 		= 0 , 
-										dy 			: Int 				= 0 , 
-										fScaleX		: Float 			= 1.0,
-										fScaleY		: Float 			= 1.0										
+										display     : BitmapData,
+										bPrim       : Bool			= false ,
+										bLoop       : Bool			= false ,
+										speedFactor : Float			= 1.0,
+										dx          : Int			= 0 , 
+										dy          : Int 			= 0 , 
+										fScaleX     : Float 		= 1.0,
+										fScaleY     : Float 		= 1.0,
+										limits      : AABB = null							
 									) : Void {
 				
-				var layer : ParallaxLayer = new ParallaxLayer ( display , speedFactor ,  bLoop );
+				var layer : ParallaxLayer = new ParallaxLayer ( display , speedFactor ,  bLoop , limits );
 					layer.setTransform( dx , dy , fScaleX , fScaleY );
 				
 				addChild( layer );
-				_aLayers.push( layer );
+
+				if( !bPrim )
+					_aLayers.push( layer );
+				else
+					_lPrimary = layer;
+				
 				_iLayersCount++;
 			}
 			
@@ -114,6 +123,9 @@ package org.shoebox.display.containers;
 			*/
 			public function update( dx : Float , dy : Float = 0 ) : Bool {
 				
+				if( !_lPrimary.translate( dx , dy ) )
+					return false;
+
 				for( l in _aLayers ){
 					l.translate( dx , dy );
 				}

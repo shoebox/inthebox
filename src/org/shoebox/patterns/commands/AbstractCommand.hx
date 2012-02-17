@@ -22,7 +22,7 @@ package org.shoebox.patterns.commands;
 		/*[Event(name="Event_COMMAND_CANCEL",	 	type="org.shoebox.patterns.commands.events.CommandEvents")]*/
 		/*[Event(name="Event_COMMAND_START", 		type="org.shoebox.patterns.commands.events.CommandEvents")]*/
 		
-		public var frontController: FrontController ;
+		public var frontController: FrontController;
 	
 		var ERROR_ISRUNNING: String ;
 		var ERROR_ISCANCELED: String ;

@@ -32,7 +32,7 @@ package org.shoebox.geom;
 import com.eclecticdesignstudio.motion.Actuate;
 import nme.geom.Matrix;
 import org.shoebox.core.BoxMath;
-import org.shoebox.geom.FPosition;
+import org.shoebox.geom.FPoint;
 
 
 /**
@@ -45,10 +45,10 @@ class Camera2D{
 	private var _bInvalidate   : Bool;
 	private var _fAngle        : Float;
 	private var _fZoom         : Float;
-	private var _fViewPort     : FPosition;
-	private var _fPosition     : FPosition;
-	private var _fHalfViewPort : FPosition;
-	private var _fLimits       : FPosition;
+	private var _fViewPort     : FPoint;
+	private var _FPoint     : FPoint;
+	private var _fHalfViewPort : FPoint;
+	private var _fLimits       : FPoint;
 	private var _mProj         : Matrix;
 
 	// -------o constructor
@@ -61,7 +61,7 @@ class Camera2D{
 		*/
 		public function new( ) {
 			_fViewPort     = { x : 0.0 , y : 0.0 };
-			_fPosition     = { x : 0.0 , y : 0.0 };
+			_FPoint     = { x : 0.0 , y : 0.0 };
 			_fHalfViewPort = { x : 0.0 , y : 0.0 };
 			_fZoom         = 1.0;
 			_fAngle        = 0;
@@ -92,8 +92,8 @@ class Camera2D{
 		* @return	void
 		*/
 		public function setPosition( x : Float , y : Float ) : Void {
-			_fPosition.x = x;
-			_fPosition.y = y;
+			_FPoint.x = x;
+			_FPoint.y = y;
 			//_limits( );
 			_bInvalidate = true;
 		}
@@ -105,7 +105,7 @@ class Camera2D{
 		* @return	void
 		*/
 		public function move( dx : Float , dy : Float ) : Void {
-			setPosition( _fPosition.x + dx , _fPosition.y + dy );
+			setPosition( _FPoint.x + dx , _FPoint.y + dy );
 		}
 
 		/**
@@ -119,11 +119,11 @@ class Camera2D{
 			if( !_bInvalidate )
 				return _mProj;
 			
-			_fPosition.x = _limit( _fPosition.x , _fLimits.x * _fZoom , _fHalfViewPort.x );
-			_fPosition.y = _limit( _fPosition.y , _fLimits.y * _fZoom , _fHalfViewPort.y );
+			_FPoint.x = _limit( _FPoint.x , _fLimits.x * _fZoom , _fHalfViewPort.x );
+			_FPoint.y = _limit( _FPoint.y , _fLimits.y * _fZoom , _fHalfViewPort.y );
 
 			_mProj.identity( );
-			_mProj.translate( -_fPosition.x , -_fPosition.y );
+			_mProj.translate( -_FPoint.x , -_FPoint.y );
 			_mProj.rotate( 0 );
 			_mProj.scale( _fZoom , _fZoom );
 			_mProj.translate( _fHalfViewPort.x , _fHalfViewPort.y );
@@ -163,7 +163,7 @@ class Camera2D{
 		* @return	void
 		*/
 		public function moveTo( dx : Float , dy : Float , nDur : Float = 1 ) : Void {
-			Actuate.tween( _fPosition , 10 , { x : dx , y : dy } , true );
+			Actuate.tween( _FPoint , 10 , { x : dx , y : dy } , true );
 		}
 
 	// -------o protected
