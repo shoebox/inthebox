@@ -45,19 +45,31 @@ class BoxBitmapdata {
 	*/
 	static public function resize( source : BitmapData , w : Float , h : Float , bMax : Bool = false , bZoom : Bool = false , bSmooth : Bool = false ) : BitmapData {
 		
-		var nRatio : Float = getRatio ( source , w , h , bMax , bZoom );
+		var fRatio : Float = getRatio ( source.width , source.height , w , h , bMax , bZoom );
 
-		if ( nRatio >= 1 )
-			return source;
-
-		var mat : Matrix = new Matrix ();
-			mat.scale ( nRatio , nRatio );
-
-		var oB : BitmapData = new BitmapData ( Std.int( source.width * nRatio ) , Std.int( source.height * nRatio ) , source.transparent , 0 );
-			oB.draw ( source , mat , null , null , null , bSmooth );
+		var oB : BitmapData = new BitmapData ( Std.int( source.width * fRatio ) , Std.int( source.height * fRatio ) , source.transparent , 0 );
+			oB.draw ( source , resizeMatrix( source.width , source.height , w , h , bMax , bZoom ) );
 
 		return oB;
 	}	
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	static public function resizeMatrix( fSourceW : Float , fSouceH : Float, w : Float , h : Float , bMax : Bool = false , bZoom : Bool = false ) : Matrix {
+		
+		var fRatio : Float = getRatio ( fSourceW , fSouceH , w , h , bMax , bZoom );
+		if ( fRatio >= 1 && !bZoom )
+			return new Matrix( );
+
+		var mat : Matrix = new Matrix( );
+			mat.scale( fRatio , fRatio );
+
+		return mat;
+	}
 	
 	/**
 	* 
@@ -65,7 +77,7 @@ class BoxBitmapdata {
 	* @param 
 	* @return
 	*/
-	static public function getRatio( source : BitmapData , w : Float , h : Float , bMax : Bool = false , bZoom : Bool = false) : Float {
+	static public function getBitmapRatio( source : BitmapData , w : Float , h : Float , bMax : Bool = false , bZoom : Bool = false) : Float {
 		
 		var fRatio : Float;
 		if( bMax )
@@ -77,5 +89,26 @@ class BoxBitmapdata {
 			fRatio = Math.min( fRatio , 1 ) ;
 			
 		return fRatio;	
+	}
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	static public function getRatio( fW : Float , fH : Float , fMaxW : Float , fMaxH : Float , bMax : Bool = false , bZoom : Bool = false ) : Float {
+		
+		var fRatio : Float;
+		if( bMax )
+			fRatio = Math.max( fMaxW / fW , fMaxH  / fH );
+		else
+			fRatio = Math.min( fMaxW / fW , fMaxH / fH );
+		
+		if( !bZoom )
+			fRatio = Math.min( fRatio , 1 ) ;
+			
+		return fRatio;	
+
 	}
 }

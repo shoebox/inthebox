@@ -33,20 +33,30 @@ package org.shoebox.events.seq;
 	import nme.events.Event;
 	import nme.events.TimerEvent;
 	import nme.events.TouchEvent;
+
+	import org.shoebox.events.seq.ISeq;
+	import org.shoebox.events.seq.SeqEvent;
+	import org.shoebox.events.seq.SeqDelayer;
+	import org.shoebox.events.CustomEvent;
+	import org.shoebox.patterns.commands.AbstractCommand;
+	import org.shoebox.patterns.commands.ICommand;
+	import org.shoebox.utils.system.Signal;
 	
 	/**
 	* org.shoebox.events.seq.EventSequence
 	* @author shoebox
 	*/
-	class EventSequence extends EventDispatcher{
+	class EventSequence extends AbstractCommand , implements ICommand{
 		
-		private var _aSequence			: Array<ISeq>;
-		private var _oEvent				: SeqEvent;
-		private var _oDelayer			: SeqDelayer;
-		private var _iTouchId			: Int;
-		private var _iInc				: Int;
-		private var _iLen				: Int;
-		
+		public var monoTouchId : Bool;
+
+		private var _aContent : Array<ISeq>;
+		private var _oCurrent : ISeq;
+		private var _oDelayer : ISeq;
+		private var _iPos     : Int;
+		private var _iLen     : Int;
+		private var _iTouchId : Int;
+
 		// -------o constructor
 		
 			/**
@@ -55,11 +65,9 @@ package org.shoebox.events.seq;
 			* @public
 			* @return	void
 			*/
-			public function new( a : Array<ISeq> ) : Void {
+			public function new( ) : Void {
 				super( );
-				_aSequence 	= a;
-				_iLen		= a.length;
-				reset( );
+				_iTouchId = -1;
 			}
 
 		// -------o public
@@ -70,45 +78,48 @@ package org.shoebox.events.seq;
 			* @public
 			* @return	void
 			*/
-			public function reset( ) : Void{
-				_iTouchId = -1;
-				_iInc = -1;
+			public function add<T>( c : SequenceItem ) : Void {
 				
-				for( item in _aSequence ){
+				if( _aContent == null )
+					_aContent = new Array<ISeq>( );
+
+				var item : ISeq;
+				switch( c ){
 					
-					if( Std.is( item , SeqEvent )){
-						cast( item , SeqEvent).removeEventListener( SeqEvent.DONE , _onEvent , false );
-					}
+					case SeqEv( target , s , b ):
+						item = new SeqEvent( target , s  , b );
 					
+					case SeqDel( delay ):
+						item = new SeqDelayer( delay );
+
 				}
-				
-				if( _oDelayer != null )
-					_oDelayer.removeEventListener( TimerEvent.TIMER , _onDelayerTick , false );
-					
-				_next( );
+
+				_aContent.push( item );
+				_iLen = _aContent.length;
 			}
-			
+
 			/**
 			* 
 			* 
 			* @public
 			* @return	void
 			*/
-			public function cancel( ) : Void{
-				
-				if( _oEvent != null )
-					_oEvent.removeEventListener( cast( _oEvent , SeqEvent).sType , _onEvent , false );
-				
-				if( _oDelayer != null )
-					_oDelayer.removeEventListener( TimerEvent.TIMER , _onDelayerTick , false );
-					
-				_oEvent = null;
-				
-				for( o in _aSequence ){
-					o.cancel( );
-				}
+			override public function onExecute( ?e : Event = null ) : Void {
+				_iPos = 0;
+				_next( );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			override public function onCancel( ?e : Event = null ) : Void {
+							
 			}
 			
+
 		// -------o protected
 			
 			/**
@@ -117,87 +128,121 @@ package org.shoebox.events.seq;
 			* @private
 			* @return	void
 			*/
-			private function _next( eFrom : Event = null ) : Void{
+			private function _next( e : Event = null ) : Void{
 				
-				_iInc++;
-				//
-					if( _iInc >= _iLen ){
-						
-						var e : EventSequenceEvent = new EventSequenceEvent( EventSequenceEvent.DONE , eFrom );
-						dispatchEvent( e );
-						reset( );
-						return;
-					}
-					
-				//
-					var next : ISeq = _aSequence[ _iInc ];
-					
-				//
-					if( Std.is( next , SeqEvent )){
-						next.addEventListener( SeqEvent.DONE , _onEvent , false );
-						next = _oEvent = cast( next , SeqEvent );
-						next.start( );
-					}
-					
-				//
-					if( Std.is( next , SeqDelayer ) ){
-						
-						_oDelayer = cast( next , SeqDelayer );
-						_oDelayer.addEventListener( TimerEvent.TIMER , _onDelayerTick , false );
-						_oDelayer.reset( );
-						_oDelayer.start( );
-						_next( );
-					}
-			
-					
-			}
-			
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _onEvent( customEvent : CustomEvent = null ) : Void{
-				var e : Event = cast( customEvent.oDatas , Event ); 
-				
-				if( e != null ){
-					if( Std.is( e , TouchEvent )){
-						
-						var eTouch : TouchEvent = cast( e , TouchEvent );
-						trace( _iTouchId+' vs '+eTouch.touchPointID);
-						
-						if( _iTouchId != -1 && eTouch.touchPointID != _iTouchId ) 
-							return;
-						
-						if( eTouch.type == TouchEvent.TOUCH_END )	
-							_iTouchId = -1;
-						
-						if( eTouch.type == TouchEvent.TOUCH_BEGIN )	
-							_iTouchId = eTouch.touchPointID;
-						
-					}
+				if( _iPos >= _iLen ){
+					dispatchEvent( new EventSequenceEvent( EventSequenceEvent.DONE , e ) );
+					_reset( );
 				}
+
+				_cancelCurrent( );
+
+				var next : ISeq = _aContent[ _iPos ++ ];
 				
-				if( _oEvent != null )
-					_oEvent.removeEventListener( cast( _oEvent , SeqEvent).sType , _onEvent , false );
-				
-				_next( e );
+				if( Std.is( next , SeqDelayer ) ){
+					
+					next.addEventListener( TimerEvent.TIMER , _onDelayerTick , false  );
+					next.start( );
+					_next( );
+
+				}else if( Std.is( next , SeqEvent ) ){
+
+					next.addEventListener( SeqEvent.DONE , _onEvent , false );
+					next.start( );
+
+					_oCurrent = next;
+				}
+
 			}
-			
+
 			/**
 			* 
 			* 
 			* @private
 			* @return	void
 			*/
-			private function _onDelayerTick( e : TimerEvent ) : Void{
-				reset( );
+			private function _onEvent( e : CustomEvent = null ) : Void{
+				var e : Event = cast( e.oDatas , Event ); 
+				
+				_cancelDelayer( );
+				_cancelCurrent( );
+
+				if( monoTouchId && Std.is( e , TouchEvent ) ){
+					var id : Int = cast( e , TouchEvent ).touchPointID;
+					
+					if( _iTouchId == -1 ){
+
+						_iTouchId = id;
+						_next( );
+
+					}else if( id != _iTouchId ){
+						_reset( );
+					}else
+						_next( e );
+						
+				}else
+					_next( e );
 			}
-			
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _onDelayerTick( _ ) : Void{
+				_cancelCurrent( );
+				_reset( );
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _reset( ) : Void{
+				_iTouchId = -1;
+				_iPos     = 0;
+				_next( );
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _cancelCurrent( ) : Void{
+				if( _oCurrent == null )
+					return;
+				
+				_oCurrent.cancel( );
+				if( _oCurrent.hasEventListener( SeqEvent.DONE ) )
+					_oCurrent.removeEventListener( SeqEvent.DONE , _onEvent , false );
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _cancelDelayer( ) : Void{
+				if( _oDelayer != null ){
+					_oDelayer.cancel( );
+					_oDelayer.removeEventListener( TimerEvent.TIMER , _onDelayerTick , false );
+				}
+					
+			}
+
 		// -------o misc
 
 	}
 	
+	enum SequenceItem{
+		SeqEv( target : EventDispatcher , s : String , b : Bool );
+		SeqDel( delay : Int );
+	}
 	
 

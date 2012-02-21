@@ -83,7 +83,7 @@ package org.shoebox.display.containers;
 										fScaleX     : Float 		= 1.0,
 										fScaleY     : Float 		= 1.0,
 										limits      : AABB = null							
-									) : Void {
+									) : ParallaxLayer {
 				
 				var layer : ParallaxLayer = new ParallaxLayer ( display , speedFactor ,  bLoop , limits );
 					layer.setTransform( dx , dy , fScaleX , fScaleY );
@@ -96,6 +96,8 @@ package org.shoebox.display.containers;
 					_lPrimary = layer;
 				
 				_iLayersCount++;
+
+				return layer;
 			}
 			
 			/**
@@ -127,14 +129,12 @@ package org.shoebox.display.containers;
 					return false;
 
 				for( l in _aLayers ){
-					l.translate( dx , dy );
+					if( l != _lPrimary )
+						l.translate( dx , dy );
 				}
 				
 				return true;
-				
 			}
-			
-			
 			
 		// -------o private
 			

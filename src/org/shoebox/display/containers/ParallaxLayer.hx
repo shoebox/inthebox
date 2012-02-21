@@ -35,6 +35,7 @@ package org.shoebox.display.containers;
 	import nme.display.IBitmapDrawable;
 	import nme.display.Sprite;
 	import nme.filters.BitmapFilter;
+	import nme.filters.BlurFilter;
 	import nme.geom.Matrix;
 	import nme.geom.Point;
 	import nme.geom.Rectangle;
@@ -98,8 +99,31 @@ package org.shoebox.display.containers;
 		// -------o public
 			
 			
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function applyFilter( sType : String , value : Dynamic ) : Void {
+				
+				var filter : BitmapFilter = null;
+
+				switch( sType ){
+					
+					case 'blur':
+						filter = new BlurFilter( value , value , 2 );
+
+				}
+
+				if( filter != null )
+					bitmapData.applyFilter( bitmapData , bitmapData.rect , new Point( 0 , 0 ) , filter );
+
+			}
+
+
 			public function setTransform( dx : Int = 0 , dy : Int = 0 , fScaleX : Float = 1.0 , fScaleY : Float = 1.0 ) : Void{
-			
+				
 				position = new Vector2D( dx , dy );
 				_fDx = x = dx;
 				_fDy = y = dy;
@@ -136,14 +160,13 @@ package org.shoebox.display.containers;
 				position.x += dx * _fSpeed;
 				position.y += dy * _fSpeed;
 				
-				
 				if( bLoop ){
 					position.x = _modulate( position.x , _fRefWidth );
 					position.y = _modulate( position.y , _fRefHeight );
 				}
 				
-				x = position.x + _fDx;
-				y = position.y + _fDy;
+				x = position.x;
+				y = position.y;
 				return true;
 			}
 			

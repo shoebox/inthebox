@@ -63,6 +63,7 @@ package org.shoebox.events.seq;
 			* @return	void
 			*/
 			override public function start( ) : Void{
+				reset( );
 				super.start( );
 			}
 			

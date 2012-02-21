@@ -348,7 +348,6 @@ package org.shoebox.patterns.frontcontroller;
 					
 				//
 					var aCodes : Array<String> = _hStates.get( s );
-					trace('drawState ::: '+s+' - '+aCodes);
 				
 				//
 					if ( _sState != null ) {

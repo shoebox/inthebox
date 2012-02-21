@@ -72,7 +72,7 @@ package org.shoebox.events.seq;
 			* @return	void
 			*/
 			public function start( ) : Void{
-				target.addEventListener( sType , _onEvent , _bBubble );
+				target.addEventListener( sType , _onEvent , _bBubble , 100 );
 			}
 			
 			/**
@@ -83,6 +83,16 @@ package org.shoebox.events.seq;
 			*/
 			public function cancel( ) : Void{
 				target.removeEventListener( sType , _onEvent , _bBubble );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			override public function toString( ) : String {
+				return '[ SeqEvent > '+sType+' ]';
 			}
 			
 		// -------o protected

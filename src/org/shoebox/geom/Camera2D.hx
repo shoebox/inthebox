@@ -46,7 +46,7 @@ class Camera2D{
 	private var _fAngle        : Float;
 	private var _fZoom         : Float;
 	private var _fViewPort     : FPoint;
-	private var _FPoint     : FPoint;
+	private var _FPoint        : FPoint;
 	private var _fHalfViewPort : FPoint;
 	private var _fLimits       : FPoint;
 	private var _mProj         : Matrix;
@@ -118,7 +118,6 @@ class Camera2D{
 			
 			if( !_bInvalidate )
 				return _mProj;
-			
 			_FPoint.x = _limit( _FPoint.x , _fLimits.x * _fZoom , _fHalfViewPort.x );
 			_FPoint.y = _limit( _FPoint.y , _fLimits.y * _fZoom , _fHalfViewPort.y );
 
@@ -151,8 +150,21 @@ class Camera2D{
 		* @public
 		* @return	void
 		*/
+		public function zoom( f : Float ) : Void {
+			_fZoom *= f;
+			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
+			_bInvalidate = true;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		public function appendZoom( f : Float ) : Void {
-			_fZoom += f;
+			_fZoom += _fZoom * f;
+			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
 			_bInvalidate = true;
 		}
 
