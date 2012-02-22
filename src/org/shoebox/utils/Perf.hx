@@ -98,17 +98,18 @@ class Perf extends Sprite{
 	
 			//
 				_tfFps.defaultTextFormat = _tfMs.defaultTextFormat = _oFormat;
-				_tfMs.autoSize           = _tfFps.autoSize = TextFieldAutoSize.NONE;
 				_tfFps.width             = _tfMs.width = WIDTH;
+				_tfFps.height            = _tfMs.height = 20;
 				_tfFps.selectable        = _tfMs.selectable = false;
 				_tfFps.textColor         = 0xFFFF00;
 				_tfFps.text              = "FPS: ";
 				addChild ( _tfFps );
 			
 			//
-				_tfMs.y = 15;
+				_tfMs.y         = 15;
 				_tfMs.textColor = 0x00FF00;
-				_tfMs.text = "MS: ";
+				_tfMs.text      = "MS: ";
+				//_tfFps.autoSize = _tfMs.autoSize = TextFieldAutoSize.NONE;
 				addChild ( _tfMs );
 		
 		}

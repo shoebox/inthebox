@@ -162,6 +162,16 @@ class Camera2D{
 		* @public
 		* @return	void
 		*/
+		public function getZoom( ) : Float {
+			return _fZoom;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		public function appendZoom( f : Float ) : Void {
 			_fZoom += _fZoom * f;
 			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );

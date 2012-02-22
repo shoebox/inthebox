@@ -63,6 +63,8 @@ package org.shoebox.patterns.frontcontroller;
 		private var _hTriads			: Hash<MVCCommand>;
 		private var _hVariables			: Hash<Hash<Dynamic>>;
 		private var _sState				: String;
+
+		public static inline var CHANGE_STATE : String = 'CHANGE_STATE';
 		
 		// -------o constructor
 		
@@ -370,6 +372,7 @@ package org.shoebox.patterns.frontcontroller;
 					}
 				
 				_sState = s;
+				emit( CHANGE_STATE , [ _sState ] );
 			}
 			
 			private function _executeTriad( sCodeName : String ) : Void {
