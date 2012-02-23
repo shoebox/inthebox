@@ -2,7 +2,6 @@ package org.shoebox.utils.frak;
 
 import nme.display.Sprite;
 import nme.events.Event;
-import org.shoebox.patterns.mvc.abstracts.AApplication;
 import org.shoebox.patterns.mvc.commands.MVCCommand;
 
 /**

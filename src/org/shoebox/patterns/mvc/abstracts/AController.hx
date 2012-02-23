@@ -5,6 +5,7 @@
 	import org.shoebox.utils.system.Signal;
 	import org.shoebox.patterns.commands.AbstractCommand;
 	import org.shoebox.patterns.frontcontroller.FrontController;
+	import org.shoebox.patterns.mvc.commands.MVCCommand;
 	import org.shoebox.patterns.mvc.interfaces.IController;
 	import nme.display.DisplayObject;
 	import nme.events.Event;
@@ -24,10 +25,12 @@
 	*/
 	class AController extends Signal, implements IController {
 		
-		public var app				: AApplication;
-		public var model			: AModel;
-		public var view				: AView;
-		public var frontController	: FrontController;
+		public var model 			( _getModel , null ) 		: AModel;
+		public var view 			( _getView , null ) 		: AView;
+		//public var controller 		( _getController , null ) 	: AController;
+		public var frontController 	( _getFc , null ) 			: FrontController;
+
+		public var ref             : MVCCommand;
 		
 		private var _oDico			: Hash<Dynamic> ;
 		
@@ -118,16 +121,6 @@
 			}
 			
 			/**
-			* Do nothing method, call to intialize the controller
-			* (After than the view have been added to the stage)
-			* 
-			* @return void
-			public function initialize():void{
-				throw new Error(Errors.DONOTHING);
-			}
-			*/
-			
-			/**
 			* runApp function
 			* @public
 			* @param 
@@ -154,6 +147,47 @@
 					oCom.execute(e);
 				
 			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getModel( ) : AModel{
+				return ref.model;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getView( ) : AView{
+				return ref.view;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getController( ) : AController{
+				return ref.controller;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getFc( ) : FrontController{
+				return ref.frontController;
+			}
+
 			
 		// -------o misc
 			public static function trc(arguments:Dynamic) : Void {

@@ -1,5 +1,6 @@
 package org.shoebox.patterns.mvc.abstracts; 
 
+	import org.shoebox.patterns.mvc.commands.MVCCommand;
 	import org.shoebox.core.interfaces.IDispose;
 	import org.shoebox.patterns.frontcontroller.FrontController;
 	import org.shoebox.patterns.mvc.interfaces.IView;
@@ -27,23 +28,15 @@ package org.shoebox.patterns.mvc.abstracts;
 	*/
 	class AView extends MovieClip, implements IView {
 		
+		//public var model 			( _getModel , null ) 		: AModel;
+		//public var view 			( _getView , null ) 		: AView;
+		//public var controller 		( _getController , null ) 	: AController;
+		public var frontController 	( _getFc , null ) 			: FrontController;
 		
-		
-		public var app(getApp, setApp) : AApplication;
-		
-		public var controller(getController, setController) : AController;
-		
-		public var model: AModel;
-		public var appContainer: MovieClip;
-		public var frontController: FrontController;
+		public var ref             : MVCCommand;
 				
-		private var _oController: AController;
-		private var _oAPPLICATION: AApplication;
 		private var _vDisplayObjects	: Array<DisplayObject>;
 		
-		public var i: Int ;
-		public var l: Int ;
-		public var d: DisplayObject;
 		
 		// -------o constructor
 			
@@ -75,43 +68,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			*/
 			public function cancel( ):Void{
 				
-			}
-			
-			/**
-			* 
-			* @param
-			* @return
-			*/
-			public function getController():AController{
-				return _oController;
-			}
-			
-			/**
-			* 
-			* @param
-			* @return
-			*/
-			public function setController(o:AController):AController{
-				_oController = o;
-				return o;
-			}
-				
-			/**
-			* Get the application instance
-			* @return Application instance (AAplication)
-			*/
-			public function getApp():AApplication{
-				return _oAPPLICATION;
-			}
-			
-			/**
-			* Set the application instance
-			* @param o:Application instance (AAplication)
-			* @return void
-			*/
-			public function setApp(o : AApplication):AApplication{
-				_oAPPLICATION = o;
-				return o;
 			}
 			
 			/**
@@ -153,15 +109,8 @@ package org.shoebox.patterns.mvc.abstracts;
 					cancel( );
 					return;
 				}
-				
-				i = 0;
-				l = _vDisplayObjects.length;
-				
-				i ;
 					
-				while ( i < l ){
-					
-					d = _vDisplayObjects[ i ];
+				for( d in _vDisplayObjects ){
 					
 					if( d == null )
 						continue;
@@ -189,12 +138,8 @@ package org.shoebox.patterns.mvc.abstracts;
 					
 					if( d.parent != null )
 						d.parent.removeChild( d );
-					
-					_vDisplayObjects[ i ] = d = null;
-					
-					i++ ;
-					
 				}
+				
 				_vDisplayObjects = null;
 				cancel( );
 				
@@ -204,6 +149,46 @@ package org.shoebox.patterns.mvc.abstracts;
 			
 		// -------o private
 			
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getModel( ) : AModel{
+				return ref.model;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getView( ) : AView{
+				return ref.view;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getController( ) : AController{
+				return ref.controller;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getFc( ) : FrontController{
+				return ref.frontController;
+			}
+
 		// -------o misc
 		
 			public static function trc(arguments:Dynamic) : Void {

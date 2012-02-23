@@ -109,7 +109,11 @@ package org.shoebox.patterns.frontcontroller;
 				if( _hTriads.exists( sName ) )
 					throw new IllegalOperationError('A triad with the code name '+sName+' is already registered');
 				
-				_hTriads.set( sName , new MVCCommand( m , v , c , container , this ) );
+				
+				var com : MVCCommand = new MVCCommand( );
+					com.init( m , v , c , container,  this );
+
+				_hTriads.set( sName , com );
 				
 				return true; 
 				
@@ -383,6 +387,7 @@ package org.shoebox.patterns.frontcontroller;
 				
 				//
 					var oTriad : MVCCommand = _hTriads.get( sCodeName );
+						oTriad.frontController = this;
 					if ( oTriad.isRunning )
 						return;
 						
@@ -399,8 +404,8 @@ package org.shoebox.patterns.frontcontroller;
 						owner.addChild( mc );
 						
 				//
-					if( _hVariables.exists( sCodeName )) 
-						oTriad.setVars( _hVariables.get( sCodeName ) );
+					//if( _hVariables.exists( sCodeName )) 
+					//	oTriad.setVars( _hVariables.get( sCodeName ) );
 						
 					oTriad.prepare( );
 					oTriad.view.name = sCodeName;

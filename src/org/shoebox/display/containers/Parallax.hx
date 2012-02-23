@@ -106,8 +106,8 @@ package org.shoebox.display.containers;
 			* @param 
 			* @return
 			*/
-			public function dispose() : Void {
-				
+			public function cancel() : Void {
+				trace('cancel ::: '+_aLayers);
 				for( layer in _aLayers ){
 					layer.dispose( );	
 					layer = null;

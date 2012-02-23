@@ -138,7 +138,9 @@ package org.shoebox.display.containers;
 			* @return
 			*/
 			public function dispose() : Void {
-				
+				trace('dispose');
+				bitmapData = null;
+				_bmpPattern = null;
 			}
 			
 			/**
