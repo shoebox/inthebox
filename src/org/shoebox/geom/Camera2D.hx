@@ -185,11 +185,30 @@ class Camera2D{
 		* @return	void
 		*/
 		public function moveTo( dx : Float , dy : Float , nDur : Float = 1 ) : Void {
-			Actuate.tween( _FPoint , 10 , { x : dx , y : dy } , true );
+			Actuate.tween( _FPoint , nDur , { x : dx , y : dy } , false ).onUpdate( _invalidate );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function zoomTo( z : Float = 1.0 , nDur : Float = 1.0 ) : Void {
+			Actuate.tween( this , nDur , { _fZoom : z } , false ).onUpdate( _invalidate );
 		}
 
 	// -------o protected
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _invalidate( ) : Void{
+			_bInvalidate = true;
+		}
 		
 		/**
 		* 

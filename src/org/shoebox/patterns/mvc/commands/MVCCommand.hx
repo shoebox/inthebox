@@ -69,6 +69,7 @@ class MVCCommand extends AbstractCommand ,  implements ICommand{
 		*/
 		public function new( ) {
 			super( );
+			cancelable = false;
 		}
 	
 	// -------o public
@@ -99,11 +100,11 @@ class MVCCommand extends AbstractCommand ,  implements ICommand{
 		* @public
 		* @return	void
 		*/
-		public function prepare( ) : Void {
+		public function prepare( modelVars : Array<Dynamic> = null ) : Void {
 			
 			// Model
 				if( _cModel != null ){
-					_oModel = Type.createInstance( _cModel , [ ] );
+					_oModel = Type.createInstance( _cModel , modelVars == null ? [ ] : modelVars );
 					_oModel.ref = this;
 				}
 

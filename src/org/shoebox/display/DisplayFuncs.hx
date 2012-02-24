@@ -52,24 +52,50 @@ class DisplayFuncs{
 		*/
 		static public function align( o : DisplayObject , aabb : AABB , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
 			
-			//
-				if( sAlign == StageAlign.RIGHT || sAlign == StageAlign.TOP_RIGHT || sAlign == StageAlign.BOTTOM_RIGHT ){
-					o.x = aabb.max.x - o.width;
-				}else if( sAlign == StageAlign.TOP || sAlign == StageAlign.LEFT || sAlign == StageAlign.TOP_LEFT  || sAlign == StageAlign.BOTTOM_LEFT ){
-					o.x = aabb.min.x;
-				}else{
-					o.x = aabb.min.x + ( aabb.max.x - aabb.min.x - o.width ) / 2;
-				}
-			
-			//
-				if( sAlign == StageAlign.BOTTOM || sAlign == StageAlign.BOTTOM_RIGHT || sAlign == StageAlign.BOTTOM_LEFT ){
-					o.y = aabb.max.y - o.height;
-				}else if( sAlign == StageAlign.TOP || sAlign == StageAlign.TOP_LEFT || sAlign == StageAlign.TOP_RIGHT )
+			var centerX : Float = aabb.min.x + ( aabb.max.x - aabb.min.x - o.width ) / 2;
+			var centerY : Float = aabb.min.y + ( aabb.max.y - aabb.min.y - o.height ) / 2;
+
+			if( sAlign == null ){
+				o.x = centerX + dx;
+				o.y = centerY + dy;
+				return;
+			}
+
+			switch( sAlign ){
+
+				case StageAlign.TOP:
+					o.x = centerX;
 					o.y = aabb.min.y;
-				else
-					o.y = aabb.min.y + ( aabb.max.y - aabb.min.y - o.height )/ 2;
 
+				case StageAlign.LEFT:
+					o.x = aabb.min.x;
+					o.y = centerY;
 
+				case StageAlign.RIGHT:
+					o.x = aabb.max.x - o.width;
+					o.y = centerY;
+
+				case StageAlign.BOTTOM:
+					o.x = centerX;
+					o.y = aabb.max.y - o.height;
+
+				case StageAlign.TOP_LEFT:
+					o.x = aabb.min.x;
+					o.y = aabb.min.y;
+
+				case StageAlign.BOTTOM_LEFT:
+					o.x = aabb.min.x;
+					o.y = aabb.max.y - o.height;
+
+				case StageAlign.TOP_RIGHT:
+					o.x = aabb.max.x - o.width;
+					o.y = aabb.min.y;
+
+				case StageAlign.BOTTOM_RIGHT:
+					o.x = aabb.max.x - o.width;
+					o.y = aabb.max.y - o.height;
+			}
+			
 			
 			o.x += dx;
 			o.y += dy;

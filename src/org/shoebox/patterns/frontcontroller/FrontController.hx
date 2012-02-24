@@ -62,6 +62,7 @@ package org.shoebox.patterns.frontcontroller;
 		private var _hStates			: Hash<Array<String>>;
 		private var _hTriads			: Hash<MVCCommand>;
 		private var _hVariables			: Hash<Hash<Dynamic>>;
+		private var _hVariables2		: Hash<Array<Dynamic>>;
 		private var _sState				: String;
 
 		public static inline var CHANGE_STATE : String = 'CHANGE_STATE';
@@ -83,6 +84,7 @@ package org.shoebox.patterns.frontcontroller;
 				_hStates 			= new Hash<Array<String>>( );
 				_hStates 			= new Hash<Array<String>>( );
 				_hVariables			= new Hash<Hash<Dynamic>>( );
+				_hVariables2		= new Hash<Array<Dynamic>>( );
 				_hTriads   			= new Hash<MVCCommand>( );
 			}
 
@@ -219,6 +221,16 @@ package org.shoebox.patterns.frontcontroller;
 					o.set( sVarName , oVarVal );
 					
 				_hVariables.set( appCode , o );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function setAppVariables( appCode : String  , vars : Array<Dynamic> ) : Void {
+				_hVariables2.set( appCode , vars );	
 			}
 			
 			/**
@@ -407,7 +419,7 @@ package org.shoebox.patterns.frontcontroller;
 					//if( _hVariables.exists( sCodeName )) 
 					//	oTriad.setVars( _hVariables.get( sCodeName ) );
 						
-					oTriad.prepare( );
+					oTriad.prepare( _hVariables2.get( sCodeName ) );
 					oTriad.view.name = sCodeName;
 			
 				//
