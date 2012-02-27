@@ -86,8 +86,8 @@ package org.shoebox.events.seq;
 				var item : ISeq;
 				switch( c ){
 					
-					case SeqEv( target , s , b ):
-						item = new SeqEvent( target , s  , b );
+					case SeqEv( target , s , b , iPrio ):
+						item = new SeqEvent( target , s  , b  , iPrio );
 					
 					case SeqDel( delay ):
 						item = new SeqDelayer( delay );
@@ -116,7 +116,21 @@ package org.shoebox.events.seq;
 			* @return	void
 			*/
 			override public function onCancel( ?e : Event = null ) : Void {
-							
+
+				if( _aContent != null ){
+
+					for( o in _aContent ){
+						o.cancel( );
+					}
+
+				}
+
+				_aContent = [ ];
+
+				trace('cancel ::: '+_aContent );
+
+				_cancelCurrent( );
+				_cancelDelayer( );
 			}
 			
 
@@ -241,7 +255,7 @@ package org.shoebox.events.seq;
 	}
 	
 	enum SequenceItem{
-		SeqEv( target : EventDispatcher , s : String , b : Bool );
+		SeqEv( target : EventDispatcher , s : String , b : Bool , iPrio : Int );
 		SeqDel( delay : Int );
 	}
 	

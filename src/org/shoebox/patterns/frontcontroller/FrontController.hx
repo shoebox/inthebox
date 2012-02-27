@@ -201,7 +201,7 @@ package org.shoebox.patterns.frontcontroller;
 			* @return
 			*/
 			public function execTriad( s : String ) : Void {
-				_executeTriad( s );
+				_executeTriad( s , 0 );
 			}
 			
 			/**
@@ -382,8 +382,9 @@ package org.shoebox.patterns.frontcontroller;
 					
 				// Execute triads
 					if( aCodes != null ){
+						var d : Int = 0;
 						for ( s in aCodes ) {
-							_executeTriad( s );
+							_executeTriad( s , d++ );
 						}
 					}
 				
@@ -391,7 +392,7 @@ package org.shoebox.patterns.frontcontroller;
 				emit( CHANGE_STATE , [ _sState ] );
 			}
 			
-			private function _executeTriad( sCodeName : String ) : Void {
+			private function _executeTriad( sCodeName : String , d : Int = -1 ) : Void {
 			
 				//
 					if( !_hTriads.exists( sCodeName ) )
@@ -414,6 +415,9 @@ package org.shoebox.patterns.frontcontroller;
 				//
 					if ( !owner.contains( mc ) )
 						owner.addChild( mc );
+
+					if( d != -1 )
+						owner.setChildIndex( mc , d );
 						
 				//
 					//if( _hVariables.exists( sCodeName )) 

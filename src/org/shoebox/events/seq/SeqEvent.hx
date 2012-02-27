@@ -40,10 +40,11 @@ package org.shoebox.events.seq;
 		
 		public static inline var DONE	: String = 'SeqEvent_DONE';
 		
-		public var sType				: String;
-		public var target				: EventDispatcher;
+		public var iPrio  : Int;
+		public var sType  : String;
+		public var target : EventDispatcher;
 		
-		private var _bBubble			: Bool;
+		private var _bBubble : Bool;
 		
 		// -------o constructor
 		
@@ -53,11 +54,12 @@ package org.shoebox.events.seq;
 			* @public
 			* @return	void
 			*/
-			public function new( target : EventDispatcher , sType : String , bBubble : Bool = false ) : Void {
+			public function new( target : EventDispatcher , sType : String , bBubble : Bool = false , iPrio : Int = 1 ) : Void {
 				super( );
 				
 				_bBubble = bBubble;
 				
+				this.iPrio = iPrio;
 				this.target = target;
 				this.sType 	= sType;
 			}
@@ -72,7 +74,7 @@ package org.shoebox.events.seq;
 			* @return	void
 			*/
 			public function start( ) : Void{
-				target.addEventListener( sType , _onEvent , _bBubble , 100 );
+				target.addEventListener( sType , _onEvent , _bBubble , iPrio );
 			}
 			
 			/**
