@@ -3,7 +3,7 @@ package org.shoebox.patterns.commands;
 	//import org.shoebox.patterns.commands.events.CommandEvents;
 	import org.shoebox.patterns.frontcontroller.FrontController;
 	import org.shoebox.utils.system.Signal;
-	import nme.errors.IllegalOperationError;
+	import nme.errors.Error;
 	import nme.events.Event;
 	
 	/**
@@ -77,9 +77,9 @@ package org.shoebox.patterns.commands;
 			public function execute(?e:Event = null ) : Void {
 				
 				if( _bIsRunning )
-					throw new IllegalOperationError(ERROR_ISRUNNING+' /// '+this) ;
+					throw new Error(ERROR_ISRUNNING+' /// '+this) ;
 				else if( _bIsCanceled )
-					throw new IllegalOperationError(ERROR_ISCANCELED+' /// '+this) ;
+					throw new Error(ERROR_ISCANCELED+' /// '+this) ;
 				else{
 					
 					start();
@@ -108,10 +108,10 @@ package org.shoebox.patterns.commands;
 			public function cancel(?e:Event = null) : Void {
 				
 				if(_bIsCanceled)
-					throw(  new IllegalOperationError('The command is already canceled'));
+					throw(  new Error('The command is already canceled'));
 					
 				if(!_bIsRunning)
-					throw( new IllegalOperationError('Cannot cancel a command who was not started'));
+					throw( new Error('Cannot cancel a command who was not started'));
 				
 				if(_bIsCancelable)
 					_bIsCanceled = true;

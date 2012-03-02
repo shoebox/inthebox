@@ -30,7 +30,6 @@
 
 package org.shoebox.patterns.frontcontroller; 
 
-	import nme.errors.ArgumentError;
 	import nme.errors.Error;
 	import org.shoebox.core.BoxObject;
 	import org.shoebox.patterns.commands.AbstractCommand;
@@ -42,7 +41,7 @@ package org.shoebox.patterns.frontcontroller;
 	import nme.display.DisplayObject;
 	import nme.display.DisplayObjectContainer;
 	import nme.display.Sprite;
-	import nme.errors.IllegalOperationError;
+	import nme.errors.Error;
 	import nme.events.Event;
 	import nme.system.System;
 	
@@ -109,8 +108,7 @@ package org.shoebox.patterns.frontcontroller;
 										) : Bool {
 			
 				if( _hTriads.exists( sName ) )
-					throw new IllegalOperationError('A triad with the code name '+sName+' is already registered');
-				
+					throw new Error('A triad with the code name '+sName+' is already registered');
 				
 				var com : MVCCommand = new MVCCommand( );
 					com.init( m , v , c , container,  this );
@@ -182,10 +180,10 @@ package org.shoebox.patterns.frontcontroller;
 			public function setState( sName : String , bHistory : Bool = true ) : Void {
 				
 				if ( !_hStates.exists( sName ) )
-					throw new ArgumentError('The state ' + sName + ' is unknow');
+					throw new Error('The state ' + sName + ' is unknow');
 					
 				if ( _sState == sName )
-					throw new ArgumentError('The state ' + sName + ' is already the current state');
+					throw new Error('The state ' + sName + ' is already the current state');
 				
 				if ( bHistory ) {
 					_queueHistory( _sState );
@@ -384,7 +382,8 @@ package org.shoebox.patterns.frontcontroller;
 					if( aCodes != null ){
 						var d : Int = 0;
 						for ( s in aCodes ) {
-							_executeTriad( s , d++ );
+							if( _executeTriad( s , d ) )
+								d++;
 						}
 					}
 				
@@ -392,7 +391,7 @@ package org.shoebox.patterns.frontcontroller;
 				emit( CHANGE_STATE , [ _sState ] );
 			}
 			
-			private function _executeTriad( sCodeName : String , d : Int = -1 ) : Void {
+			private function _executeTriad( sCodeName : String , d : Int = -1 ) : Bool {
 			
 				//
 					if( !_hTriads.exists( sCodeName ) )
@@ -402,7 +401,7 @@ package org.shoebox.patterns.frontcontroller;
 					var oTriad : MVCCommand = _hTriads.get( sCodeName );
 						oTriad.frontController = this;
 					if ( oTriad.isRunning )
-						return;
+						return oTriad.defaultContainer;
 						
 				//
 					var mc : DisplayObjectContainer = oTriad.container;
@@ -410,13 +409,14 @@ package org.shoebox.patterns.frontcontroller;
 						mc = new Sprite( );
 						mc.name = sCodeName;
 						oTriad.container = mc;
+						oTriad.defaultContainer = true;
 					}
 					
 				//
 					if ( !owner.contains( mc ) )
 						owner.addChild( mc );
 
-					if( d != -1 )
+					if( d != -1 && owner.numChildren > 0 )
 						owner.setChildIndex( mc , d );
 						
 				//
@@ -442,13 +442,15 @@ package org.shoebox.patterns.frontcontroller;
 				
 				//
 					_hTriads.set( sCodeName , oTriad );
+					return oTriad.defaultContainer;
 			}
 			
 			private function _cancelTriad( sCodeName : String ) : Void {
 				
 				//
 					var oTriad : MVCCommand = _hTriads.get( sCodeName );
-						oTriad.cancel( );
+						if( oTriad.isRunning )
+							oTriad.cancel( );
 					
 				//
 					if( owner.getChildByName( sCodeName )!= null)

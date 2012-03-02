@@ -46,10 +46,12 @@ import org.shoebox.patterns.mvc.abstracts.AController;
 
 class MVCCommand extends AbstractCommand ,  implements ICommand{
 
+	public var defaultContainer : Bool;
+	public var container        : DisplayObjectContainer;
+	
 	public var model     	( _getModel , null ) : AModel;
 	public var view       	( _getView , null ) : AView;
 	public var controller 	( _getController , null ) : AController;
-	public var container  : DisplayObjectContainer;
 
 	private var _oModel        : AModel;
 	private var _oView         : AView;
@@ -92,6 +94,7 @@ class MVCCommand extends AbstractCommand ,  implements ICommand{
 			_cView         = v;
 			_cController   = c;
 			_oFrontControl = fc;
+
 		}
 
 		/**
@@ -128,7 +131,7 @@ class MVCCommand extends AbstractCommand ,  implements ICommand{
 		* @return	void
 		*/
 		override public function onExecute( ?e : Event = null ) : Void {
-
+			trace('onExecute ::: '+container);
 			//
 				if(container != null && !container.contains(_oView))
 					container.addChild(_oView);					

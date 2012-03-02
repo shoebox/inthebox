@@ -31,7 +31,7 @@
 
 package org.shoebox.utils.system;
 
-	import nme.errors.IllegalOperationError;
+	import nme.errors.Error;
 	import nme.events.Event;
 	import nme.events.IEventDispatcher;
 	

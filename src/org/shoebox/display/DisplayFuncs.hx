@@ -96,7 +96,9 @@ class DisplayFuncs{
 					o.y = aabb.max.y - o.height;
 			}
 			
-			
+			o.x = Math.round( o.x );
+			o.y = Math.round( o.y );
+
 			o.x += dx;
 			o.y += dy;
 			

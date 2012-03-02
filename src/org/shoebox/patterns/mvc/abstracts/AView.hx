@@ -6,6 +6,7 @@ package org.shoebox.patterns.mvc.abstracts;
 	import org.shoebox.patterns.mvc.interfaces.IView;
 	import nme.display.Bitmap;
 	import nme.display.DisplayObject;
+	import nme.display.DisplayObjectContainer;
 	import nme.display.Loader;
 	import nme.display.MovieClip;
 	import nme.events.Event;
@@ -31,6 +32,9 @@ package org.shoebox.patterns.mvc.abstracts;
 		//public var model 			( _getModel , null ) 		: AModel;
 		//public var view 			( _getView , null ) 		: AView;
 		//public var controller 		( _getController , null ) 	: AController;
+
+		public var container ( _getContainer , never ) : DisplayObjectContainer;
+
 		public var frontController 	( _getFc , null ) 			: FrontController;
 		
 		public var ref             : MVCCommand;
@@ -127,9 +131,9 @@ package org.shoebox.patterns.mvc.abstracts;
 						}
 						
 					}else if( Std.is( d, Loader) ){
-						
+						#if (flash || mobile )
 						( cast( d, Loader) ).unload( );
-						
+						#end
 					}
 					
 					if( Std.is( d, MovieClip) ){
@@ -155,38 +159,18 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @private
 			* @return	void
 			*/
-			private function _getModel( ) : AModel{
-				return ref.model;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getView( ) : AView{
-				return ref.view;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getController( ) : AController{
-				return ref.controller;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
 			private function _getFc( ) : FrontController{
 				return ref.frontController;
+			}
+
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getContainer( ) : DisplayObjectContainer{
+				return ref.container;
 			}
 
 		// -------o misc

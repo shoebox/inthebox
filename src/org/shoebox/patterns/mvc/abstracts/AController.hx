@@ -1,6 +1,6 @@
 ﻿package org.shoebox.patterns.mvc.abstracts; 
 
-	import nme.errors.IllegalOperationError;
+	import nme.errors.Error;
 	import org.shoebox.core.BoxObject;
 	import org.shoebox.utils.system.Signal;
 	import org.shoebox.patterns.commands.AbstractCommand;
@@ -25,8 +25,8 @@
 	*/
 	class AController extends Signal, implements IController {
 		
-		public var model 			( _getModel , null ) 		: AModel;
-		public var view 			( _getView , null ) 		: AView;
+		public var model 			( _getModel , null ) 		: Dynamic;
+		public var view 			( _getView , null ) 		: Dynamic;
 		//public var controller 		( _getController , null ) 	: AController;
 		public var frontController 	( _getFc , null ) 			: FrontController;
 
@@ -90,7 +90,7 @@
 									?bPRIO : Int = 0, 
 									?bWEAK : Bool = false):Void{
 				
-				throw new IllegalOperationError('Deprecate');
+				throw new Error('Deprecate');
 				
 				/*
 				if(tgt == null || sEVENTNAME == null)

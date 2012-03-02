@@ -31,6 +31,7 @@ package org.shoebox.display.containers;
 
 	import org.shoebox.geom.AABB;
 
+	import org.shoebox.core.Vector2D;
 	import nme.display.BitmapData;
 	import nme.display.IBitmapDrawable;
 	import nme.display.Sprite;
@@ -134,6 +135,16 @@ package org.shoebox.display.containers;
 				}
 				
 				return true;
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function getPosition( ) : Vector2D {
+				return _lPrimary.position;
 			}
 			
 		// -------o private
