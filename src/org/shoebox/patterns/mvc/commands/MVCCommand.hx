@@ -29,37 +29,16 @@
 */
 package org.shoebox.patterns.mvc.commands; 
 
-import nme.display.DisplayObjectContainer;
-import nme.events.Event;
-import org.shoebox.patterns.commands.AbstractCommand;
-import org.shoebox.patterns.commands.ICommand;
-import org.shoebox.patterns.frontcontroller.FrontController;
 import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
 import org.shoebox.patterns.mvc.abstracts.AController;
-
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class MVCCommand extends AbstractCommand ,  implements ICommand{
-
-	public var defaultContainer : Bool;
-	public var container        : DisplayObjectContainer;
-	
-	public var model     	( _getModel , null ) : AModel;
-	public var view       	( _getView , null ) : AView;
-	public var controller 	( _getController , null ) : AController;
-
-	private var _oModel        : AModel;
-	private var _oView         : AView;
-	private var _oController   : AController;
-	private var _cModel        : Class<AModel>;
-	private var _cView         : Class<AView>;
-	private var _cController   : Class<AController>;
-	private var _oFrontControl : FrontController;
+class MVCCommand<M:AModel,V:AView,C:AController>{
 
 	// -------o constructor
 		
@@ -69,159 +48,17 @@ class MVCCommand extends AbstractCommand ,  implements ICommand{
 		* @param	
 		* @return	void
 		*/
-		public function new( ) {
-			super( );
-			cancelable = false;
+		public function new( m : M , v : V , c : C ) {
+			trace('constructor ::: '+m+' - '+v+' - '+c);
 		}
 	
 	// -------o public
-			
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function init(
-								? m : Class<AModel>,
-								? v : Class<AView>,
-								? c : Class<AController> , 
-								? d : DisplayObjectContainer = null ,
-								? fc : FrontController = null 
-							 ) : Void {
-			container      = d;	
-			_cModel        = m;
-			_cView         = v;
-			_cController   = c;
-			_oFrontControl = fc;
-
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function prepare( modelVars : Array<Dynamic> = null ) : Void {
-			
-			// Model
-				if( _cModel != null ){
-					_oModel = Type.createInstance( _cModel , modelVars == null ? [ ] : modelVars );
-					_oModel.ref = this;
-				}
-
-			// View
-				if( _cView != null ){
-					_oView = Type.createInstance( _cView , [ ]);
-					_oView.ref = this;
-				}
-
-			// Controller
-				if( _cController != null ){
-					_oController = Type.createInstance( _cController , [ ] );		
-					_oController.ref = this;
-				}
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		override public function onExecute( ?e : Event = null ) : Void {
-			trace('onExecute ::: '+container);
-			//
-				if(container != null && !container.contains(_oView))
-					container.addChild(_oView);					
-
-			// Init
-				if( _oModel != null )
-					_oModel.initialize( );
 				
-				if( _oView != null )
-					_oView.initialize( );
-
-				if( _oController != null )
-					_oController.initialize( );
-			
-			// StartUp
-				if( _oModel != null )
-					_oModel.startUp( );
 				
-				if( _oView != null )
-					_oView.startUp( );
-
-				if( _oController != null )
-					_oController.startUp( );
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		override public function onCancel( ? e : Event = null ) : Void {
-			
-			//
-				if( _oModel != null )
-					_oModel.cancel( );
-			
-			//
-				if( container != null )
-					if( container.contains(_oView) )
-						container.addChild(_oView);					
-						container = null;
-
-			//
-				if( _oView != null )
-					_oView.cancel( );
-
-			//
-				if( _oController != null )
-					_oController.cancel( );
-		
-
-			super.onCancel( );
-			_oFrontControl = null;
-			_oModel        = null;
-			_oView         = null;
-			_oController   = null;
-		}
 
 	// -------o protected
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getModel( ) : AModel{
-			return _oModel;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getView( ) : AView{
-			return _oView;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getController( ) : AController{
-			return _oController;
-		}
+	
+		
 
 	// -------o misc
 	

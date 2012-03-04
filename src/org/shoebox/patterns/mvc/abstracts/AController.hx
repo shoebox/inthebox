@@ -23,14 +23,11 @@
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
-	class AController extends Signal, implements IController {
+	class AController extends ABase, implements IController {
 		
-		public var model 			( _getModel , null ) 		: Dynamic;
-		public var view 			( _getView , null ) 		: Dynamic;
-		//public var controller 		( _getController , null ) 	: AController;
-		public var frontController 	( _getFc , null ) 			: FrontController;
-
-		public var ref             : MVCCommand;
+		public var model( _getModel , null ) : Dynamic;
+		public var view( _getView , null ) : Dynamic;
+		//public var controller( _getController , null ) : AController;
 		
 		private var _oDico			: Hash<Dynamic> ;
 		
@@ -130,7 +127,26 @@
 			
 			}
 			
-			
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function getView( ) {
+				return _getView( );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function getModel( ) {
+				return _getModel( );
+			}
+
 		// -------o private
 			
 			/**
@@ -147,48 +163,7 @@
 					oCom.execute(e);
 				
 			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getModel( ) : AModel{
-				return ref.model;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getView( ) : AView{
-				return ref.view;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getController( ) : AController{
-				return ref.controller;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getFc( ) : FrontController{
-				return ref.frontController;
-			}
-
-			
+		
 		// -------o misc
 			public static function trc(arguments:Dynamic) : Void {
 				//Logger.log(AController,arguments);

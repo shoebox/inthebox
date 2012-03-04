@@ -40,5 +40,35 @@ class BoxArray
 		
 		return -1;		
 	}
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	static public function difference<T>( a1 : Array<T> , a2 : Array<T> ) : Array<T> {
+
+		var res = new Array<T>( );
+		var b : Bool;
+		for( val1 in a1 ){
+
+			b = false;
+			for( val2 in a2 ){
+
+				if( val1 == val2 ){
+					b = true;
+					break;
+				}
+
+			}
+
+			if( !b )
+				res.push( val1 );
+
+		}
+		
+		return res;					
+	}
 	
 }

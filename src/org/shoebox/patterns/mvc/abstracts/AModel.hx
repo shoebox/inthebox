@@ -1,5 +1,8 @@
 package org.shoebox.patterns.mvc.abstracts; 
-
+	
+	import org.shoebox.patterns.mvc.abstracts.AModel;
+	import org.shoebox.patterns.mvc.abstracts.AView;
+	import org.shoebox.patterns.mvc.abstracts.AController;
 	import org.shoebox.patterns.mvc.commands.MVCCommand;
 	import org.shoebox.patterns.frontcontroller.FrontController;
 	import org.shoebox.patterns.mvc.interfaces.IView;
@@ -20,15 +23,12 @@ package org.shoebox.patterns.mvc.abstracts;
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
-	class AModel extends EventDispatcher {
+	class AModel extends ABase {
 		
-		//public var model 			( _getModel , null ) 		: AModel;
-		public var view 			( _getView , null ) 		: AView;
-		public var controller 		( _getController , null ) 	: AController;
-		public var frontController 	( _getFc , null ) 			: FrontController;
+		//public var model( _getModel , null ) : AModel;
+		public var view( _getView , null ) : Dynamic;
+		public var controller( _getController , null ) : Dynamic;
 
-		public var ref             : MVCCommand;
-		
 		// -------o constructor
 			
 			/**
@@ -80,49 +80,29 @@ package org.shoebox.patterns.mvc.abstracts;
 			public function startUp( ) : Void {
 			
 			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function getView( ) {
+				return _getView( );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function getController( ) {
+				return _getController( );
+			}
 			
 		// -------o private
 			
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getModel( ) : AModel{
-				return ref.model;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getView( ) : AView{
-				return ref.view;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getController( ) : AController{
-				return ref.controller;
-			}
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			*/
-			private function _getFc( ) : FrontController{
-				return ref.frontController;
-			}
-
 		// -------o misc
 			public static function trc(arguments:Dynamic) : Void {
 				//Logger.log(AModel,arguments);

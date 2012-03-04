@@ -33,11 +33,11 @@ package org.shoebox.patterns.mvc.abstracts;
 		//public var view 			( _getView , null ) 		: AView;
 		//public var controller 		( _getController , null ) 	: AController;
 
-		public var container ( _getContainer , never ) : DisplayObjectContainer;
+		//public var container ( _getContainer , never ) : DisplayObjectContainer;
 
-		public var frontController 	( _getFc , null ) 			: FrontController;
+		//public var frontController 	( _getFc , null ) 			: FrontController;
 		
-		public var ref             : MVCCommand;
+		//public var ref             : MVCCommand;
 				
 		private var _vDisplayObjects	: Array<DisplayObject>;
 		
@@ -158,20 +158,20 @@ package org.shoebox.patterns.mvc.abstracts;
 			* 
 			* @private
 			* @return	void
-			*/
+			
 			private function _getFc( ) : FrontController{
 				return ref.frontController;
-			}
+			}*/
 
 			/**
 			* 
 			* 
 			* @private
 			* @return	void
-			*/
+			
 			private function _getContainer( ) : DisplayObjectContainer{
 				return ref.container;
-			}
+			}*/
 
 		// -------o misc
 		
