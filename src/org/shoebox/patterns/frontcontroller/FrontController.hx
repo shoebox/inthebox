@@ -46,7 +46,12 @@ class FrontController{
 		* @public
 		* @return	void
 		*/
-		public function add<M,V,C>( cM : Class<M> , cV : Class<V> , cC : Class<C> , ?container : DisplayObjectContainer = null) : String {
+		public function add<M,V,C>( 
+										cM        : Class<M> , 
+										cV        : Class<V> , 
+										cC        : Class<C> , 
+										?container: DisplayObjectContainer = null
+									) : String {
 			
 			if( owner == null )
 				throw new Error( );
@@ -163,7 +168,10 @@ class FrontController{
 						oTri = _hTriads.get( sApp );
 						oTri.codeName = sApp;
 						oTri.frontController = this;
-						oTri.setVariables( _hVariables.get( sApp ) );
+						if( _hVariables.exists( sApp ) ){
+							oTri.setVariables( _hVariables.get( sApp ) );
+							_hVariables.remove( sApp );
+						}
 						if( !oTri.isRunning )
 							oTri.execute( );
 
