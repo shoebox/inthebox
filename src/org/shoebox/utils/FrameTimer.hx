@@ -27,20 +27,28 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.patterns.mvc.abstracts; 
+package org.shoebox.utils;
 
-import nme.events.EventDispatcher;
-import org.shoebox.patterns.frontcontroller.FrontController;
+import nme.events.TimerEvent;
+import nme.Lib;
+import nme.utils.Timer;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class ABase extends EventDispatcher{
+class FrameTimer {
 
-	public var codeName : String;
-	public var frontController : FrontController;
+	static private var _aFuncs : Array<Void->Void> = new Array<Void->Void>( );
+
+	private var _fFrameDuration : Float;
+	private var _fPrev : Float;
+	private var _fPrevTimer : Float;
+		private var _iDiffTime : Int;
+	
+	private static var _bRunning : Bool;
+	private static var _oTimer   : Timer;
 
 	// -------o constructor
 		
@@ -50,44 +58,101 @@ class ABase extends EventDispatcher{
 		* @param	
 		* @return	void
 		*/
-		public function new() {
-			super( );
+		private function new( ) {
+			_fFrameDuration = 1000 / Lib.current.stage.frameRate;
+			_oTimer = new Timer( _fFrameDuration );
+			_oTimer.addEventListener( TimerEvent.TIMER , _onTick , false );
+			_bRunning = false;
 		}
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function add( f : Void -> Void ) : Void {
+
+			_aFuncs.remove( f );
+			_aFuncs.push( f );
+			getInstance( ).start( );
+
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function remove( f : Void -> Void ) : Void {
+
+			_aFuncs.remove( f );
+		
+		}	
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function start( ) : Void {
+
+			if( _bRunning )
+				return;
+
+			_oTimer.start( );
+			_fPrev = Lib.getTimer( );
+			_bRunning = true;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function stop( ) : Void {
+			_oTimer.stop( );
+			_bRunning = false;
+		}
+
 	// -------o protected
-	
+		
 		/**
 		* 
 		* 
 		* @private
 		* @return	void
 		*/
-		private function _getModel( ){
-			return frontController.getApp( codeName ).mod;
+		private function _onTick( _ ) : Void{
+			//var now = Lib.getTimer( );//haxe.Timer.stamp( );
+			var now:Float = haxe.Timer.stamp();
+			_iDiffTime = Math.round((now - _fPrevTimer) * Lib.current.stage.frameRate);
+			
+			for( i in 0..._iDiffTime ){
+				for( f in _aFuncs ){
+					f( );
+				}
+			}
+
+			_fPrevTimer = now;
 		}
 
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getView( ){
-			return frontController.getApp( codeName ).view;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getController( ){
-			return frontController.getApp( codeName ).controller;
-		}
+		
+		
 
 	// -------o misc
-	
+		
+		public static function getInstance( ) : FrameTimer{
+			if( null == instance )
+				instance = new FrameTimer( );
+
+			return instance;
+		}
+
+		public static var instance( default , null ) : FrameTimer;
 }

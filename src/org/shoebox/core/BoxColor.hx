@@ -1,4 +1,4 @@
-﻿/**
+/**
 *  HomeMade by shoe[box]
 *
 *  Redistribution and use in source and binary forms, with or without 
@@ -27,34 +27,34 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.patterns.mvc.commands; 
-
-import org.shoebox.patterns.mvc.abstracts.AModel;
-import org.shoebox.patterns.mvc.abstracts.AView;
-import org.shoebox.patterns.mvc.abstracts.AController;
+package org.shoebox.core;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class MVCCommand<M:AModel,V:AView,C:AController>{
+class BoxColor{
 
 	// -------o constructor
 		
-		/**
-		* constructor
-		*
-		* @param	
-		* @return	void
-		*/
-		public function new( m : M , v : V , c : C ) {
-			trace('constructor ::: '+m+' - '+v+' - '+c);
-		}
-	
 	// -------o public
 				
-				
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function toRGB( col : Int ) : RGBCol {
+			
+			return { 
+						r : col >> 16 & 0xff , 
+						g : col >> 8 & 0xff , 
+						b : col & 0xff 
+					};
+
+		}
 
 	// -------o protected
 	
@@ -62,4 +62,12 @@ class MVCCommand<M:AModel,V:AView,C:AController>{
 
 	// -------o misc
 	
+}
+
+typedef RGBCol = {
+
+	public var r : Int;
+	public var g : Int;
+	public var b : Int;
+
 }

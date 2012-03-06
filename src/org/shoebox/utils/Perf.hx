@@ -11,6 +11,7 @@ import nme.system.System;
 import nme.text.TextField;
 import nme.text.TextFieldAutoSize;
 import nme.text.TextFormat;
+import org.shoebox.utils.FrameTimer;
 
 /**
  * ...
@@ -67,7 +68,8 @@ class Perf extends Sprite{
 			x = Lib.current.stage.stageWidth - WIDTH;
 			removeEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
 			addEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );
-			addEventListener( Event.ENTER_FRAME , _onUpdate , false );
+			//addEventListener( Event.ENTER_FRAME , _onUpdate , false );
+			FrameTimer.add( _onUpdate );
 			_draw( );
 		}
 		
@@ -120,7 +122,7 @@ class Perf extends Sprite{
 		* @private
 		* @return	void
 		*/
-		private function _onUpdate( e : Event ) : Void {
+		private function _onUpdate( ) : Void {
 			
 			var now = Timer.stamp();
 			_aTimes.push(now);
@@ -143,8 +145,9 @@ class Perf extends Sprite{
 		*/
 		private function _onRemoved( e : Event ) : Void {
 			trace('onRemoved');
-			removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
+			//removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
 			removeEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false ); 
+			FrameTimer.remove( _onUpdate );
 		}
 
 	// -------o misc
