@@ -125,11 +125,11 @@ class Array2D<T>{
 		* @public
 		* @return	void
 		*/
-		public function getRegion( min : IPosition , max : IPosition , res : Array<T> = null ) : Array<T> {
+		public function getRegion( minX : Int , minY : Int , maxX : Int , maxY : Int , res : Array<T> = null ) : Array<T> {
 
 			var res : Array<T> = res!=null ? res : new Array<T>( );
-			for( dy in min.y...max.y ){
-				res = res.concat( _aContent.slice( getIndex( min.x , dy ) , getIndex( max.x , dy ) ) );
+			for( dy in minY...maxY ){
+				res = res.concat( _aContent.slice( getIndex( minX , dy ) , getIndex( maxX , dy ) ) );
 			}
 
 			return res;
@@ -141,13 +141,33 @@ class Array2D<T>{
 		* @public
 		* @return	void
 		*/
-		public function getRegionCustom<B>( min : IPosition , max : IPosition , res : Array<B> , fConcat : Array<T> -> Array<B> -> Array<B> = null ) : Array<B> {
+		public function getRegionCustom<B>( minX : Int , minY : Int , maxX : Int , maxY : Int , res : Array<B> , fConcat : Array<T> -> Array<B> -> Array<B> = null ) : Array<B> {
 			
-			for( dy in min.y...max.y )
-				res = fConcat( _aContent.slice( getIndex( min.x , dy ) , getIndex( max.x , dy ) ) , res );
+			for( dy in minY...maxY )
+				res = fConcat( _aContent.slice( getIndex( minX , dy ) , getIndex( maxX , dy ) ) , res );
 			
 			return res;
 		}	
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function trace( ) : Void {
+			
+			var s : String;
+			for( dy in 0..._iHeight ){
+				s = '';
+				for( dx in 0..._iWidth ){
+					s = s + ' - '+get( dx , dy );
+				}
+
+				trace( s );
+			}
+
+		}
 	
 	// -------o protected
 		

@@ -164,7 +164,7 @@ class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
 		* @return	void
 		*/
 		override public function onCancel( ?e : Event = null ) : Void {
-			trace('onCancel');
+			//trace('onCancel');
 			//
 				if( mod != null )
 					cast( mod , AModel ).cancel( );

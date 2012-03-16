@@ -203,10 +203,15 @@ class Signal extends EventDispatcher{
 		* @return	void
 		*/
 		private function _disconnect( f : Dynamic -> Dynamic , channel : Dynamic ) : Void{
+
+			//
+				if( !_hChannels.exists( channel ) )
+					return;
+
 			//
 				var aListeners = _hChannels.get( channel );
 				for( l in aListeners ){
-					
+					trace( l );
 					if( l.fListener == f && l.channel == channel )
 						aListeners.remove( l );
 

@@ -52,8 +52,8 @@ package org.shoebox.display.containers;
 	*/
 	class ParallaxLayer extends Bitmap{
 		
-		public var bLoop				: Bool;
-		public var position			: Vector2D;
+		public var bLoop    : Bool;
+		public var position : FPoint;
 
 		private var _oLimits    : AABB;
 		private var _bmpPattern : BitmapData;
@@ -122,9 +122,9 @@ package org.shoebox.display.containers;
 			}
 
 
-			public function setTransform( dx : Int = 0 , dy : Int = 0 , fScaleX : Float = 1.0 , fScaleY : Float = 1.0 ) : Void{
+			public function setTransform( dx : Float = 0.0 , dy : Float = 0.0 , fScaleX : Float = 1.0 , fScaleY : Float = 1.0 ) : Void{
 				
-				position = new Vector2D( dx , dy );
+				position = { x : dx , y : dy };
 				_fDx = x = dx;
 				_fDy = y = dy;
 				scaleX = fScaleX;

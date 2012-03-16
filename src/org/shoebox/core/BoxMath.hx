@@ -30,6 +30,8 @@
 
 package org.shoebox.core;
 
+import org.shoebox.geom.FPoint;
+
 /**
  * ...
  * @author shoe[box]
@@ -63,6 +65,18 @@ class BoxMath
 		var dy : Float = Math.abs( y1 - y2 );
 		return Math.sqrt( dx * dx + dy * dy );
 	}
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	static public function distance2( p1 : FPoint , p2 : FPoint ) : Float {
+		var dx = Math.abs( p1.x - p2.x );
+		var dy = Math.abs( p1.y - p2.y );
+		return Math.sqrt( dx * dx + dy * dy );
+	}
 	
 	/**
    * toIndice function
@@ -81,6 +95,16 @@ class BoxMath
    
    }
    
+   /**
+   * 
+   * 
+   * @public
+   * @return	void
+   */
+   static public function posToAngle( dx : Float  , dy : Float ) : Float {
+		return RAD_TO_DEG * Math.atan2( dx , dy );
+	}
+
    static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Dynamic {
 	   
 		var rTop : Float = (A.y-C.y)*(D.x-C.x)-(A.x-C.x)*(D.y-C.y);

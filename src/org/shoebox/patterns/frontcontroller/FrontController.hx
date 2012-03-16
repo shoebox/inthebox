@@ -162,7 +162,7 @@ class FrontController extends Signal{
 		* @return	void
 		*/
 		private function _setState( s : String ) : String{
-			trace('setState ::: '+s);
+			//trace('setState ::: '+s);
 
 			if( !_hStatesDesc.exists( s ) )
 				throw new Error('State '+s+' is not registered');

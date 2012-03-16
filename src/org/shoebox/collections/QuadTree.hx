@@ -30,7 +30,8 @@
 package org.shoebox.collections;
 
 import nme.display.Graphics;
-import org.shoebox.display.AABB;
+import org.shoebox.geom.AABB;
+import org.shoebox.geom.FPoint;
 
 class QuadTree<T> extends QuadTreeNode<T>{
 
@@ -40,16 +41,16 @@ class QuadTree<T> extends QuadTreeNode<T>{
 		* 
 		* 
 		* @public
-		* @param maxDepth : Max tree depth ( Int )
+		* @param 
 		* @return	void
 		*/
-		public function new( bounds : AABB , maxDepth : Int = 5 , gDebug : Graphics = null ) : Void {
-			super( bounds , 0 , maxDepth , gDebug );
+		public function new( bounds : AABB , iMax : Int = 10 , gDebug : Graphics = null ) : Void {
+			
+			super( bounds , 0 , iMax , gDebug );
 		}
 	
 	// -------o public
 		
-
 	// -------o protected
 	
 	// -------o misc
@@ -63,20 +64,16 @@ class QuadTree<T> extends QuadTreeNode<T>{
 
 class QuadTreeNode<T>{
 
-	private var _bBounds     : AABB;
-	private var _aContent    : Array<T>;
-	private var _bMaxDepth   : Bool;
-	private var _bInitialize : Bool;
-	private var _fHalfX      : Float;
-	private var _fHalfY      : Float;
-	private var _gDebug      : Graphics;
-	private var _iDepth      : Int;
-	private var _iMaxDepth   : Int;
-	private var _qTopL       : QuadTreeNode<T>;
-	private var _qTopR       : QuadTreeNode<T>;
-	private var _qBotL       : QuadTreeNode<T>;
-	private var _qBotR       : QuadTreeNode<T>;
-	
+	public var bounds : AABB;
+	public var iDepth : Int;
+	public var iMax   : Int;
+	public var gDebug : Graphics;
+
+	private var _aContent : Array<QuadTreeContent<T>>;
+	private var _bMax  : Bool;
+	private var _fHalf : FPoint;
+	private var _aSubs : Array<QuadTreeNode<T>>;
+
 	// -------o constructor
 		
 		/**
@@ -85,18 +82,20 @@ class QuadTreeNode<T>{
 		* @param	
 		* @return	void
 		*/
-		public function new( bounds : AABB , depth : Int , maxDepth : Int = 10 , gDebug : Graphics = null ) {
-			_bBounds   = bounds;
-			_iDepth    = depth;
-			_iMaxDepth = maxDepth;	
-			_gDebug    = gDebug;
-			_fHalfX    = (bounds.max.x - bounds.min.x ) / 2 ;
-			_fHalfY    = (bounds.max.y - bounds.min.y ) / 2 ;
-			_bMaxDepth = depth >= maxDepth;
-		
-			if( _gDebug != null ){
-				bounds.debug( gDebug );
-			}
+		public function new( bounds : AABB , iDepth : Int , iMax : Int , gDebug : Graphics = null ) {
+			
+			this.bounds = bounds;
+			this.iDepth = iDepth;
+			this.iMax   = iMax;
+			this.gDebug = gDebug;
+			_bMax = iDepth >= iMax;
+			_fHalf = { 
+						x : bounds.min.x + ( bounds.max.x - bounds.min.x ) / 2,
+						y : bounds.min.y + ( bounds.max.y - bounds.min.y ) / 2
+					};
+			//trace('constructor ::: '+gDebug);
+			if( gDebug != null )
+				gDebug.drawRect( bounds.min.x , bounds.min.y , bounds.width , bounds.height );
 		}
 	
 	// -------o public
@@ -107,27 +106,8 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function put( t : T , bounds : AABB ) : Bool {
-			
-			if( !_bBounds.intersect( bounds ) )
-				return false;
-			
-			if( _bMaxDepth ){
-				_addContent( t );
-				return false;
-			}
-			
-			if( !_bInitialize )
-				_init( );
-			
-
-			var q : QuadTreeNode<T> = _getQuad( _getQuadAt( bounds.min.x , bounds.min.y ) );
-			var b : Bool = q.put( t , bounds );
-			if( !b ){
-				_addContent( t );
-				b = true;
-			}
-			return b;
+		public function toString( ) : String {
+			return _getIndent( )+'[ QuadTreeNode : '+bounds +' ]';
 		}
 
 		/**
@@ -136,12 +116,26 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function putArray( a : Array<T> , bounds : AABB ) : Void {
-			
-			for( t in a )
-				put( t , bounds );
+		public function add( b : AABB , value : T ) : Void {
 
-		}
+			//if( !bounds.containPoint( b.min.x , b.min.y ) )
+			//	return;
+				
+			if( !_bMax ){
+
+				var q = _getQuad( getQuadAt( b.min.x , b.min.y ) );
+				if( q.bounds.containAABB( b ) )
+					q.add( b , value );
+				else
+					_addContent( value , b );
+			}else{
+				_addContent( value , b );
+			}
+
+			
+			
+
+		}		
 
 		/**
 		* 
@@ -149,32 +143,92 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function get( bounds : AABB , res : Array<T> = null ) : Array<T> {
-			
-			//
-				if( res == null )
-					res = new Array<T>( );
+		public function get( b : AABB , res : Array<T> = null ) : Array<T> {
 
-			//
-				if( !bounds.intersect( _bBounds ) )
-					return res;
+			if( res == null )
+				res = new Array<T>( );
 			
-			//
-				if( _aContent != null ){
+			if( _aSubs != null ){
+				for( sub in _aSubs ){
+
+					if( sub == null )
+						continue;
 					
-					res = res.concat( _aContent );
+					if( sub.bounds.intersect( b ) )
+						sub.get( b , res );
 				}
+			}
 
-			//
-				if( _bInitialize ){
-					res = _qTopL.get( bounds , res );
-					res = _qTopR.get( bounds , res );
-					res = _qBotL.get( bounds , res );
-					res = _qBotR.get( bounds , res );
-				}
+			
+			if( _aContent != null ){
+
+				for( c in _aContent )
+					if( c.bounds.intersect( b ) )
+						res.push( c.content );
+
+			}
 
 			return res;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function get2<B>( b : AABB , fConcat : T -> Array<B> -> Array<B> , res : Array<B> = null ) : Array<B> {
 			
+			 if( res == null )
+			 	res = new Array<B>( );
+
+			 
+
+			if( _aContent != null ){
+				
+				for( c in _aContent ){
+					if( c.bounds.intersect( b ) ){
+						res = fConcat( c.content , res );
+					}
+				}
+			
+			}
+
+			if( _aSubs != null ){
+				for( sub in _aSubs ){
+
+					if( sub == null )
+						continue;
+					
+					if( sub.bounds.intersect( b ) )
+						res = sub.get2( b , fConcat , res );
+				}
+			}
+
+			return res;
+
+		}
+		
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getQuadAt( fx : Float , fy : Float ) : Quad {
+			return 
+				if ( fy <= _fHalf.y ) {
+					if ( fx <= _fHalf.x )
+						Quad.TL;
+					else
+						Quad.TR;
+				} else {
+					if ( fx <= _fHalf.x )
+						Quad.BL;
+					else
+						Quad.BR;
+				}
 		}
 
 	// -------o protected
@@ -185,100 +239,36 @@ class QuadTreeNode<T>{
 		* @private
 		* @return	void
 		*/
-		private function _addContent( t : T ) : Void{
-			
-			if( _aContent == null )
-				_aContent = new Array<T>( );
-				_aContent.push( t );
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _init( ) : Void{
-			
-			_qTopL = new QuadTreeNode<T>( 	new AABB( 
-														_bBounds.min.x , 
-														_bBounds.min.y , 
-														_bBounds.min.x + _fHalfX , 
-														_bBounds.min.y + _fHalfY 
-													) , _iDepth + 1 , _iMaxDepth , _gDebug );
-			
-			_qTopR = new QuadTreeNode<T>( 
-											new AABB( 
-														_bBounds.min.x + _fHalfX , 
-														_bBounds.min.y , 
-														_bBounds.max.x , 
-														_bBounds.min.y + _fHalfY
-													) , _iDepth + 1 , _iMaxDepth , _gDebug );									
-			
-			_qBotL = new QuadTreeNode<T>( 	new AABB( 
-														_bBounds.min.x , 
-														_bBounds.min.y + _fHalfY , 
-														_bBounds.min.x + _fHalfX , 
-														_bBounds.max.y
-													) , _iDepth + 1 , _iMaxDepth , _gDebug );
-			
-			_qBotR = new QuadTreeNode<T>( 	new AABB( 
-														_bBounds.min.x + _fHalfX , 
-														_bBounds.min.y + _fHalfY , 
-														_bBounds.max.x , 
-														_bBounds.max.y
-													) , _iDepth + 1 , _iMaxDepth , _gDebug );
-			
-			_bInitialize = true;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
 		private function _getQuad( q : Quad ) : QuadTreeNode<T>{
 			
-			return switch( q ){
+			if( _aSubs == null )
+				_aSubs = new Array<QuadTreeNode<T>>( );
 
-				case TL : _qTopL;
-					
-				case TR : _qTopR;
-				
-				case BL : _qBotL;
-				
-				case BR : _qBotR;
-				
+			return switch( q ) {
+
+				case TL:
+					if( _aSubs[ 0 ] == null )
+						_aSubs[ 0 ] = new QuadTreeNode<T>( new AABB( bounds.min.x , bounds.min.y , _fHalf.x , _fHalf.y ) , iDepth + 1 , iMax , gDebug );
+
+					_aSubs[ 0 ];
+
+				case TR:
+					if( _aSubs[ 1 ] == null )
+						_aSubs[ 1 ] = new QuadTreeNode<T>( new AABB( _fHalf.x , bounds.min.y , bounds.max.x , _fHalf.y ) , iDepth + 1 , iMax , gDebug );
+
+					_aSubs[ 1 ];
+
+				case BL:
+					if( _aSubs[ 2 ] == null )
+						_aSubs[ 2 ] = new QuadTreeNode<T>( new AABB( bounds.min.x , _fHalf.y , _fHalf.x , bounds.max.y ) , iDepth + 1 , iMax , gDebug );
+					_aSubs[ 2 ];
+
+				case BR:
+					if( _aSubs[ 3 ] == null )
+						_aSubs[ 3 ] = new QuadTreeNode<T>( new AABB( _fHalf.x , _fHalf.y , bounds.max.x , bounds.max.y ) , iDepth + 1 , iMax , gDebug );
+					_aSubs[ 3 ];
+
 			}
-
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getQuadAt( x : Float , y : Float ) : Quad{
-
-			var iMiddleX : Float = _bBounds.min.x + _fHalfX;
-			var iMiddleY : Float = _bBounds.min.y + _fHalfY;
-			return if( y <= iMiddleY){
-						
-						if( x <= iMiddleX )
-							Quad.TL;
-						else
-							Quad.TR;
-
-					}else{
-
-						if( x <= iMiddleX )
-							Quad.BL;
-						else
-							Quad.BR;	
-												
-					}
 
 		}
 
@@ -290,10 +280,8 @@ class QuadTreeNode<T>{
 		*/
 		private function _getIndent( ) : String{
 			var s = '';
-			for( i in 0..._iDepth ){
-				s += '\t';
-				
-			}
+			for( i in 0...iDepth )
+				s+='\t';
 
 			return s;
 		}
@@ -301,15 +289,22 @@ class QuadTreeNode<T>{
 		/**
 		* 
 		* 
-		* @public
+		* @private
 		* @return	void
 		*/
-		public function toString( ) : String {
-			return 'QuadTreeNode ::: '+_bBounds;
+		private function _addContent( value : T , b : AABB ) : Void{
+			if( _aContent == null )
+				_aContent = new Array<QuadTreeContent<T>>( );
+				_aContent.push( { content : value , bounds : b } );
 		}
-
+		
 	// -------o misc
 	
+}
+
+typedef QuadTreeContent<T>={
+	public var content : T;
+	public var bounds : AABB;
 }
 
 enum Quad{

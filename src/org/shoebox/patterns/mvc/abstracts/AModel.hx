@@ -46,7 +46,6 @@ package org.shoebox.patterns.mvc.abstracts;
 	* 	===> The model store the view instance
 	* 	
 	* 	===> The model update the view
-	* 	
 	* org.shoebox.patterns.mvc2.controller.AModel
 	* @date:26 janv. 09
 	* @author shoe[box]

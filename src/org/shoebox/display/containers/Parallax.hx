@@ -39,13 +39,16 @@ package org.shoebox.display.containers;
 	import nme.geom.Matrix;
 	import nme.errors.Error;
 	import nme.Lib;
+	import org.shoebox.geom.FPoint;
 	
 	/**
 	* Parallax
 	* @author shoebox
 	*/
 	class Parallax extends Sprite{
-	
+		
+		public var position( _getPosition , null ) : FPoint;
+
 		private var _iLayersCount		: Int;
 		private var _fMaxRight			: Float;
 		private var _lPrimary			: ParallaxLayer;
@@ -136,19 +139,19 @@ package org.shoebox.display.containers;
 				
 				return true;
 			}
-
-			/**
-			* 
-			* 
-			* @public
-			* @return	void
-			*/
-			public function getPosition( ) : Vector2D {
-				return _lPrimary.position;
-			}
 			
 		// -------o private
 			
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _getPosition( ) : FPoint{
+				return _lPrimary.position;
+			}
+
 		// -------o misc
 
 	}

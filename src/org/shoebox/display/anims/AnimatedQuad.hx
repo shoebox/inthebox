@@ -172,7 +172,7 @@ class AnimatedQuad extends Sprite{
 		* @public
 		* @return	void
 		*/
-		public function update( iDelay : Int ) : Void {
+		public function update( iDelay : Int , bRedraw : Bool = true ) : Void {
 			
 			//trace('update :: '+iDelay+' - '+_bPlaying+'  '+_bInvalidate);
 			if ( _bPlaying || _bInvalidate ) {
@@ -193,8 +193,8 @@ class AnimatedQuad extends Sprite{
 				}
 				
 				_iFrame = Math.round ( fRatio * (_iCycleLen - 1));
-				
-				_redrawFrame( );
+				if( bRedraw )
+					_redrawFrame( );
 				_bInvalidate = false;
 			}
 			
@@ -244,6 +244,40 @@ class AnimatedQuad extends Sprite{
 		*/
 		public function getQuadHeight( ) : Float {
 			return _oAtlas.getFrameRec( _sCycle , _iFrame ).height;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getFrameArray( flags : Int = 0 , fx : Float = 0 , fy : Float = 0 ) : Array<Float> {
+			
+			var dx : Float = 0.0;
+			var dy : Float = 0.0;
+			var rec : Rectangle = _oAtlas.getFrameRec( _sCycle , _iFrame );
+			switch( _sAlign ) {
+				
+				case CENTER:
+					dx = - rec.width / 2;
+					dy = - rec.height / 2;
+				
+				case TOP_LEFT:
+					dx = 0;
+					dy = 0;
+					
+				case TOP:
+					dx = - rec.width / 2;
+			}
+
+			var useScale = (flags & Tilesheet.TILE_SCALE) > 0;
+			
+			if( useScale )
+				return [ dx + fx , dy + fy , _oAtlas.getTileId( _sCycle , _iFrame ) , 1 ];
+			
+			return [ dx + fx , dy + fy , _oAtlas.getTileId( _sCycle , _iFrame ) ];
+
 		}
 
 	// -------o protected

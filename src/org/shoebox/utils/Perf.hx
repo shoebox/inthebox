@@ -31,6 +31,7 @@ class Perf extends Sprite{
 	private var _tfMs       : TextField;
 	private var _tfFps      : TextField;
 	private var _oFormat    : TextFormat;
+	private var _oTimer     : Timer;
 	
 	private static var WIDTH			: Int = 100;
 	private static var HEIGHT			: Int = 40;	
@@ -69,7 +70,9 @@ class Perf extends Sprite{
 			removeEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
 			addEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );
 			//addEventListener( Event.ENTER_FRAME , _onUpdate , false );
-			FrameTimer.add( _onUpdate );
+			trace('fps ::: '+Lib.current.stage.frameRate );
+			_oTimer = new Timer( Math.round( 1000 / Lib.current.stage.frameRate ) );
+			_oTimer.run = _onUpdate;
 			_draw( );
 		}
 		
@@ -147,7 +150,9 @@ class Perf extends Sprite{
 			trace('onRemoved');
 			//removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
 			removeEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false ); 
-			FrameTimer.remove( _onUpdate );
+			//FrameTimer.remove( _onUpdate );
+			_oTimer.stop( );
+			_oTimer.run = null;
 		}
 
 	// -------o misc

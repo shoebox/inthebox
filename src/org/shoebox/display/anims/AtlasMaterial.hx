@@ -92,7 +92,7 @@ class AtlasMaterial extends Tilesheet{
 		* @public
 		* @return	void
 		*/
-		static public function parseXML( sDesc : String , bmp : BitmapData , sMatName : String = null ) : AtlasMaterial {
+		static public function parseXML( sDesc : String , bmp : BitmapData , sMatName : String = null , fDecalX : Float = 0 , fDecalY : Float = 0 ) : AtlasMaterial {
 			
 			var oMat : AtlasMaterial = new AtlasMaterial( bmp );
 				oMat.name = sMatName;
@@ -138,7 +138,7 @@ class AtlasMaterial extends Tilesheet{
 					a = sName.split('/');
 					s = a[ 0 ];
 					i = Std.parseInt( a[ 1 ] );
-					oMat._addFrame( s , i , toRec( item ) );
+					oMat._addFrame( s , i , toRec( item , fDecalX , fDecalY ) );
 				}
 			
 			return oMat;
@@ -150,11 +150,11 @@ class AtlasMaterial extends Tilesheet{
 		* @public
 		* @return	void
 		*/
-		static public function toRec( x : Xml ) : Rectangle {
+		static public function toRec( x : Xml , fDecalX : Float = 0 , fDecalY : Float = 0 ) : Rectangle {
 			
 			return new Rectangle( 
-									Std.parseInt( x.get('x') ),
-									Std.parseInt( x.get('y') ),
+									Std.parseInt( x.get('x') ) + fDecalX,
+									Std.parseInt( x.get('y') ) + fDecalY,
 									Std.parseInt( x.get('width') ),
 									Std.parseInt( x.get('height') )
 								);

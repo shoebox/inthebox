@@ -27,21 +27,26 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.geom;
+package org.shoebox.display;
 
-import nme.display.Graphics;
+import nme.display.BitmapData;
+import nme.display.Tilesheet;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+import org.shoebox.geom.FPoint;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class AABB{
+class TilesMap extends Tilesheet{
 
-	public var width( _getWidth , null ) : Float;
-	public var height( _getHeight , null ) : Float;
-	public var min : Pos;
-	public var max : Pos;
+	private var _hCycles  : Hash<Int>;
+	private var _hNames   : Hash<Int>;
+	private var _hCenters : Hash<Point>;
+	private var _hBounds  : Hash<Rectangle>;
+	private var _iInc     : Int;
 
 	// -------o constructor
 		
@@ -51,25 +56,37 @@ class AABB{
 		* @param	
 		* @return	void
 		*/
-		public function new( l : Float = 0.0 , t : Float = 0.0 , r : Float = 0.0 , b : Float = 0.0 ) {
-			min = { x : l , y : t };
-			max = { x : r , y : b };
+		public function new( bmp : BitmapData ) {
+			super( bmp );
+			_hNames   = new Hash<Int>( );
+			_hBounds  = new Hash<Rectangle>( );
+			_hCenters = new Hash<Point>( );
+			_iInc   = 0;
 		}
 	
 	// -------o public
-				
+		
 		/**
 		* 
 		* 
 		* @public
 		* @return	void
 		*/
-		public function intersect( aabb : AABB ) : Bool {
-		
-			if( min.x >= aabb.max.x || max.x <= aabb.min.x ) return false;
-			if( min.y >= aabb.max.y || max.y <= aabb.min.y ) return false;
-           
-			return true;
+		public function addByName( sName : String , rec : Rectangle , pt : Point ) : Int {
+			addTileRect( rec , pt );
+			_hCenters.set( Std.string( _iInc ) , pt ); 
+			_hBounds.set( Std.string( _iInc ) , rec );
+			_hNames.set( sName , _iInc );
+			return _iInc++;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getIdByFrame( sCycle : String , iFrame : Int ) : Void {
 			
 		}
 
@@ -79,8 +96,8 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function containPoint( dx : Float , dy : Float ) : Bool {
-			return ( dx >= min.x && dx <= max.x && dy >= min.y && dy <= max.y );
+		public function getIdByName( s : String ) : Int {
+			return _hNames.get( s );
 		}
 
 		/**
@@ -89,9 +106,8 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function fromRec( x : Float , y : Float , w : Float , h : Float ) : Void {
-			min = { x : x , y : y };
-			max = { x : x + w , y : y + h };
+		public function getCenter( id : Int ) : Point {
+			return _hCenters.get( Std.string( id ) );
 		}
 
 		/**
@@ -100,8 +116,8 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function toString( ) : String {
-			return '[ AABB > [ min : '+min.x+' '+min.y+' | max '+max.x+' '+max.y+' ] ]';
+		public function getRectById( id : Int ) : Rectangle{
+			return _hBounds.get( Std.string( id ) );
 		}
 
 		/**
@@ -110,60 +126,12 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function debug( g : Graphics ) : Void {
-			g.drawRect( min.x , min.y , max.x - min.x , max.y - min.y );
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function containAABB( aabb : AABB ) : Bool {
-			return ( aabb.max.x <= max.x && aabb.max.y <= max.y && aabb.min.x >= min.x && aabb.min.y >= min.y );
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function translate( fx : Float , fy : Float ) : Void {
-			min.x += fx;
-			max.x += fx;
-			min.y += fy;
-			max.y += fy;
+		public function getTileArray( ) : Array<Float> {
+			return [ 0.0 ];
 		}
 
 	// -------o protected
-		
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getWidth( ) : Float{
-			return max.x - min.x;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getHeight( ) : Float{
-			return max.y - min.y;
-		}
-
+	
 	// -------o misc
 	
-}
-
-private typedef Pos={
-	public var x : Float;
-	public var y : Float;
 }

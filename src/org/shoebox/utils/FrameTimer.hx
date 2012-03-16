@@ -38,17 +38,15 @@ import nme.utils.Timer;
  * @author shoe[box]
  */
 
-class FrameTimer {
+class FrameTimer{
+	
+	private var _fAfter  : Float;
+	private var _fBefore : Float;
+	private var _fPeriod : Float;
+	private var _fSleep  : Float;
+	private var _oTimer  : Timer;
 
 	static private var _aFuncs : Array<Void->Void> = new Array<Void->Void>( );
-
-	private var _fFrameDuration : Float;
-	private var _fPrev : Float;
-	private var _fPrevTimer : Float;
-		private var _iDiffTime : Int;
-	
-	private static var _bRunning : Bool;
-	private static var _oTimer   : Timer;
 
 	// -------o constructor
 		
@@ -58,15 +56,15 @@ class FrameTimer {
 		* @param	
 		* @return	void
 		*/
-		private function new( ) {
-			_fFrameDuration = 1000 / Lib.current.stage.frameRate;
-			_oTimer = new Timer( _fFrameDuration );
-			_oTimer.addEventListener( TimerEvent.TIMER , _onTick , false );
-			_bRunning = false;
+		private function new() {
+			_fBefore = 0;
+			_fAfter  = 0;
+			_fSleep  = 0;
+			_fPeriod = 1000 / Lib.current.stage.frameRate;
 		}
 	
 	// -------o public
-		
+				
 		/**
 		* 
 		* 
@@ -74,11 +72,8 @@ class FrameTimer {
 		* @return	void
 		*/
 		static public function add( f : Void -> Void ) : Void {
-
-			_aFuncs.remove( f );
 			_aFuncs.push( f );
 			getInstance( ).start( );
-
 		}
 
 		/**
@@ -88,9 +83,10 @@ class FrameTimer {
 		* @return	void
 		*/
 		static public function remove( f : Void -> Void ) : Void {
-
 			_aFuncs.remove( f );
-		
+			
+			if( _aFuncs.length == 0 )
+				getInstance( ).stop( );
 		}	
 
 		/**
@@ -100,13 +96,12 @@ class FrameTimer {
 		* @return	void
 		*/
 		public function start( ) : Void {
-
-			if( _bRunning )
-				return;
-
-			_oTimer.start( );
-			_fPrev = Lib.getTimer( );
-			_bRunning = true;
+			trace('start');
+			if( _oTimer == null )
+				_oTimer = new Timer( 1 );
+				_oTimer.delay = Std.int( _fPeriod );
+				_oTimer.addEventListener( TimerEvent.TIMER , _onTick , false );
+				_oTimer.start( );
 		}
 
 		/**
@@ -116,8 +111,8 @@ class FrameTimer {
 		* @return	void
 		*/
 		public function stop( ) : Void {
+			_oTimer.removeEventListener( TimerEvent.TIMER , _onTick , false );
 			_oTimer.stop( );
-			_bRunning = false;
 		}
 
 	// -------o protected
@@ -129,24 +124,37 @@ class FrameTimer {
 		* @return	void
 		*/
 		private function _onTick( _ ) : Void{
-			//var now = Lib.getTimer( );//haxe.Timer.stamp( );
-			var now:Float = haxe.Timer.stamp();
-			_iDiffTime = Math.round((now - _fPrevTimer) * Lib.current.stage.frameRate);
-			
-			for( i in 0..._iDiffTime ){
-				for( f in _aFuncs ){
-					f( );
-				}
-			}
+			_fBefore = Lib.getTimer( );
+			var fOver = _fBefore - _fAfter - _fSleep;
 
-			_fPrevTimer = now;
+			for( f in _aFuncs )
+				f( );
+
+			_fAfter = Lib.getTimer( );
+
+			var fDiff = _fAfter - _fBefore;
+			_fSleep = _fPeriod - fDiff - fOver;
+
+			var fExcess = 0.0;
+
+			if( _fSleep <= 0.0 ){
+				fExcess -= _fSleep;
+				_fSleep = 2;
+			}
+			
+			_oTimer.reset( );
+			_oTimer.delay = _fSleep;
+			_oTimer.start( );
+
+			while( fExcess > _fPeriod ){
+				for( f in _aFuncs )
+					f( );
+				fExcess -= _fPeriod;
+			}
 		}
 
-		
-		
-
 	// -------o misc
-		
+
 		public static function getInstance( ) : FrameTimer{
 			if( null == instance )
 				instance = new FrameTimer( );
