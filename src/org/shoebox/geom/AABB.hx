@@ -30,6 +30,7 @@
 package org.shoebox.geom;
 
 import nme.display.Graphics;
+import nme.geom.Rectangle;
 
 /**
  * ...
@@ -57,19 +58,31 @@ class AABB{
 		}
 	
 	// -------o public
-				
+		
 		/**
 		* 
 		* 
 		* @public
 		* @return	void
 		*/
-		public function intersect( aabb : AABB ) : Bool {
+		static public function fromRect( r : Rectangle ) : AABB {			
+			return new AABB( r.x , r.y , r.x + r.width , r.y + r.height );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		inline public function intersect( aabb : AABB ) : Bool {
 		
-			if( min.x >= aabb.max.x || max.x <= aabb.min.x ) return false;
-			if( min.y >= aabb.max.y || max.y <= aabb.min.y ) return false;
-           
-			return true;
+			if( min.x >= aabb.max.x || max.x <= aabb.min.x ) 
+				return false;
+			else if( min.y >= aabb.max.y || max.y <= aabb.min.y ) 
+				return false;
+           else
+				return true;
 			
 		}
 
@@ -79,8 +92,15 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function containPoint( dx : Float , dy : Float ) : Bool {
-			return ( dx >= min.x && dx <= max.x && dy >= min.y && dy <= max.y );
+		public function intersectCoords( dx1 : Float , dy1 : Float , dx2 : Float , dy2 : Float ) : Bool {
+
+			if( min.x >= dx2 || max.x <= dx1 ) 
+				return false;
+			else if( min.y >= dy2 || max.y <= dy1 ) 
+				return false;
+           
+           return true;	
+
 		}
 
 		/**
@@ -89,9 +109,8 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function fromRec( x : Float , y : Float , w : Float , h : Float ) : Void {
-			min = { x : x , y : y };
-			max = { x : x + w , y : y + h };
+		inline public function containPoint( dx : Float , dy : Float ) : Bool {
+			return ( dx >= min.x && dx <= max.x && dy >= min.y && dy <= max.y );
 		}
 
 		/**
@@ -120,7 +139,7 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function containAABB( aabb : AABB ) : Bool {
+		inline public function containAABB( aabb : AABB ) : Bool {
 			return ( aabb.max.x <= max.x && aabb.max.y <= max.y && aabb.min.x >= min.x && aabb.min.y >= min.y );
 		}
 
@@ -130,7 +149,7 @@ class AABB{
 		* @public
 		* @return	void
 		*/
-		public function translate( fx : Float , fy : Float ) : Void {
+		inline public function translate( fx : Float , fy : Float ) : Void {
 			min.x += fx;
 			max.x += fx;
 			min.y += fy;

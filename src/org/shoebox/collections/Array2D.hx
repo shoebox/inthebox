@@ -75,6 +75,16 @@ class Array2D<T>{
 		* @public
 		* @return	void
 		*/
+		public function validate( dx : Int , dy : Int ) : Bool {
+			return ( dx >= 0 && dy >= 0 && dx < _iWidth && dy < _iHeight );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		inline public function getIndex( dx : Int , dy : Int ) : Int{
 			return dy * _iWidth + dx;
 		}

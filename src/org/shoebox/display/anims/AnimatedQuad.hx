@@ -47,10 +47,6 @@ import nme.Lib;
 
 class AnimatedQuad extends Sprite{
 
-	public static inline var CENTER			: String = 'CENTER';
-	public static inline var TOP			: String = 'TOP';
-	public static inline var TOP_LEFT		: String = 'TOP_LEFT';
-	
 	public var align ( null , _setAlign ) : String;
 	
 	private var _oAtlas       : AtlasMaterial;
@@ -259,16 +255,20 @@ class AnimatedQuad extends Sprite{
 			var rec : Rectangle = _oAtlas.getFrameRec( _sCycle , _iFrame );
 			switch( _sAlign ) {
 				
-				case CENTER:
+				case null:
 					dx = - rec.width / 2;
 					dy = - rec.height / 2;
 				
-				case TOP_LEFT:
+				case StageAlign.TOP_LEFT:
 					dx = 0;
 					dy = 0;
 					
-				case TOP:
+				case StageAlign.TOP:
 					dx = - rec.width / 2;
+
+				case StageAlign.BOTTOM:
+					dx = - rec.width / 2;
+					dy = - rec.height;
 			}
 
 			var useScale = (flags & Tilesheet.TILE_SCALE) > 0;

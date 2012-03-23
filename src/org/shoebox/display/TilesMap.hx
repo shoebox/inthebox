@@ -97,7 +97,21 @@ class TilesMap extends Tilesheet{
 		* @return	void
 		*/
 		public function getIdByName( s : String ) : Int {
+
+			if( !_hNames.exists( s ) )
+				throw new nme.errors.Error('Unknow id');
+
 			return _hNames.get( s );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function contains( s : String ) : Bool {
+			return _hNames.exists( s );
 		}
 
 		/**

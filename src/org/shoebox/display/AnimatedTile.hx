@@ -1,7 +1,9 @@
 package org.shoebox.display;
 
+import nme.display.Tilesheet;
 import org.shoebox.display.AnimatedTilesMap;
 import org.shoebox.geom.FPoint;
+import org.shoebox.geom.IPosition;
 
 /**
  * ...
@@ -13,16 +15,17 @@ class AnimatedTile{
 	public var cycle( default , _setCycle ) : String;
 
 	private var _aFrame       : Array<Float>;
-	private var _refMap       : AnimatedTilesMap;
+	private var _bInnvalidate : Bool;
 	private var _bLoop        : Bool;
 	private var _bPlaying     : Bool;
-	private var _bInnvalidate : Bool;
 	private var _fCenter      : FPoint;
 	private var _fPosition    : FPoint;
 	private var _iCycleLen    : Int;
 	private var _iFrame       : Int;
-	private var _iTimeElapsed : Int;
 	private var _iLoopTime    : Int;
+	private var _iSize        : IPosition;
+	private var _iTimeElapsed : Int;
+	private var _refMap       : AnimatedTilesMap;
 	
 	// -------o constructor
 		
@@ -32,16 +35,17 @@ class AnimatedTile{
 		* @param	
 		* @return	void
 		*/
-		public function new( refMap : AnimatedTilesMap , fps : Int = 30 ) {
-			_refMap       = refMap;
-			_iFrame       = 0;
-			_iTimeElapsed = 0;
+		public function new( width : Int , height : Int , refMap : AnimatedTilesMap , fps : Int = 30 ) {
 			_bInnvalidate = true;
-			_bPlaying     = true;
 			_bLoop        = true;
-			_fPosition    = { x : 0.0 , y : 0.0 };
+			_bPlaying     = true;
 			_fCenter      = { x : 0.0 , y : 0.0 };
+			_fPosition    = { x : 0.0 , y : 0.0 };
 			_iCycleLen    = 0;
+			_iFrame       = 0;
+			_iSize        = { x : width , y : height };
+			_iTimeElapsed = 0;
+			_refMap       = refMap;
 		}
 	
 	// -------o public
@@ -72,12 +76,36 @@ class AnimatedTile{
 		* @public
 		* @return	void
 		*/
-		public function getFrameArray( ) : Array<Float> {
+		public function getFrameArray( iFlag : Int = Tilesheet.TILE_SCALE ) : Array<Float> {
 			
-			if( _bInnvalidate ){
-				_aFrame = [ _fPosition.x , _fPosition.y , _refMap.getCycleId( cycle , _iFrame ) , 1 ];
+			//if( _bInnvalidate ){
+
+				var id = _refMap.getCycleId( cycle , _iFrame );
+				var bounds = _refMap.getRectById( id );
+
+				//x, y, tile ID, scale, rotation, red, green, blue, alpha
+
+				switch( iFlag ){
+
+					case Tilesheet.TILE_SCALE:						
+						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 ];
+
+					case Tilesheet.TILE_ROTATION:	
+						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 , 0 ];					
+
+					case Tilesheet.TILE_RGB:
+						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 , 0 , 0 , 0 , 0 ];					
+
+					case Tilesheet.TILE_ALPHA:
+						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 , 0 , 1 , 1 , 1 , 1 ];			
+
+					default:
+						_aFrame = [ _fPosition.x , _fPosition.y , id ];			
+				}
+
 				_bInnvalidate = false;
-			}
+
+			//}
 
 			return _aFrame;						
 		}
@@ -129,6 +157,8 @@ class AnimatedTile{
 				_iTimeElapsed -= _iLoopTime;
 			}			
 
+
+
 			//
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
 				if (fRatio >= 1) {
@@ -143,36 +173,18 @@ class AnimatedTile{
 
 			//
 				_iFrame = Math.round ( fRatio * ( _iCycleLen - 1) );
-				//trace( _iFrame+' - '+_iCycleLen );
-
-			/*
-			//trace('update :: '+iDelay+' - '+_bPlaying+'  '+_bInvalidate);
-			if ( _bPlaying || _bInvalidate ) {
-				
-				_iTimeElapsed += iDelay;
-				
-				var fRatio : Float = _iTimeElapsed / _iLoopTime;
-				if (fRatio >= 1) {
-					
-					if( _bLoop ){
-						fRatio -= Math.floor (fRatio);
-					} else {
-						_bPlaying = false;
-						fRatio = 1;
-						if ( hasEventListener( Event.COMPLETE ) )
-							dispatchEvent( new Event( Event.COMPLETE ) );
-					}
-				}
-				
-				_iFrame = Math.round ( fRatio * (_iCycleLen - 1));
-				if( bRedraw )
-					_redrawFrame( );
-				_bInvalidate = false;
-			}
-			*/
-
+		
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function setCycle( s : String ) : Void {
+			_setCycle( s );
+		}
 
 	// -------o protected
 		
@@ -183,11 +195,13 @@ class AnimatedTile{
 		* @return	void
 		*/
 		private function _gotoAnd( bPlay : Bool , frameId : Int , sCycle : String = null ) : Void{
-			cycle         = sCycle;
+			
+			if( sCycle != null )
+				cycle = sCycle;
+
 			_bPlaying     = bPlay;
 			_iFrame       = frameId;
-			_bInnvalidate = true;
-			
+			_bInnvalidate = true;			
 		}
 
 		/**
@@ -197,10 +211,9 @@ class AnimatedTile{
 		* @return	void
 		*/
 		private function _setCycle( s : String ) : String{
-			
 
 			if( s == null )
-				return cycle;
+				throw new nme.errors.Error( );
 
 			if( cycle == s )
 				return s;
@@ -209,7 +222,8 @@ class AnimatedTile{
 			_iFrame       = 0;
 			_bInnvalidate = true;
 			_iCycleLen    = _refMap.getCycleLen( s );
-			_iLoopTime 		= Std.int( (_iCycleLen  / 30 ) * 1000);
+			_iLoopTime    = Std.int( (_iCycleLen  / 30 ) * 1000);
+			
 			return s;
 		}
 

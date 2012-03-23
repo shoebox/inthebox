@@ -32,13 +32,24 @@ package org.shoebox.core;
 class BoxArray 
 {
 
-	public static function index( a : Array<Dynamic> , what : Dynamic ) : Int {
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	static public function indexOf<T>( a : Array<T> , value : T ) : Int {
 		
-		for ( o in a.iterator( ) ) {
-			trace( 'o : ' + o );
+		var l : Int = a.length;
+		var p : Int = -1;
+		for( i in 0...l ){
+			if( a[ i ] == value ){
+				p = i;
+				break;
+			}
 		}
-		
-		return -1;		
+		return p;
+	
 	}
 
 	/**

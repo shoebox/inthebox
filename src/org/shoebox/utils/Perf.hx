@@ -69,11 +69,14 @@ class Perf extends Sprite{
 			x = Lib.current.stage.stageWidth - WIDTH;
 			removeEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
 			addEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );
-			//addEventListener( Event.ENTER_FRAME , _onUpdate , false );
+			_draw( );
+			addEventListener( Event.ENTER_FRAME , _onUpdate , false );
 			trace('fps ::: '+Lib.current.stage.frameRate );
+			/*
 			_oTimer = new Timer( Math.round( 1000 / Lib.current.stage.frameRate ) );
 			_oTimer.run = _onUpdate;
-			_draw( );
+			
+			*/
 		}
 		
 		/**
@@ -125,7 +128,7 @@ class Perf extends Sprite{
 		* @private
 		* @return	void
 		*/
-		private function _onUpdate( ) : Void {
+		private function _onUpdate( _ ) : Void {
 			
 			var now = Timer.stamp();
 			_aTimes.push(now);
@@ -133,10 +136,10 @@ class Perf extends Sprite{
 			while( _aTimes[ 0 ] < now - 1)
 				_aTimes.shift();
 			
-			iTimer = Lib.getTimer();
-			
+			iTimer      = Lib.getTimer();
 			_tfFps.text = "FPS: " + _aTimes.length + " / " + stage.frameRate;
-			_tfMs.text = "MS: " + (iTimer - iMs);
+			_tfMs.text  = "MS: " + (iTimer - iMs);
+
 			iMs = iTimer;
 		}
 		
@@ -146,9 +149,9 @@ class Perf extends Sprite{
 		* @private
 		* @return	void
 		*/
-		private function _onRemoved( e : Event ) : Void {
+		private function _onRemoved( e : Event = null ) : Void {
 			trace('onRemoved');
-			//removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
+			removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
 			removeEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false ); 
 			//FrameTimer.remove( _onUpdate );
 			_oTimer.stop( );

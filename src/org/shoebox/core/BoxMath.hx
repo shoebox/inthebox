@@ -59,7 +59,7 @@ class BoxMath
 	* @param 
 	* @return
 	*/
-	static public function distance( x1 : Float , y1 : Float , x2 : Float , y2 : Float ) : Float {
+	inline static public function distance( x1 : Float , y1 : Float , x2 : Float , y2 : Float ) : Float {
 		
 		var dx : Float = Math.abs( x1 - x2 );
 		var dy : Float = Math.abs( y1 - y2 );
@@ -72,7 +72,7 @@ class BoxMath
 	* @public
 	* @return	void
 	*/
-	static public function distance2( p1 : FPoint , p2 : FPoint ) : Float {
+	inline static public function distance2( p1 : FPoint , p2 : FPoint ) : Float {
 		var dx = Math.abs( p1.x - p2.x );
 		var dy = Math.abs( p1.y - p2.y );
 		return Math.sqrt( dx * dx + dy * dy );
@@ -94,6 +94,59 @@ class BoxMath
            return ( s + u ).substr(-n, n);
    
    }
+
+   /**
+   * 
+   * 
+   * @public
+   * @return	void
+   */
+   static public function bresenham( x0 : Int , y0 : Int , x1 : Int , y1 : Int , res : Array<Int> = null ) : Array<Int> {
+   		
+   		if( res == null )
+   			res = new Array<Int>( );
+
+   		
+		var iIncX : Int = ( x1 - x0 ) > 0 ? 1 : -1;
+		var iIncY : Int = ( y1 - y0 ) > 0 ? 1 : -1;
+		var dx    : Int = Std.int( Math.abs( x1 - x0 ) );
+		var dy    : Int = Std.int( Math.abs( y1 - y0 ) );
+
+   		var iCumul : Int;
+   		if( dx > dy ){
+
+   			//
+   				iCumul = Std.int( dx >> 1 );
+
+   			//
+	   			for( i in 1...dx ){
+	   				x0 += iIncX;
+	   				iCumul += dy;
+	   				if( iCumul >= dx ){
+	   					y0 += iIncY;
+	   					iCumul -= dx;
+	   				}
+	   				res.push( x0 );
+	   				res.push( y0 );
+	   			}
+
+	   		//
+	   			for( i in 1...dy ){
+	   				y0 += iIncY;
+	   				iCumul += dx;
+	   				if( iCumul >= dy ){
+	   					x0 += iIncX;
+	   					iCumul -= dy;
+	   				}
+
+	   				res.push( x0 );
+	   				res.push( y0 );
+	   			}
+   		}
+
+   		return res;
+   }
+
    
    /**
    * 
@@ -101,7 +154,7 @@ class BoxMath
    * @public
    * @return	void
    */
-   static public function posToAngle( dx : Float  , dy : Float ) : Float {
+   inline static public function posToAngle( dx : Float  , dy : Float ) : Float {
 		return RAD_TO_DEG * Math.atan2( dx , dy );
 	}
 

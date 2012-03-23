@@ -29,6 +29,7 @@
 */
 package org.shoebox.collections;
 
+import haxe.Md5;
 import nme.display.Graphics;
 import org.shoebox.geom.AABB;
 import org.shoebox.geom.FPoint;
@@ -45,12 +46,11 @@ class QuadTree<T> extends QuadTreeNode<T>{
 		* @return	void
 		*/
 		public function new( bounds : AABB , iMax : Int = 10 , gDebug : Graphics = null ) : Void {
-			
 			super( bounds , 0 , iMax , gDebug );
 		}
 	
 	// -------o public
-		
+
 	// -------o protected
 	
 	// -------o misc
@@ -93,7 +93,7 @@ class QuadTreeNode<T>{
 						x : bounds.min.x + ( bounds.max.x - bounds.min.x ) / 2,
 						y : bounds.min.y + ( bounds.max.y - bounds.min.y ) / 2
 					};
-			//trace('constructor ::: '+gDebug);
+			
 			if( gDebug != null )
 				gDebug.drawRect( bounds.min.x , bounds.min.y , bounds.width , bounds.height );
 		}
@@ -118,9 +118,6 @@ class QuadTreeNode<T>{
 		*/
 		public function add( b : AABB , value : T ) : Void {
 
-			//if( !bounds.containPoint( b.min.x , b.min.y ) )
-			//	return;
-				
 			if( !_bMax ){
 
 				var q = _getQuad( getQuadAt( b.min.x , b.min.y ) );
@@ -131,11 +128,24 @@ class QuadTreeNode<T>{
 			}else{
 				_addContent( value , b );
 			}
+		}	
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function remove( b : AABB , value : T ) : Void {
 			
-			
+			if( _aContent != null ){
+				for( c in _aContent ){
+					if( c.bounds == b && c.content == value )
+						_aContent.remove( c );
+				}
+			}
 
-		}		
+		}	
 
 		/**
 		* 
@@ -144,6 +154,16 @@ class QuadTreeNode<T>{
 		* @return	void
 		*/
 		public function get( b : AABB , res : Array<T> = null ) : Array<T> {
+			return getCoords( b.min.x , b.min.y , b.max.x , b.max.y , res );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getCoords( dx1 : Float , dy1 : Float , dx2 : Float , dy2 : Float , res : Array<T> = null ) : Array<T> {
 
 			if( res == null )
 				res = new Array<T>( );
@@ -154,8 +174,8 @@ class QuadTreeNode<T>{
 					if( sub == null )
 						continue;
 					
-					if( sub.bounds.intersect( b ) )
-						sub.get( b , res );
+					if( sub.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
+						sub.getCoords( dx1 , dy1 , dx2 , dy2 , res );
 				}
 			}
 
@@ -163,12 +183,12 @@ class QuadTreeNode<T>{
 			if( _aContent != null ){
 
 				for( c in _aContent )
-					if( c.bounds.intersect( b ) )
+					if( c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
 						res.push( c.content );
 
 			}
 
-			return res;
+			return res;	
 		}
 
 		/**
@@ -216,7 +236,7 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function getQuadAt( fx : Float , fy : Float ) : Quad {
+		inline public function getQuadAt( fx : Float , fy : Float ) : Quad {
 			return 
 				if ( fy <= _fHalf.y ) {
 					if ( fx <= _fHalf.x )
@@ -239,7 +259,7 @@ class QuadTreeNode<T>{
 		* @private
 		* @return	void
 		*/
-		private function _getQuad( q : Quad ) : QuadTreeNode<T>{
+		inline private function _getQuad( q : Quad ) : QuadTreeNode<T>{
 			
 			if( _aSubs == null )
 				_aSubs = new Array<QuadTreeNode<T>>( );

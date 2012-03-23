@@ -14,6 +14,7 @@ class AnimatedTilesMap extends TilesMap{
 
 	private var _hCyclesFrames : Hash<Array<Int>>;
 	private var _hCyclesLen    : Hash<Int>;
+	private var _hCustomCenter : Hash<Point>;
 
 	// -------o constructor
 		
@@ -27,6 +28,7 @@ class AnimatedTilesMap extends TilesMap{
 			super( bmp );
 			_hCyclesFrames = new Hash<Array<Int>>( );
 			_hCyclesLen    = new Hash<Int>( );
+			_hCustomCenter = new Hash<Point>( );
 		}
 	
 	// -------o public
@@ -59,6 +61,16 @@ class AnimatedTilesMap extends TilesMap{
 		*/
 		public function getCycleLen( sCycle : String ) : Int {
 			return _hCyclesLen.get( sCycle );						
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function setCycleCenter( s : String , fx : Float , fy : Float ) : Void {
+			_hCustomCenter.set( s , new Point( fx , fy ) );
 		}
 
 		/**
@@ -106,6 +118,10 @@ class AnimatedTilesMap extends TilesMap{
 						aIds = _hCyclesFrames.get( sCycle );
 					else
 						aIds = new Array<Int>( );
+
+					if( _hCustomCenter.exists( sCycle ) )
+						aIds[ iFrame ] = addByName( s.att.name , rec.clone( ) , _hCustomCenter.get( sCycle ) );
+					else
 						aIds[ iFrame ] = addByName( s.att.name , rec.clone( ) , pt );
 					
 					_hCyclesFrames.set( sCycle , aIds );
