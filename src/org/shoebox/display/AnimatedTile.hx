@@ -76,36 +76,43 @@ class AnimatedTile{
 		* @public
 		* @return	void
 		*/
-		public function getFrameArray( iFlag : Int = Tilesheet.TILE_SCALE ) : Array<Float> {
+		public function getFrameArray( iFlags : Int = Tilesheet.TILE_SCALE ) : Array<Float> {
 			
 			//if( _bInnvalidate ){
 
-				var id = _refMap.getCycleId( cycle , _iFrame );
-				var bounds = _refMap.getRectById( id );
+			//
+				var id 			= _refMap.getCycleId( cycle , _iFrame );
+				var bounds 		= _refMap.getRectById( id );
+				var useScale 	= (iFlags & Tilesheet.TILE_SCALE) > 0;
+				var useRotation = (iFlags & Tilesheet.TILE_ROTATION) > 0;
+				var useRGB 		= (iFlags & Tilesheet.TILE_RGB) > 0;
+				var useAlpha 	= (iFlags & Tilesheet.TILE_ALPHA) > 0;
+				
 
-				//x, y, tile ID, scale, rotation, red, green, blue, alpha
+			//x, y, tile ID, scale, rotation, red, green, blue, alpha
+				_aFrame = [ _fPosition.x , _fPosition.y , id ];		
+				var inc = 3;
 
-				switch( iFlag ){
+			//
+				if( useScale )
+					_aFrame[ inc++ ] = 1;
+			
+			//
+				if( useRotation )
+					_aFrame[ inc++] = 0;
 
-					case Tilesheet.TILE_SCALE:						
-						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 ];
-
-					case Tilesheet.TILE_ROTATION:	
-						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 , 0 ];					
-
-					case Tilesheet.TILE_RGB:
-						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 , 0 , 0 , 0 , 0 ];					
-
-					case Tilesheet.TILE_ALPHA:
-						_aFrame = [ _fPosition.x , _fPosition.y , id , 1 , 0 , 1 , 1 , 1 , 1 ];			
-
-					default:
-						_aFrame = [ _fPosition.x , _fPosition.y , id ];			
+			//
+				if( useRGB ){
+					_aFrame[ inc++] = 1;
+					_aFrame[ inc++] = 1;
+					_aFrame[ inc++] = 1;
 				}
 
-				_bInnvalidate = false;
+			//
+				if( useAlpha )
+					_aFrame[inc++] = 1;
 
-			//}
+			_bInnvalidate = false;
 
 			return _aFrame;						
 		}

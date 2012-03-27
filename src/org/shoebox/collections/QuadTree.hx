@@ -153,6 +153,33 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
+		public function getUnderPoint( dx : Float , dy : Float , res : Array<T> = null ) : Array<T> {
+			
+			if( res == null )
+				res = new Array<T>( );
+
+			if( !_bMax ){
+				var q = _getQuad( getQuadAt( dx , dy ) );
+					q.getUnderPoint( dx , dy );
+			}
+
+			if( _aContent != null ){
+				for( c in _aContent ){
+					
+					if( c.bounds.containPoint( dx , dy ) )
+						res.push( c.content );
+				}			
+			}
+
+			return res;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		public function get( b : AABB , res : Array<T> = null ) : Array<T> {
 			return getCoords( b.min.x , b.min.y , b.max.x , b.max.y , res );
 		}
@@ -200,18 +227,14 @@ class QuadTreeNode<T>{
 		public function get2<B>( b : AABB , fConcat : T -> Array<B> -> Array<B> , res : Array<B> = null ) : Array<B> {
 			
 			 if( res == null )
-			 	res = new Array<B>( );
-
-			 
+			 	res = new Array<B>( );			 
 
 			if( _aContent != null ){
-				
 				for( c in _aContent ){
 					if( c.bounds.intersect( b ) ){
 						res = fConcat( c.content , res );
 					}
-				}
-			
+				}			
 			}
 
 			if( _aSubs != null ){

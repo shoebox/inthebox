@@ -81,5 +81,24 @@ class BoxArray
 		
 		return res;					
 	}
-	
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	static public function equal<T>( a : Array<T>, b : Array<T> , bCheckContent : Bool = false ) : Bool {
+		
+		if( a.length != b.length )
+			return false;
+			
+		for( i in 0...a.length )
+			if( a[i] != b[i] )
+				return false;
+				
+		return true;
+
+	}
+
 }

@@ -183,7 +183,6 @@ class AStar{
 							continue;
 
 						node = _aContent.get( posX , posY );
-						//trace( posX+' - '+posY+' === '+node);
 						if( !node.value )
 							continue;
 
