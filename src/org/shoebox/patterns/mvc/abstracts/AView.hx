@@ -169,6 +169,7 @@ package org.shoebox.patterns.mvc.abstracts;
 				
 				if ( parent != null )
 					parent.removeChild( this );
+
 			}
 			
 		// -------o private

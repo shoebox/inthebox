@@ -197,8 +197,7 @@ class FrontController extends Signal{
 					for( sApp in aDiff ){
 						oTri = _hTriads.get( sApp );
 						if( oTri.isRunning )
-							oTri.cancel( );
-						
+							oTri.cancel( );						
 					}
 			}
 

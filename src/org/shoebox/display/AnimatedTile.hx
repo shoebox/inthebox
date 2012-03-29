@@ -2,6 +2,7 @@ package org.shoebox.display;
 
 import nme.display.Tilesheet;
 import org.shoebox.display.AnimatedTilesMap;
+import org.shoebox.display.tile.TileDesc;
 import org.shoebox.geom.FPoint;
 import org.shoebox.geom.IPosition;
 
@@ -26,6 +27,7 @@ class AnimatedTile{
 	private var _iSize        : IPosition;
 	private var _iTimeElapsed : Int;
 	private var _refMap       : AnimatedTilesMap;
+	private var _tileDesc     : TileDesc;
 	
 	// -------o constructor
 		
@@ -46,6 +48,7 @@ class AnimatedTile{
 			_iSize        = { x : width , y : height };
 			_iTimeElapsed = 0;
 			_refMap       = refMap;
+			_tileDesc     = new TileDesc( 0 , 0 , 0 );
 		}
 	
 	// -------o public
@@ -76,8 +79,25 @@ class AnimatedTile{
 		* @public
 		* @return	void
 		*/
+		public function getTileDesc( iFlags : Int = Tilesheet.TILE_SCALE ) : TileDesc {
+			_tileDesc.x      = _fPosition.x;
+			_tileDesc.y      = _fPosition.y;
+			_tileDesc.format = iFlags;
+			_tileDesc.tileId = _refMap.getCycleId( cycle , _iFrame );	
+			return _tileDesc;	
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		public function getFrameArray( iFlags : Int = Tilesheet.TILE_SCALE ) : Array<Float> {
 			
+			return getTileDesc( iFlags ).getArray( );
+
+			/*
 			//if( _bInnvalidate ){
 
 			//
@@ -114,7 +134,8 @@ class AnimatedTile{
 
 			_bInnvalidate = false;
 
-			return _aFrame;						
+			return _aFrame;			
+			*/			
 		}
 
 		/**

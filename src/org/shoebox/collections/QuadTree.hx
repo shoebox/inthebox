@@ -69,10 +69,12 @@ class QuadTreeNode<T>{
 	public var iMax   : Int;
 	public var gDebug : Graphics;
 
-	private var _aContent : Array<QuadTreeContent<T>>;
-	private var _bMax  : Bool;
-	private var _fHalf : FPoint;
-	private var _aSubs : Array<QuadTreeNode<T>>;
+	private var _aContent    : Array<QuadTreeContent<T>>;
+	private var _bMax        : Bool;
+	private var _bHasContent : Bool;
+	private var _bHasChilds  : Bool;
+	private var _fHalf       : FPoint;
+	private var _aSubs       : Array<QuadTreeNode<T>>;
 
 	// -------o constructor
 		
@@ -116,18 +118,19 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function add( b : AABB , value : T ) : Void {
+		public function add( b : AABB , value : T , layer : String = null ) : Void {
 
 			if( !_bMax ){
 
 				var q = _getQuad( getQuadAt( b.min.x , b.min.y ) );
 				if( q.bounds.containAABB( b ) )
-					q.add( b , value );
+					q.add( b , value , layer );
 				else
-					_addContent( value , b );
-			}else{
-				_addContent( value , b );
-			}
+					_addContent( value , b , layer );
+
+			}else
+				_addContent( value , b , layer );
+			
 		}	
 
 		/**
@@ -136,10 +139,49 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function remove( b : AABB , value : T ) : Void {
+		public function dispose( ) : Void {
+			if( _bHasChilds ){
+				
+				for( sub in _aSubs ){
+					if( sub == null )
+						continue;
+
+					sub.dispose( );
+				}
+
+				_aSubs = null;
+			}
+
+			if( _bHasContent ){
+				_aContent = null;
+			}
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function remove( b : AABB , value : T , sLayer : String = null ) : Void {
 			
-			if( _aContent != null ){
+			if( !bounds.intersect( b ) )
+				return;
+
+			if( _bHasChilds ){
+				
+				for( sub in _aSubs ){
+					if( sub == null )
+						continue;
+
+					sub.remove( b , value , sLayer );
+				}
+			}
+
+			if( _bHasContent ){
+
 				for( c in _aContent ){
+
 					if( c.bounds == b && c.content == value )
 						_aContent.remove( c );
 				}
@@ -163,7 +205,7 @@ class QuadTreeNode<T>{
 					q.getUnderPoint( dx , dy );
 			}
 
-			if( _aContent != null ){
+			if( _bHasContent ){
 				for( c in _aContent ){
 					
 					if( c.bounds.containPoint( dx , dy ) )
@@ -180,8 +222,8 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function get( b : AABB , res : Array<T> = null ) : Array<T> {
-			return getCoords( b.min.x , b.min.y , b.max.x , b.max.y , res );
+		public function get( b : AABB , sLayer : String = null , res : Array<T> = null ) : Array<T> {
+			return getCoords( b.min.x , b.min.y , b.max.x , b.max.y , res , sLayer );
 		}
 
 		/**
@@ -190,29 +232,36 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function getCoords( dx1 : Float , dy1 : Float , dx2 : Float , dy2 : Float , res : Array<T> = null ) : Array<T> {
+		public function getCoords( dx1 : Float , dy1 : Float , dx2 : Float , dy2 : Float , res : Array<T> = null , sLayer : String = null ) : Array<T> {
 
 			if( res == null )
 				res = new Array<T>( );
 			
-			if( _aSubs != null ){
+			if( _bHasChilds ){
 				for( sub in _aSubs ){
 
 					if( sub == null )
 						continue;
 					
 					if( sub.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
-						sub.getCoords( dx1 , dy1 , dx2 , dy2 , res );
+						sub.getCoords( dx1 , dy1 , dx2 , dy2 , res , sLayer );
 				}
 			}
 
-			
-			if( _aContent != null ){
+			var bLayer : Bool = sLayer != null;
+			if( _bHasContent ){
 
-				for( c in _aContent )
-					if( c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
+				for( c in _aContent ){
+					
+					if( bLayer ){
+
+						if( c.sLayer == sLayer && c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
+							res.push( c.content );
+
+					}else if( c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
 						res.push( c.content );
 
+				}
 			}
 
 			return res;	
@@ -229,7 +278,7 @@ class QuadTreeNode<T>{
 			 if( res == null )
 			 	res = new Array<B>( );			 
 
-			if( _aContent != null ){
+			if( _bHasContent ){
 				for( c in _aContent ){
 					if( c.bounds.intersect( b ) ){
 						res = fConcat( c.content , res );
@@ -237,7 +286,7 @@ class QuadTreeNode<T>{
 				}			
 			}
 
-			if( _aSubs != null ){
+			if( _bHasChilds ){
 				for( sub in _aSubs ){
 
 					if( sub == null )
@@ -260,6 +309,7 @@ class QuadTreeNode<T>{
 		* @return	void
 		*/
 		inline public function getQuadAt( fx : Float , fy : Float ) : Quad {
+
 			return 
 				if ( fy <= _fHalf.y ) {
 					if ( fx <= _fHalf.x )
@@ -272,6 +322,7 @@ class QuadTreeNode<T>{
 					else
 						Quad.BR;
 				}
+
 		}
 
 	// -------o protected
@@ -284,8 +335,10 @@ class QuadTreeNode<T>{
 		*/
 		inline private function _getQuad( q : Quad ) : QuadTreeNode<T>{
 			
-			if( _aSubs == null )
+			if( _aSubs == null ){
 				_aSubs = new Array<QuadTreeNode<T>>( );
+				_bHasChilds = true;
+			}
 
 			return switch( q ) {
 
@@ -335,10 +388,15 @@ class QuadTreeNode<T>{
 		* @private
 		* @return	void
 		*/
-		private function _addContent( value : T , b : AABB ) : Void{
-			if( _aContent == null )
-				_aContent = new Array<QuadTreeContent<T>>( );
-				_aContent.push( { content : value , bounds : b } );
+		private function _addContent( value : T , b : AABB , layer : String = null ) : Void{
+
+			var content = { content : value , bounds : b , sLayer : layer };
+			if( _aContent == null ){
+				_aContent = [ content ];
+				_bHasContent = true;
+			}else
+				_aContent.push( content );
+
 		}
 		
 	// -------o misc
@@ -347,7 +405,8 @@ class QuadTreeNode<T>{
 
 typedef QuadTreeContent<T>={
 	public var content : T;
-	public var bounds : AABB;
+	public var bounds  : AABB;
+	public var sLayer  : String;
 }
 
 enum Quad{

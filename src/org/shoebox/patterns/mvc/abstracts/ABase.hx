@@ -56,6 +56,16 @@ class ABase extends EventDispatcher{
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function onCancel( ) : Void {
+			frontController = null;	
+		}
+
 	// -------o protected
 	
 		/**

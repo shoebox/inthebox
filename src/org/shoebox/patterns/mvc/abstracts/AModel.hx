@@ -85,7 +85,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function cancel( ):Void{
-				
+
 			}
 			
 			/**
@@ -94,8 +94,9 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @param 
 			* @return
 			*/
-			public function onCancel( ) : Void {
+			override public function onCancel( ) : Void {
 				cancel( );
+				super.onCancel( );
 			}
 			
 			/**

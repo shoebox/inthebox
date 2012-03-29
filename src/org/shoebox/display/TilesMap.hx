@@ -33,6 +33,7 @@ import nme.display.BitmapData;
 import nme.display.Tilesheet;
 import nme.geom.Point;
 import nme.geom.Rectangle;
+import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.geom.FPoint;
 
 /**
@@ -40,8 +41,9 @@ import org.shoebox.geom.FPoint;
  * @author shoe[box]
  */
 
-class TilesMap extends Tilesheet{
+class TilesMap extends Tilesheet , implements IDispose{
 
+	private var _bMap     : BitmapData;
 	private var _hCycles  : Hash<Int>;
 	private var _hNames   : Hash<Int>;
 	private var _hCenters : Hash<Point>;
@@ -58,14 +60,29 @@ class TilesMap extends Tilesheet{
 		*/
 		public function new( bmp : BitmapData ) {
 			super( bmp );
+			_bMap     = bmp;
 			_hNames   = new Hash<Int>( );
 			_hBounds  = new Hash<Rectangle>( );
 			_hCenters = new Hash<Point>( );
-			_iInc   = 0;
+			_iInc     = 0;
 		}
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function dispose( ) : Void {
+			
+			if( _bMap != null )
+				_bMap.dispose( );
+
+			_bMap = null;
+		}
+
 		/**
 		* 
 		* 

@@ -97,9 +97,12 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @param 
 			* @return
 			*/
-			public function onCancel( ) : Void {
-				//cancelAllEvents( );
+			override public function onCancel( ) : Void {
+				
+				trace('onCancel');
 				cancel( );
+				super.onCancel( );
+
 			}
 			
 			/**
