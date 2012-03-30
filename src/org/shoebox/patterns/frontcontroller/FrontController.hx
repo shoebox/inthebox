@@ -172,7 +172,7 @@ class FrontController extends Signal{
 
 			_drawState( _hStatesDesc.get( s ) );
 			emit( CHANGE_STATE , [ s ] );
-			nme.system.System.gc( );
+			
 			return _sState = s;
 		}
 

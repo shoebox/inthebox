@@ -144,12 +144,12 @@ package org.shoebox.events.seq;
 			*/
 			private function _next( e : Event = null ) : Void{
 				
-				if( _iPos >= _iLen ){
+				if( _iPos == _iLen ){
 					dispatchEvent( new EventSequenceEvent( EventSequenceEvent.DONE , e ) );
+					_cancelCurrent( );
 					_reset( );
+					return;
 				}
-
-				_cancelCurrent( );
 
 				var next : ISeq = _aContent[ _iPos ++ ];
 				
