@@ -7,6 +7,8 @@ package org.shoebox.collections;
 
 class PriorityQueue<T>{
 
+	public var length( _getLength , never ) : Int;
+
 	private var _aContent    : Array<PrioDesc<T>>;
 	private var _bInvalidate : Bool;
 	private var _oIterator   : PrioQueueIterator<T>;
@@ -178,6 +180,16 @@ class PriorityQueue<T>{
 			}
 
 			_aContent.insert( inc + 1 , desc );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _getLength( ) : Int{
+			return _aContent.length;
 		}
 
 	// -------o misc

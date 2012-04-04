@@ -29,19 +29,22 @@
 */
 package org.shoebox.utils.system;
 
-import nme.events.EventDispatcher;
-import org.shoebox.collections.PriorityQueue;
+import nme.display.DisplayObject;
+import nme.events.Event;
+import org.shoebox.utils.system.Signal1;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class ASignal<T>{
+class SignalEvent extends Signal1<Event>{
 
-	public var enabled( default , _setEnabled ) : Bool;
+	public var target( default , _setTarget ) : DisplayObject;
+	public var eventType( default , _setEvent ) : String;
 
-	private var _oQueue : PriorityQueue<SignalListener<T>>;
+	private var _bBubbling: Bool;
+	private var _sType    : String;
 
 	// -------o constructor
 		
@@ -51,9 +54,11 @@ class ASignal<T>{
 		* @param	
 		* @return	void
 		*/
-		public function new( ) {
-			_oQueue = new PriorityQueue<SignalListener<T>>( );
-			enabled = true;
+		public function new( target : DisplayObject , sType : String , bBubbling : Bool = false ) {
+			_bBubbling = bBubbling;
+			_setTarget( target );
+			_setEvent( sType );
+			super( );
 		}
 	
 	// -------o public
@@ -64,12 +69,8 @@ class ASignal<T>{
 		* @public
 		* @return	void
 		*/
-		public function connect( f : T , prio : Int = 0 , count : Int = -1 ) : Void {
-
-			//TODO : Multi add check
-			var s = { listener : f , count : count  };
-			_oQueue.add( s , prio );
-
+		override public function connect( f : Event->Void , prio : Int = 0 , count : Int = -1 ) : Void {
+			super.connect( f , prio , count );		
 		}
 
 		/**
@@ -78,27 +79,10 @@ class ASignal<T>{
 		* @public
 		* @return	void
 		*/
-		public function disconnect( f : T ) : Void {
-			
-			var content = _oQueue.getContent( );
-			for( o in content ){
-
-				if( o.content.listener != f )
-					continue;
-
-				content.remove( o );
-			}
-
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function dispose( ) : Void {
-			_oQueue = null;
+		override public function disconnect( f : Event->Void ) : Void {
+			super.disconnect( f );
+			if( _oQueue.length == 0 )
+				_setEnabled( false );
 		}
 
 	// -------o protected
@@ -109,15 +93,18 @@ class ASignal<T>{
 		* @private
 		* @return	void
 		*/
-		private function _check( l : SignalListener<T> ) : Void{
+		private function _setTarget( target : DisplayObject ) : DisplayObject{
+			
+			if( enabled )
+				_removeListener( );
 
-			if( l.count != -1 )
-				l.count--;
+			this.target = target;
 
-			if( l.count == 0 )
-				disconnect( l.listener );
-				//_oQueue.remove( l );
-		}	
+			if( enabled )
+				_addListener( );
+
+			return target;
+		}
 
 		/**
 		* 
@@ -125,16 +112,69 @@ class ASignal<T>{
 		* @private
 		* @return	void
 		*/
-		private function _setEnabled( b : Bool ) : Bool{
-			this.enabled = b;
-			return b;
+		override private function _setEnabled( b : Bool ) : Bool{
+			
+			if( b )
+				_addListener( );
+			else
+				_removeListener( );
+
+			return super._setEnabled( b );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _setEvent( s : String ) : String{
+			
+			if( enabled )
+				_removeListener( );
+				
+			this.eventType = s;
+
+			if( enabled )
+				_addListener( );
+
+			return s;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _addListener( ) : Void{
+			trace('addListener');
+			if( !target.hasEventListener( eventType ) )
+				target.addEventListener( eventType , _onEvent , _bBubbling );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _removeListener( ) : Void{
+			trace('removeListener');
+			if( target.hasEventListener( eventType ) )
+				target.removeEventListener( eventType , _onEvent , _bBubbling );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onEvent( e : Event ) : Void{
+			emit( e );
 		}
 
 	// -------o misc
 	
-}
-
-typedef SignalListener<T> = {
-	public var listener : T;
-	public var count    : Int;
 }
