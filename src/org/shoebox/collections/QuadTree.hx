@@ -29,6 +29,7 @@
 */
 package org.shoebox.collections;
 
+import Lambda;
 import haxe.Md5;
 import nme.display.Graphics;
 import org.shoebox.geom.AABB;
@@ -223,7 +224,12 @@ class QuadTreeNode<T>{
 		* @return	void
 		*/
 		public function get( b : AABB , sLayer : String = null , res : Array<T> = null ) : Array<T> {
-			return getCoords( b.min.x , b.min.y , b.max.x , b.max.y , res , sLayer );
+
+			if( res == null )
+				res = new Array<T>( );
+
+			getCoords( b.min.x , b.min.y , b.max.x , b.max.y , res , sLayer );
+			return res;
 		}
 
 		/**
@@ -232,39 +238,49 @@ class QuadTreeNode<T>{
 		* @public
 		* @return	void
 		*/
-		public function getCoords( dx1 : Float , dy1 : Float , dx2 : Float , dy2 : Float , res : Array<T> = null , sLayer : String = null ) : Array<T> {
+		public function getCoords( 
+									dx1    : Float , 
+									dy1    : Float , 
+									dx2    : Float , 
+									dy2    : Float , 
+									res    : Array<T> , 
+									sLayer : String = null 
+								) : Void {
 
-			if( res == null )
-				res = new Array<T>( );
-			
+			if( !bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
+				return;
+
 			if( _bHasChilds ){
 				for( sub in _aSubs ){
 
 					if( sub == null )
 						continue;
 					
-					if( sub.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
-						sub.getCoords( dx1 , dy1 , dx2 , dy2 , res , sLayer );
+					sub.getCoords( dx1 , dy1 , dx2 , dy2 , res , sLayer );
 				}
 			}
 
 			var bLayer : Bool = sLayer != null;
 			if( _bHasContent ){
 
-				for( c in _aContent ){
-					
-					if( bLayer ){
+    			var func = function( c ) {
+    				return c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 );
+    			};
 
-						if( c.sLayer == sLayer && c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
-							res.push( c.content );
+    			var funcLayer = function( c ) {
 
-					}else if( c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
-						res.push( c.content );
+    				if( c.sLayer != sLayer )
+    					return false;
 
+    				return c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 );
+    			};
+
+				var res2 = Lambda.filter( _aContent , bLayer ? funcLayer : func );
+				for( sub in res2 ){
+					res.push( sub.content );
 				}
 			}
 
-			return res;	
 		}
 
 		/**

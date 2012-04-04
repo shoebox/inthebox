@@ -27,26 +27,19 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.utils;
+package org.shoebox.utils.system;
 
-import nme.events.TimerEvent;
-import nme.Lib;
-import nme.utils.Timer;
+import nme.events.EventDispatcher;
+import org.shoebox.collections.PriorityQueue;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class FrameTimer{
-	
-	private var _fAfter  : Float;
-	private var _fBefore : Float;
-	private var _fPeriod : Float;
-	private var _fSleep  : Float;
-	private var _oTimer  : Timer;
+class ASignal<T>{
 
-	static private var _aFuncs : Array<Void->Void> = new Array<Void->Void>( );
+	private var _oQueue : PriorityQueue<SignalListener<T>>;
 
 	// -------o constructor
 		
@@ -56,24 +49,24 @@ class FrameTimer{
 		* @param	
 		* @return	void
 		*/
-		private function new() {
-			_fBefore = 0;
-			_fAfter  = 0;
-			_fSleep  = 0;
-			_fPeriod = 1000 / Lib.current.stage.frameRate;
+		public function new( ) {
+			_oQueue = new PriorityQueue<SignalListener<T>>( );
 		}
 	
 	// -------o public
-				
+		
 		/**
 		* 
 		* 
 		* @public
 		* @return	void
 		*/
-		static public function add( f : Void -> Void ) : Void {
-			_aFuncs.push( f );
-			getInstance( ).start( );
+		public function connect( f : T , prio : Int = 0 , count : Int = -1 ) : Void {
+
+			//TODO : Multi add check
+			var s = { listener : f , count : count  };
+			_oQueue.add( s , prio );
+
 		}
 
 		/**
@@ -82,26 +75,17 @@ class FrameTimer{
 		* @public
 		* @return	void
 		*/
-		static public function remove( f : Void -> Void ) : Void {
-			_aFuncs.remove( f );
+		public function disconnect( f : T ) : Void {
 			
-			if( _aFuncs.length == 0 )
-				getInstance( ).stop( );
-		}	
+			var content = _oQueue.getContent( );
+			for( o in content ){
 
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function start( ) : Void {
-			trace('start');
-			if( _oTimer == null )
-				_oTimer = new Timer( 1 );
-				_oTimer.delay = Std.int( _fPeriod );
-				_oTimer.addEventListener( TimerEvent.TIMER , _onTick , false );
-				_oTimer.start( );
+				if( o.content.listener != f )
+					continue;
+
+				content.remove( o );
+			}
+
 		}
 
 		/**
@@ -110,11 +94,8 @@ class FrameTimer{
 		* @public
 		* @return	void
 		*/
-		public function stop( ) : Void {
-			if( _oTimer != null ){
-				_oTimer.removeEventListener( TimerEvent.TIMER , _onTick , false );
-				_oTimer.stop( );
-			}
+		public function dispose( ) : Void {
+			_oQueue = null;
 		}
 
 	// -------o protected
@@ -125,44 +106,20 @@ class FrameTimer{
 		* @private
 		* @return	void
 		*/
-		private function _onTick( _ ) : Void{
-			_fBefore = Lib.getTimer( );
-			var fOver = _fBefore - _fAfter - _fSleep;
+		private function _check( l : SignalListener<T> ) : Void{
 
-			for( f in _aFuncs )
-				f( );
+			if( l.count != -1 )
+				l.count--;
 
-			_fAfter = Lib.getTimer( );
-
-			var fDiff = _fAfter - _fBefore;
-			_fSleep = _fPeriod - fDiff - fOver;
-
-			var fExcess = 0.0;
-
-			if( _fSleep <= 0.0 ){
-				fExcess -= _fSleep;
-				_fSleep = 2;
-			}
-			
-			_oTimer.reset( );
-			_oTimer.delay = _fSleep;
-			_oTimer.start( );
-
-			while( fExcess > _fPeriod ){
-				for( f in _aFuncs )
-					f( );
-				fExcess -= _fPeriod;
-			}
-		}
+			if( l.count == 0 )
+				_oQueue.remove( l );
+		}	
 
 	// -------o misc
+	
+}
 
-		public static function getInstance( ) : FrameTimer{
-			if( null == instance )
-				instance = new FrameTimer( );
-
-			return instance;
-		}
-
-		public static var instance( default , null ) : FrameTimer;
+typedef SignalListener<T> = {
+	public var listener : T;
+	public var count    : Int;
 }

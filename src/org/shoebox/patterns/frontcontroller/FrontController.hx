@@ -36,19 +36,21 @@ import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
 import org.shoebox.patterns.mvc.abstracts.AController;
 import org.shoebox.patterns.mvc.MVCTriad;
-import org.shoebox.utils.system.Signal;
+import org.shoebox.utils.system.Signal1;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class FrontController extends Signal{
+class FrontController {
 
 	static inline public var CHANGE_STATE : String = 'CHANGE_STATE';
 
 	public var owner ( default , default ) 		: DisplayObjectContainer;
 	public var state ( _getState , _setState ) 	: String;
+
+	public var stateChanged : Signal1<String>;
 
 	private var _hTriads    : Hash<Dynamic>;
 	private var _hStatesDesc: Hash<Array<String>>;
@@ -64,10 +66,10 @@ class FrontController extends Signal{
 		* @return	void
 		*/
 		public function new( ) {
-			super( );
 			_hTriads     = new Hash<Dynamic>( );
 			_hStatesDesc = new Hash<Array<String>>( );
 			_hVariables  = new Hash<Array<Dynamic>>( );
+			stateChanged = new Signal1( );
 		}
 	
 	// -------o public
@@ -89,6 +91,7 @@ class FrontController extends Signal{
 				throw new Error( );
 
 			var s = haxe.Md5.encode( cM+'-'+cV+'-'+cC );
+			var s = cM+'-'+cV+'-'+cC;
 			var t = MVCTriad.create( cM , cV , cC , container == null ? owner : container );
 			
 			_hTriads.set( s , t );
@@ -171,8 +174,8 @@ class FrontController extends Signal{
 				return s;
 
 			_drawState( _hStatesDesc.get( s ) );
-			emit( CHANGE_STATE , [ s ] );
-			
+			//emit( CHANGE_STATE , [ s ] );
+			stateChanged.emit( s );
 			return _sState = s;
 		}
 
@@ -201,6 +204,8 @@ class FrontController extends Signal{
 					}
 			}
 
+			nme.system.System.gc( );
+			
 			// Executing the new apps
 				var hDepth : Hash<Int> = new Hash<Int>( );
 				var d : Int;

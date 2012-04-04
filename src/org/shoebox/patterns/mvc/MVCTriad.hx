@@ -177,7 +177,7 @@ class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
 
 			// 
 				if( view != null ){
-					cast( view , AView ).cancel( );
+					cast( view , AView ).onCancel( );
 					if( container != null )
 						container.removeChild( cast( view , DisplayObject ) );
 					view = null;

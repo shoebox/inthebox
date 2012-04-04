@@ -88,7 +88,7 @@ class TileDesc{
 		* @return	void
 		*/
 		public function getArray( ) : Array<Float> {
-
+			
 			if( _bInvalidate )
 				_invalidate( );
 

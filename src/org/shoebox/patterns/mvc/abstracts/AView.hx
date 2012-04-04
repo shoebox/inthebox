@@ -133,7 +133,7 @@ package org.shoebox.patterns.mvc.abstracts;
 					cancel( );
 					return;
 				}
-					
+				
 				for( d in _vDisplayObjects ){
 					
 					if( d == null )
@@ -166,10 +166,7 @@ package org.shoebox.patterns.mvc.abstracts;
 				
 				_vDisplayObjects = null;
 				cancel( );
-				
-				if ( parent != null )
-					parent.removeChild( this );
-
+			
 			}
 			
 		// -------o private
