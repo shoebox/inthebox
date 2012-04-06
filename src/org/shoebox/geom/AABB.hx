@@ -93,12 +93,7 @@ class AABB{
 		* @return	void
 		*/
 		public function intersectCoords( dx1 : Float , dy1 : Float , dx2 : Float , dy2 : Float ) : Bool {
-			
-			//if( ( min.x >= dx2 || max.x <= dx1 ) || ( min.y >= dy2 || max.y <= dy1 ) )
-			//	return false;
-		
-           return !( ( min.x >= dx2 || max.x <= dx1 ) || ( min.y >= dy2 || max.y <= dy1 ) );	
-
+		   return !( ( min.x >= dx2 || max.x <= dx1 ) || ( min.y >= dy2 || max.y <= dy1 ) );	
 		}
 
 		/**

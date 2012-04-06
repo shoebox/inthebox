@@ -102,7 +102,7 @@ package org.shoebox.patterns.mvc.abstracts;
 				trace('onCancel');
 				cancel( );
 				super.onCancel( );
-
+				
 			}
 			
 			/**

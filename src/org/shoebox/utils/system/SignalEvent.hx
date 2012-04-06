@@ -31,6 +31,7 @@ package org.shoebox.utils.system;
 
 import nme.display.DisplayObject;
 import nme.events.Event;
+import nme.events.EventDispatcher;
 import org.shoebox.utils.system.Signal1;
 
 /**
@@ -38,9 +39,9 @@ import org.shoebox.utils.system.Signal1;
  * @author shoe[box]
  */
 
-class SignalEvent extends Signal1<Event>{
+class SignalEvent<T:Event> extends Signal1<T>{
 
-	public var target( default , _setTarget ) : DisplayObject;
+	public var target( default , _setTarget ) : EventDispatcher;
 	public var eventType( default , _setEvent ) : String;
 
 	private var _bBubbling: Bool;
@@ -54,7 +55,7 @@ class SignalEvent extends Signal1<Event>{
 		* @param	
 		* @return	void
 		*/
-		public function new( target : DisplayObject , sType : String , bBubbling : Bool = false ) {
+		public function new( target : EventDispatcher , sType : String , bBubbling : Bool = false ) {
 			_bBubbling = bBubbling;
 			_setTarget( target );
 			_setEvent( sType );
@@ -69,8 +70,10 @@ class SignalEvent extends Signal1<Event>{
 		* @public
 		* @return	void
 		*/
-		override public function connect( f : Event->Void , prio : Int = 0 , count : Int = -1 ) : Void {
+		override public function connect( f : T->Void , prio : Int = 0 , count : Int = -1 ) : Void {
 			super.connect( f , prio , count );		
+			if( !enabled )
+				enabled = true;
 		}
 
 		/**
@@ -79,10 +82,21 @@ class SignalEvent extends Signal1<Event>{
 		* @public
 		* @return	void
 		*/
-		override public function disconnect( f : Event->Void ) : Void {
+		override public function disconnect( f : T->Void ) : Void {
 			super.disconnect( f );
 			if( _oQueue.length == 0 )
 				_setEnabled( false );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		override public function dispose( ) : Void {
+			enabled = false;
+			super.dispose( );		
 		}
 
 	// -------o protected
@@ -93,7 +107,7 @@ class SignalEvent extends Signal1<Event>{
 		* @private
 		* @return	void
 		*/
-		private function _setTarget( target : DisplayObject ) : DisplayObject{
+		private function _setTarget( target : EventDispatcher ) : EventDispatcher{
 			
 			if( enabled )
 				_removeListener( );
@@ -148,7 +162,6 @@ class SignalEvent extends Signal1<Event>{
 		* @return	void
 		*/
 		private function _addListener( ) : Void{
-			trace('addListener');
 			if( !target.hasEventListener( eventType ) )
 				target.addEventListener( eventType , _onEvent , _bBubbling );
 		}
@@ -160,7 +173,6 @@ class SignalEvent extends Signal1<Event>{
 		* @return	void
 		*/
 		private function _removeListener( ) : Void{
-			trace('removeListener');
 			if( target.hasEventListener( eventType ) )
 				target.removeEventListener( eventType , _onEvent , _bBubbling );
 		}
@@ -171,7 +183,7 @@ class SignalEvent extends Signal1<Event>{
 		* @private
 		* @return	void
 		*/
-		private function _onEvent( e : Event ) : Void{
+		private function _onEvent( e : T ) : Void{
 			emit( e );
 		}
 

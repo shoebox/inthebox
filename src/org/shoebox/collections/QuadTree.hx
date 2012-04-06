@@ -263,24 +263,18 @@ class QuadTreeNode<T>{
 			var bLayer : Bool = sLayer != null;
 			if( _bHasContent ){
 
-    			var func = function( c ) {
-    				return c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 );
-    			};
+				var l = res.length;
+				for( c in _aContent ){
 
-    			var funcLayer = function( c ) {
+					if( bLayer && ( c.sLayer != sLayer ) )
+						continue;
 
-    				if( c.sLayer != sLayer )
-    					return false;
-
-    				return c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 );
-    			};
-
-				var res2 = Lambda.filter( _aContent , bLayer ? funcLayer : func );
-				for( sub in res2 ){
-					res.push( sub.content );
+					if( c.bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
+						res[ l++ ] = c.content;
+						//res.push( c.content );
 				}
+				
 			}
-
 		}
 
 		/**

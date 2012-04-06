@@ -13,6 +13,8 @@ import nme.text.TextFieldAutoSize;
 import nme.text.TextFormat;
 import org.shoebox.utils.FrameTimer;
 
+using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
+
 /**
  * ...
  * @author shoe[box]
@@ -31,7 +33,6 @@ class Perf extends Sprite{
 	private var _tfMs       : TextField;
 	private var _tfFps      : TextField;
 	private var _oFormat    : TextFormat;
-	private var _oTimer     : Timer;
 	
 	private static var WIDTH			: Int = 100;
 	private static var HEIGHT			: Int = 40;	
@@ -49,7 +50,8 @@ class Perf extends Sprite{
 			super( );
 			_iStart = System.totalMemory;
 			mouseChildren = mouseEnabled = false;
-			addEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
+			//addEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
+			onStaged( ).connect( _onStaged , 0 , 1 );
 			_aTimes = [ ];
 		}
 	
@@ -65,18 +67,12 @@ class Perf extends Sprite{
 		* @private
 		* @return	void
 		*/
-		private function _onStaged( e : Event ) : Void {
+		private function _onStaged( _ ) : Void {
 			x = Lib.current.stage.stageWidth - WIDTH;
-			removeEventListener( Event.ADDED_TO_STAGE , _onStaged , false );
-			addEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false );
+			onRemoved( ).connect( _onRemoved , 0 , 1 );
 			_draw( );
-			addEventListener( Event.ENTER_FRAME , _onUpdate , false );
-			trace('fps ::: '+Lib.current.stage.frameRate );
-			/*
-			_oTimer = new Timer( Math.round( 1000 / Lib.current.stage.frameRate ) );
-			_oTimer.run = _onUpdate;
 			
-			*/
+			Lib.current.stage.onFrame( ).connect( _onUpdate );
 		}
 		
 		/**
@@ -150,12 +146,10 @@ class Perf extends Sprite{
 		* @return	void
 		*/
 		private function _onRemoved( e : Event = null ) : Void {
-			trace('onRemoved');
-			removeEventListener( Event.ENTER_FRAME , _onUpdate , false );
-			removeEventListener( Event.REMOVED_FROM_STAGE , _onRemoved , false ); 
-			//FrameTimer.remove( _onUpdate );
-			_oTimer.stop( );
-			_oTimer.run = null;
+			
+			Lib.current.stage.onFrame( ).disconnect( _onUpdate );
+			onStaged( ).connect( _onStaged , 0 , 1 );
+			
 		}
 
 	// -------o misc
