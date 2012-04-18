@@ -45,8 +45,7 @@ class SignalEvent<T:Event> extends Signal1<T>{
 	public var eventType( default , _setEvent ) : String;
 
 	private var _bBubbling: Bool;
-	private var _sType    : String;
-
+	
 	// -------o constructor
 		
 		/**
@@ -73,7 +72,7 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		override public function connect( f : T->Void , prio : Int = 0 , count : Int = -1 ) : Void {
 			super.connect( f , prio , count );		
 			if( !enabled )
-				enabled = true;
+				_setEnabled( true );
 		}
 
 		/**
@@ -82,8 +81,8 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		* @public
 		* @return	void
 		*/
-		override public function disconnect( f : T->Void ) : Void {
-			super.disconnect( f );
+		override public function disconnect( f : T->Void , prio : Int = 0 ) : Void {
+			super.disconnect( f , prio );
 			if( _oQueue.length == 0 )
 				_setEnabled( false );
 		}
@@ -108,9 +107,8 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		* @return	void
 		*/
 		private function _setTarget( target : EventDispatcher ) : EventDispatcher{
-			
-			if( enabled )
-				_removeListener( );
+		
+			_removeListener( );
 
 			this.target = target;
 
@@ -162,7 +160,7 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		* @return	void
 		*/
 		private function _addListener( ) : Void{
-			if( !target.hasEventListener( eventType ) )
+			if( eventType != null && target != null )
 				target.addEventListener( eventType , _onEvent , _bBubbling );
 		}
 
@@ -173,7 +171,7 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		* @return	void
 		*/
 		private function _removeListener( ) : Void{
-			if( target.hasEventListener( eventType ) )
+			if( eventType != null && target != null )
 				target.removeEventListener( eventType , _onEvent , _bBubbling );
 		}
 

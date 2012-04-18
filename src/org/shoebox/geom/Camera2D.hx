@@ -118,6 +118,7 @@ class Camera2D{
 			
 			if( !_bInvalidate )
 				return _mProj;
+			
 			_FPoint.x = _limit( _FPoint.x , _fLimits.x * _fZoom , _fHalfViewPort.x );
 			_FPoint.y = _limit( _FPoint.y , _fLimits.y * _fZoom , _fHalfViewPort.y );
 

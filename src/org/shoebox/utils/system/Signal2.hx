@@ -29,19 +29,12 @@
 */
 package org.shoebox.utils.system;
 
-import nme.events.EventDispatcher;
-import org.shoebox.collections.PriorityQueue;
-
 /**
  * ...
  * @author shoe[box]
  */
 
-class ASignal<T>{
-
-	public var enabled( default , _setEnabled ) : Bool;
-
-	private var _oQueue : PriorityQueue<SignalListener<T>>;
+class Signal2<A1,A2> extends ASignal<A1->A2->Void>{
 
 	// -------o constructor
 		
@@ -51,9 +44,8 @@ class ASignal<T>{
 		* @param	
 		* @return	void
 		*/
-		public function new( ) {
-			_oQueue = new PriorityQueue<SignalListener<T>>( );
-			enabled = true;
+		public function new() {
+			super( );
 		}
 	
 	// -------o public
@@ -64,99 +56,15 @@ class ASignal<T>{
 		* @public
 		* @return	void
 		*/
-		public function connect( f : T , prio : Int = 0 , count : Int = -1 ) : Void {
-
-			if( _exist( f , prio ) )
-				return;
-
-			var s = { listener : f , count : count  };
-			_oQueue.add( s , prio );
-
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function disconnect( f : T , prio : Int = 0 ) : Void {
-			
-			var content = _oQueue.getContent( );
-			for( o in content ){
-
-				if( o.content.listener == f && o.prio == prio ){
-					content.remove( o );
-					break;
-				}
+		public function emit( a1 : A1 , a2 : A2 ) : Void {
+			for( l in _oQueue ){
+				l.listener( a1 , a2 );
+				_check( l );
 			}
-
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function dispose( ) : Void {
-			_oQueue = null;
 		}
 
 	// -------o protected
 		
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _exist( f : T , prio : Int = 0 ) : Bool{
-
-			var b : Bool = false;
-			var content = _oQueue.getContent( );
-			for( o in content ){
-				if( o.content.listener == f && o.prio == prio ){
-					b = true;
-					break;
-				}
-			}
-			return b;
-
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _check( l : SignalListener<T> ) : Void{
-
-			if( l.count != -1 )
-				l.count--;
-
-			if( l.count == 0 )
-				disconnect( l.listener );
-			
-		}	
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _setEnabled( b : Bool ) : Bool{
-			this.enabled = b;
-			return b;
-		}
-
 	// -------o misc
 	
-}
-
-typedef SignalListener<T> = {
-	public var listener : T;
-	public var count    : Int;
 }

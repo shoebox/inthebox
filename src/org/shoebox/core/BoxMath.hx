@@ -59,6 +59,16 @@ class BoxMath
 	* @public
 	* @return	void
 	*/
+	inline static public function intClamp( f : Int , fMin : Int , fMax : Int ) : Int {
+		return ( f < fMin) ? fMin : ( f > fMax) ? fMax : f;			
+	}
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
 	static public function angleBetween( x1 : Float , y1 : Float , x2 : Float , y2 : Float ) : Float {
 		return Math.atan ( ( y2 - y1 ) / ( x2 - x1 ) );
 	}

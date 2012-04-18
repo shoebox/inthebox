@@ -3,6 +3,7 @@ package org.shoebox.utils.system.flashevents ;
 import nme.display.InteractiveObject;
 import nme.events.Event;
 import nme.events.MouseEvent;
+import nme.events.TouchEvent;
 import org.shoebox.utils.system.SignalEvent;
 import org.shoebox.utils.system.flashevents.EvChannels;
 import org.shoebox.utils.system.flashevents.InteractiveObjectEv;
@@ -64,8 +65,18 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function mouseDown( d : InteractiveObject ) : SignalEvent<MouseEvent> {
-			return _mouseEvCreate( d , MouseEvent.MOUSE_DOWN );
+		static public function onClick( d : InteractiveObject , b : Bool = false ) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.CLICK );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function mouseDown( d : InteractiveObject , b : Bool = false ) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.MOUSE_DOWN , b );
 		}
 
 		/**
@@ -104,6 +115,36 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
+		static public function touchBegin( d : InteractiveObject ) : SignalEvent<TouchEvent>{
+			return _mouseEvCreate( d , TouchEvent.TOUCH_BEGIN );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function touchMove( d : InteractiveObject ) : SignalEvent<TouchEvent>{
+			return _mouseEvCreate( d , TouchEvent.TOUCH_MOVE );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function touchEnd( d : InteractiveObject ) : SignalEvent<TouchEvent>{
+			return _mouseEvCreate( d , TouchEvent.TOUCH_END );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		static public function removeAll( d : InteractiveObject ) : Void {
 			FlashEventsCache.getInstance( ).purgeTarget( EvChannels.InteractiveObject , d );			
 		}
@@ -126,8 +167,8 @@ class InteractiveObjectEv{
 		* @private
 		* @return	void
 		*/
-		static private function _mouseEvCreate<T>( d : InteractiveObject , s : String ) : Dynamic{
-			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , false );
+		static private function _mouseEvCreate( d : InteractiveObject , s : String , b : Bool = false ) : Dynamic{
+			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , b );
 		}
 
 	// -------o misc

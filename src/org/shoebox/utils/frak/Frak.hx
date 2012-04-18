@@ -83,6 +83,16 @@ class Frak extends Sprite{
 			return _getModel( ).unRegisterVariable( s );
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function log( s : String ) : Void {
+			_getModel( ).log( s );
+		}
+
 	// -------o protected
 	
 		/**

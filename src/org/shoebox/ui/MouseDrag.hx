@@ -1,3 +1,32 @@
+/**
+*  HomeMade by shoe[box]
+*
+*  Redistribution and use in source and binary forms, with or without 
+*  modification, are permitted provided that the following conditions are
+*  met:
+*
+* Redistributions of source code must retain the above copyright notice, 
+*   this list of conditions and the following disclaimer.
+*  
+* Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the 
+*    documentation and/or other materials provided with the distribution.
+*  
+* Neither the name of shoe[box] nor the names of its 
+* contributors may be used to endorse or promote products derived from 
+* this software without specific prior written permission.
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+* IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 package org.shoebox.ui;
 
 import nme.display.InteractiveObject;
@@ -11,6 +40,9 @@ import nme.ui.MultitouchInputMode;
 import org.shoebox.geom.FPoint;
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
+import org.shoebox.utils.system.Signal2;
+
+using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
 
 /**
  * ...
@@ -19,20 +51,16 @@ import org.shoebox.patterns.commands.ICommand;
 
 class MouseDrag extends AbstractCommand , implements ICommand{
 
+	public var startPosition( _getStart , never ) : FPoint;
+
 	public static inline var START : String = 'MouseDrag_START';
 	public static inline var STOP  : String = 'MouseDrag_STOP';
 
-	public var startPosition( _getStart , never ) : FPoint;
+	public var signalMove : Signal2<Float,Float>;
 
-	private var _bTouchEnabled : Bool;
 	private var _fStart        : FPoint;
-	private var _iTouchId      : Int;
-	private var _fCallBack     : Float->Float->Void;
 	private var _oTarget       : InteractiveObject;
-	private var _sDown         : String;
-	private var _sMove         : String;
-	private var _sRel          : String;
-
+	
 	// -------o constructor
 		
 		/**
@@ -41,12 +69,10 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @param	
 		* @return	void
 		*/
-		public function new( target : InteractiveObject , f : Float->Float->Void , bTouchEnabled : Bool = true ) {
+		public function new( target : InteractiveObject , bTouchEnabled : Bool = true ) {
 			super( );
-			_fCallBack     = f;
-			_bTouchEnabled = bTouchEnabled;
-			_oTarget       = target;
-			_iTouchId      = -1;
+			_oTarget   = target;
+			signalMove = new Signal2<Float,Float>( );
 		}
 	
 	// -------o public
@@ -58,19 +84,17 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @return	void
 		*/
 		override public function onExecute( ?e : Event = null ) : Void {
+
+			_fStart = { x : 0.0 , y : 0.0 };
+
 			#if mobile
-				Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-				_sDown = TouchEvent.TOUCH_BEGIN;
-				_sMove = TouchEvent.TOUCH_MOVE;
-				_sRel  = TouchEvent.TOUCH_END;
+			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+			_oTarget.touchBegin( ).connect( _touchBegin );
 			#else
-				_sDown = MouseEvent.MOUSE_DOWN;
-				_sMove = MouseEvent.MOUSE_MOVE;
-				_sRel  = MouseEvent.MOUSE_UP;
+			_oTarget.mouseDown( ).connect( _mouseBegin );
 			#end
 			
-			_fStart = { x : 0.0 , y : 0.0 };
-			_oTarget.addEventListener( _sDown , _onDown , false );
+			//_oTarget.addEventListener( _sDown , _onDown , false );
 			
 		}
 
@@ -81,42 +105,35 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @return	void
 		*/
 		override public function onCancel( ?e : Event = null ) : Void {
-			trace('cancel');
+
 			if( _oTarget == null )
 				return;
 
-			_oTarget.removeEventListener( _sDown 	, _onDown 		, false );
-			_oTarget.removeEventListener( _sMove 	, _onMove 		, false );
-			_oTarget.removeEventListener( _sRel 	, _onMouseUp 	, false );
-			_oTarget = null;
-
+			#if mobile
+			_oTarget.touchBegin( ).disconnect( _touchBegin );
+			_oTarget.touchMove( ).disconnect( _touchMove );
+			_oTarget.touchEnd( ).disconnect( _touchEnd );
+			#else
+			_oTarget.mouseDown( ).disconnect( _mouseBegin );
+			_oTarget.mouseMove( ).disconnect( _mouseMove );
+			_oTarget.mouseUp( ).disconnect( _mouseEnd );
+			#end
 		}
 
 	// -------o protected
 		
+		#if mobile
+
 		/**
 		* 
 		* 
 		* @private
 		* @return	void
 		*/
-		private function _onDown( e ) : Void{
-			
-			if( _iTouchId != -1 )
-				return;
-
-			#if mobile
-				_iTouchId = cast( e , TouchEvent ).touchPointID;
-			#end
-			
-			if( hasEventListener( START ) )
-				dispatchEvent( new Event( START ) );
-
-			_fStart.x = e.stageX;
-			_fStart.y = e.stageY;
-			_oTarget.addEventListener( _sMove , _onMove , false );
-			_oTarget.addEventListener( _sRel , _onMouseUp , false );
-			
+		private function _touchBegin( e : TouchEvent ) : Void{
+			_start( e.stageX , e.stageY );
+			_oTarget.touchMove( ).connect( _touchMove );
+			_oTarget.touchEnd( ).connect( _touchEnd );
 		}
 
 		/**
@@ -125,19 +142,8 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @private
 		* @return	void
 		*/
-		private function _onMove( e ) : Void{
-			
-			#if mobile
-				var ev = cast( e , TouchEvent );
-				if( ev.touchPointID != _iTouchId ) 
-					return;
-				_iTouchId = ev.touchPointID;
-			#end
-
-			_fCallBack( e.stageX - _fStart.x , e.stageY - _fStart.y );
-			_fStart.x = e.stageX;
-			_fStart.y = e.stageY;
-
+		private function _touchMove( e : TouchEvent ) : Void{
+			_move( e.stageX , e.stageY );
 		}
 
 		/**
@@ -146,12 +152,69 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @private
 		* @return	void
 		*/
-		private function _onMouseUp( _ ) : Void{
-			_oTarget.removeEventListener( _sMove , _onMove , false );
-			_oTarget.removeEventListener( _sRel , _onMouseUp , false );
-			_iTouchId = -1;
-			if( hasEventListener( STOP ) )
-				dispatchEvent( new Event( STOP ) );
+		private function _touchEnd( e : TouchEvent ) : Void{
+			_oTarget.touchMove( ).disconnect( _touchMove );
+			_oTarget.touchEnd( ).disconnect( _touchEnd );
+		}
+
+		#else
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _mouseBegin( e : MouseEvent ) : Void{
+			_start( e.stageX , e.stageY );
+			_oTarget.mouseMove( ).connect( _mouseMove );
+			_oTarget.mouseUp( ).connect( _mouseEnd );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _mouseMove( e : MouseEvent ) : Void{
+			_move( e.stageX , e.stageY );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _mouseEnd( e : MouseEvent ) : Void{
+			_oTarget.mouseMove( ).disconnect( _mouseMove );
+			_oTarget.mouseUp( ).disconnect( _mouseEnd );
+		}
+
+		#end
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _start( fx : Float , fy : Float ) : Void{
+			_fStart.x = fx;
+			_fStart.y = fy;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _move( fx : Float , fy : Float ) : Void{
+			signalMove.emit( fx - _fStart.x , fy - _fStart.y );
+			_fStart.x = fx;
+			_fStart.y = fy;
 		}
 
 		/**

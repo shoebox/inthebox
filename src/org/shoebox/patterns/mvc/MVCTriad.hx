@@ -137,12 +137,6 @@ class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
 				if( oMod != null )
 					oMod.initialize( );
 
-				if( oView != null )
-					oView.initialize( );
-
-				if( oCtrl != null )
-					oCtrl.initialize( );
-
 			//
 				if( oMod != null )
 					oMod.startUp( );
