@@ -58,8 +58,8 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 
 	public var signalMove : Signal2<Float,Float>;
 
-	private var _fStart        : FPoint;
-	private var _oTarget       : InteractiveObject;
+	private var _fStart  : FPoint;
+	private var _oTarget : InteractiveObject;
 	
 	// -------o constructor
 		
@@ -86,7 +86,6 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		override public function onExecute( ?e : Event = null ) : Void {
 
 			_fStart = { x : 0.0 , y : 0.0 };
-
 			#if mobile
 			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			_oTarget.touchBegin( ).connect( _touchBegin );

@@ -85,8 +85,8 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function mouseMove( d : InteractiveObject ) : SignalEvent<MouseEvent> {
-			return _mouseEvCreate( d , MouseEvent.MOUSE_MOVE );
+		static public function mouseMove( d : InteractiveObject , b : Bool = false ) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.MOUSE_MOVE , b );
 		}
 
 		/**
@@ -95,8 +95,8 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function mouseUp( d : InteractiveObject ) : SignalEvent<MouseEvent> {
-			return _mouseEvCreate( d , MouseEvent.MOUSE_UP );
+		static public function mouseUp( d : InteractiveObject , b : Bool = false) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.MOUSE_UP , b );
 		}
 
 		/**
@@ -105,8 +105,8 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function mouseWheel( d : InteractiveObject ) : SignalEvent<MouseEvent> {
-			return _mouseEvCreate( d , MouseEvent.MOUSE_WHEEL );
+		static public function mouseWheel( d : InteractiveObject , b : Bool = false ) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.MOUSE_WHEEL , b );
 		}
 
 		/**
@@ -115,8 +115,8 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function touchBegin( d : InteractiveObject ) : SignalEvent<TouchEvent>{
-			return _mouseEvCreate( d , TouchEvent.TOUCH_BEGIN );
+		static public function touchBegin( d : InteractiveObject , b : Bool = false ) : SignalEvent<TouchEvent>{
+			return _mouseEvCreate( d , TouchEvent.TOUCH_BEGIN , b );
 		}
 
 		/**
@@ -125,8 +125,8 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function touchMove( d : InteractiveObject ) : SignalEvent<TouchEvent>{
-			return _mouseEvCreate( d , TouchEvent.TOUCH_MOVE );
+		static public function touchMove( d : InteractiveObject , b : Bool = false) : SignalEvent<TouchEvent>{
+			return _mouseEvCreate( d , TouchEvent.TOUCH_MOVE , b );
 		}
 
 		/**
@@ -135,8 +135,19 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
-		static public function touchEnd( d : InteractiveObject ) : SignalEvent<TouchEvent>{
-			return _mouseEvCreate( d , TouchEvent.TOUCH_END );
+		static public function touchEnd( d : InteractiveObject , b : Bool = false) : SignalEvent<TouchEvent>{
+			return _mouseEvCreate( d , TouchEvent.TOUCH_END , b );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function touchTap( d : InteractiveObject , b : Bool = false) : SignalEvent<TouchEvent>{
+			//TOUCH_TAP
+			return _mouseEvCreate( d , TouchEvent.TOUCH_END , b );
 		}
 
 		/**

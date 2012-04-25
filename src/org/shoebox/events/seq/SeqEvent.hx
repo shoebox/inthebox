@@ -31,6 +31,7 @@ package org.shoebox.events.seq;
 
 	import nme.events.EventDispatcher;
 	import nme.events.Event;
+	import org.shoebox.utils.system.Signal1;
 
 	/**
 	* fr.hyperfiction.touchsandbox.core.Delayer
@@ -38,10 +39,9 @@ package org.shoebox.events.seq;
 	*/
 	class SeqEvent extends EventDispatcher ,  implements ISeq{
 		
-		public static inline var DONE	: String = 'SeqEvent_DONE';
-		
 		public var iPrio  : Int;
 		public var sType  : String;
+		public var signal : Signal1;		
 		public var target : EventDispatcher;
 		
 		private var _bBubble : Bool;
@@ -62,6 +62,8 @@ package org.shoebox.events.seq;
 				this.iPrio = iPrio;
 				this.target = target;
 				this.sType 	= sType;
+
+				doneSignal = new Signal( );
 			}
 
 		// -------o public
@@ -109,6 +111,7 @@ package org.shoebox.events.seq;
 			private function _onEvent( e : Event ) : Void{
 				var eCustom : CustomEvent = new CustomEvent( DONE , false , true , e );
 				dispatchEvent( eCustom );
+				
 			}
 
 		// -------o misc

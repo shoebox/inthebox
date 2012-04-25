@@ -113,9 +113,15 @@ class PinchZoom extends AbstractCommand , implements ICommand{
 		* @return	void
 		*/
 		override public function onCancel( ?e : Event = null ) : Void {
+			#if mobile
+			_oTarget.touchBegin( ).disconnect( _onTouchBegin );
+			_oTarget.touchMove( ).disconnect( _onTouchMove );
+			_oTarget.touchEnd( ).disconnect( _onTouchEnd );
+			#end
 		}
 
 	// -------o protected
+
 		#if mobile
 		
 		/**

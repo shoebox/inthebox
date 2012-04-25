@@ -92,6 +92,26 @@ class BoxMath
 	* @public
 	* @return	void
 	*/
+	inline static public function length( fx : Float , fy : Float ) : Float {
+		return fx * fx + fy * fy;
+	}
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
+	inline static public function lengthSq( fx : Float , fy : Float ) : Float {
+		return Math.sqrt( length( fx , fy ) );			
+	}
+
+	/**
+	* 
+	* 
+	* @public
+	* @return	void
+	*/
 	inline static public function distance2( p1 : FPoint , p2 : FPoint ) : Float {
 		var dx = Math.abs( p1.x - p2.x );
 		var dy = Math.abs( p1.y - p2.y );

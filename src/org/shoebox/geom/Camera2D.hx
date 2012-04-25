@@ -123,10 +123,11 @@ class Camera2D{
 			_FPoint.y = _limit( _FPoint.y , _fLimits.y * _fZoom , _fHalfViewPort.y );
 
 			_mProj.identity( );
-			_mProj.translate( -_FPoint.x , -_FPoint.y );
-			_mProj.rotate( 0 );
 			_mProj.scale( _fZoom , _fZoom );
 			_mProj.translate( _fHalfViewPort.x , _fHalfViewPort.y );
+			trace( _FPoint );
+			_mProj.translate( -_FPoint.x , -_FPoint.y );
+			//_mProj.rotate( 0 );
 			
 			return _mProj;
 			
@@ -152,6 +153,7 @@ class Camera2D{
 		* @return	void
 		*/
 		public function zoom( f : Float ) : Void {
+
 			_fZoom *= f;
 			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
 			_bInvalidate = true;
@@ -174,8 +176,10 @@ class Camera2D{
 		* @return	void
 		*/
 		public function appendZoom( f : Float ) : Void {
+
 			_fZoom += _fZoom * f;
 			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
+			trace('_fZoom ::: '+_fZoom);
 			_bInvalidate = true;
 		}
 
