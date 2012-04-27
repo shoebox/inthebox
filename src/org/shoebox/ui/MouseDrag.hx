@@ -32,11 +32,13 @@ package org.shoebox.ui;
 import nme.display.InteractiveObject;
 import nme.events.Event;
 import nme.events.MouseEvent;
+import nme.system.Capabilities;
 #if mobile
 import nme.events.TouchEvent;
 import nme.ui.Multitouch;
 import nme.ui.MultitouchInputMode;
 #end
+import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
@@ -56,9 +58,11 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 	public static inline var START : String = 'MouseDrag_START';
 	public static inline var STOP  : String = 'MouseDrag_STOP';
 
+	public var MIN_MOVE   : Float;
 	public var signalMove : Signal2<Float,Float>;
 
 	private var _fStart  : FPoint;
+	private var _fPrev   : FPoint;
 	private var _oTarget : InteractiveObject;
 	
 	// -------o constructor
@@ -73,6 +77,7 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 			super( );
 			_oTarget   = target;
 			signalMove = new Signal2<Float,Float>( );
+			MIN_MOVE = 20 / 254 * Capabilities.screenDPI;
 		}
 	
 	// -------o public
@@ -86,15 +91,14 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		override public function onExecute( ?e : Event = null ) : Void {
 
 			_fStart = { x : 0.0 , y : 0.0 };
+			_fPrev  = { x : 0.0 , y : 0.0 };
+
 			#if mobile
-			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-			_oTarget.touchBegin( ).connect( _touchBegin );
+				Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+				_oTarget.touchBegin( ).connect( _touchBegin );
 			#else
-			_oTarget.mouseDown( ).connect( _mouseBegin );
+				_oTarget.mouseDown( ).connect( _mouseBegin );
 			#end
-			
-			//_oTarget.addEventListener( _sDown , _onDown , false );
-			
 		}
 
 		/**
@@ -202,6 +206,8 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		private function _start( fx : Float , fy : Float ) : Void{
 			_fStart.x = fx;
 			_fStart.y = fy;
+			_fPrev.x  = fx;
+			_fPrev.y  = fy;
 		}
 
 		/**
@@ -211,9 +217,13 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @return	void
 		*/
 		private function _move( fx : Float , fy : Float ) : Void{
-			signalMove.emit( fx - _fStart.x , fy - _fStart.y );
-			_fStart.x = fx;
-			_fStart.y = fy;
+
+			var len = BoxMath.length( fx - _fPrev.x , fy - _fPrev.y );
+			if( len > MIN_MOVE ){
+				signalMove.emit( fx - _fStart.x , fy - _fStart.y );
+				_fStart.x = fx;
+				_fStart.y = fy;
+			}
 		}
 
 		/**

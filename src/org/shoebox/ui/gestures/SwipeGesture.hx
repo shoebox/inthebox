@@ -75,7 +75,7 @@ class SwipeGesture extends GestureBase , implements ICommand{
 		*/
 		public function new( target : InteractiveObject ) {
 			super( );
-			minVelocity  = 0.2  / 254 * Capabilities.screenDPI;
+			minVelocity  = 0.5  / 254 * Capabilities.screenDPI;
 
 			mode     = BOTH;
 			onSwipe  = new Signal2<Float,Float>( );
@@ -103,9 +103,9 @@ class SwipeGesture extends GestureBase , implements ICommand{
 				if( Multitouch.inputMode != MultitouchInputMode.TOUCH_POINT )
 					Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 
-				_oTarget.touchBegin( ).connect( _onTouchBegin );
-				_oTarget.touchMove( ).connect( _onTouchMove );
-				_oTarget.touchEnd( ).connect( _onTouchEnd );
+				_oTarget.addEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , false );
+				_oTarget.addEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , false );
+				_oTarget.addEventListener( TouchEvent.TOUCH_END , _onTouchEnd , false );
 			#end
 		}
 
@@ -117,9 +117,9 @@ class SwipeGesture extends GestureBase , implements ICommand{
 		*/
 		override public function onCancel( ?e : Event = null ) : Void {
 			#if mobile
-				_oTarget.touchBegin( ).disconnect( _onTouchBegin );
-				_oTarget.touchMove( ).disconnect( _onTouchMove );
-				_oTarget.touchEnd( ).disconnect( _onTouchEnd );			
+				_oTarget.removeEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , false );
+				_oTarget.removeEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , false );
+				_oTarget.removeEventListener( TouchEvent.TOUCH_END , _onTouchEnd , false );		
 			#end
 		}	
 
@@ -138,6 +138,7 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			_debug( );
 			#end
 			_bNeedChange = false;
+			trace('_onTouchBegin ::: '+e.touchPointID );
 			addTouchPoint( e.touchPointID , e.stageX , e.stageY , Lib.getTimer( ) );
 			_testActive( );			
 		}
@@ -152,7 +153,6 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			
 			if( _bNeedChange )
 				return;
-
 			var prev = _hPoints.get( e.touchPointID );
 			var len = BoxMath.length( e.stageX - prev.x , e.stageY - prev.y );
 
@@ -180,23 +180,22 @@ class SwipeGesture extends GestureBase , implements ICommand{
 						var t : Float = time - _fStartTime;
 						_fVel.x = _fDiff.x / t;
 						_fVel.y = _fDiff.y / t;
-						
 						var b : Bool = false;
-						trace('mode ::: '+mode);
 						switch( mode ){
 
 							case BOTH:
-							 	b = BoxMath.length( _fVel.x , _fVel.y ) >= minVelocity;
+								b = BoxMath.length( _fVel.x , _fVel.y ) >= minVelocity;
 							
 							case X:
 								b = ( _fVel.x * _fVel.x ) >= minVelocity;
-
+							
 							case Y:
 								b = ( _fVel.y * _fVel.y ) >= minVelocity;
 						}
 
 						if( b ){
-							onSwipe.emit( _fVel.x , _fVel.y );
+							trace('emit ::: '+onSwipe+' - '+onSwipe);
+							onSwipe.emit( _fVel.x , _fVel.y , true );
 							_bNeedChange = true;
 						}
 					}
@@ -221,6 +220,7 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			#if debug
 			_clearDebug( );
 			#end
+			
 			_bNeedChange = false;
 			removeTouchPoint( e.touchPointID );
 			_testActive( );

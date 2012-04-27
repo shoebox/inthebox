@@ -67,7 +67,7 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		public function new() {
 			super( );
 			_hPoints = new IntHash<TouchPoint2>( );
-			MIN_MOVE = 20 / 254 * Capabilities.screenDPI;
+			MIN_MOVE = 50 / 254 * Capabilities.screenDPI;
 		}
 	
 	// -------o public

@@ -53,7 +53,7 @@ using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
 class TwoFingersSwipeGesture extends GestureBase , implements ICommand{
 
 	public var minVelocity( default , default ) : Float;
-	public var mode( default , default )        : Mode;
+	public var mode( default , default )        : Mode2;
 
 	public var onSwipe : Signal2<Float,Float>;
 
@@ -148,13 +148,13 @@ class TwoFingersSwipeGesture extends GestureBase , implements ICommand{
 		* @return	void
 		*/
 		private function _onTouchMove( e : TouchEvent ) : Void{
-			
 			if( _bNeedChange )
 				return;
 
 			var prev = _hPoints.get( e.touchPointID );
 			var len = BoxMath.length( e.stageX - prev.x , e.stageY - prev.y );
 
+			trace('_onTouchMove ::: '+len);
 			//If length > Minimal movement
 			if( len > MIN_MOVE ){
 
@@ -181,6 +181,7 @@ class TwoFingersSwipeGesture extends GestureBase , implements ICommand{
 						_fVel.y = _fDiff.y / t;
 						
 						var b : Bool = false;
+						trace('_onTouchMove ::: '+_fVel.x+' - '+_fVel.y );
 						switch( mode ){
 
 							case BOTH:
@@ -242,7 +243,7 @@ class TwoFingersSwipeGesture extends GestureBase , implements ICommand{
 	// -------o misc
 	
 }
-enum Mode{
+enum Mode2{
 	BOTH;
 	X;
 	Y;

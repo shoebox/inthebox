@@ -49,8 +49,8 @@ package org.shoebox.libs.nevermind.behaviors;
 			* @public
 			* @return	void
 			*/
-			public function new() : Void {
-				super( .02 );
+			public function new( value : Float = 0.02 ) : Void {
+				super( value );
 			}
 
 		// -------o public

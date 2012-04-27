@@ -51,15 +51,14 @@ using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
  * @author shoe[box]
  */
 class TapGesture extends GestureBase , implements ICommand{
-	
+
+	public var duration ( default , default ) : Int;
 	public var onTap : Signal1<TouchEvent>;
 
-	private var _bActive    : Bool;
-	private var _bBubbing   : Bool;
-	private var _bMoved     : Bool;
-	private var _iStartTime : Int;
-	private var _oTarget    : InteractiveObject;
-	
+	private var _iTouchCount : Int;
+	private var _bActive : Bool;
+	private var _oTarget : InteractiveObject;
+
 	// -------o constructor
 		
 		/**
@@ -70,14 +69,13 @@ class TapGesture extends GestureBase , implements ICommand{
 		*/
 		public function new( target : InteractiveObject , ?b : Bool = false ) {
 			super( );
+			duration = 150;
 			_oTarget  = target;
-			_bBubbing = b;
-			_bMoved   = false;
 			onTap     = new Signal1<TouchEvent>( );			
 		}
 	
 	// -------o public
-		
+				
 		/**
 		* 
 		* 
@@ -86,18 +84,23 @@ class TapGesture extends GestureBase , implements ICommand{
 		*/
 		override public function onExecute( ?e : Event = null ) : Void {
 			trace('onExecute');
+			_iTouchCount = 0;
 
 			#if !mobile
 				trace('SwipeGesture is Mobile mode only');
 			#else
+
 				if( Multitouch.inputMode != MultitouchInputMode.TOUCH_POINT )
 					Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 
-				_oTarget.touchBegin( ).connect( _onTouchBegin );
-				_oTarget.touchMove( ).connect( _onTouchMove );
-				_oTarget.touchEnd( ).connect( _onTouchEnd );
+				//_oTarget.touchBegin( ).connect( _onTouchBegin );
+				//_oTarget.touchMove( ).connect( _onTouchMove );
+				//_oTarget.touchEnd( ).connect( _onTouchEnd );
+				_oTarget.addEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , true );
+				_oTarget.addEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , true );
+				_oTarget.addEventListener( TouchEvent.TOUCH_END , _onTouchEnd , true );
 			#end
-		}
+		}	
 
 		/**
 		* 
@@ -107,11 +110,11 @@ class TapGesture extends GestureBase , implements ICommand{
 		*/
 		override public function onCancel( ?e : Event = null ) : Void {
 			#if mobile
-				_oTarget.touchBegin( ).disconnect( _onTouchBegin );
-				_oTarget.touchMove( ).disconnect( _onTouchMove );
-				_oTarget.touchEnd( ).disconnect( _onTouchEnd );			
+				_oTarget.removeEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , true );
+				_oTarget.removeEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , true );
+				_oTarget.removeEventListener( TouchEvent.TOUCH_END , _onTouchEnd , true );
 			#end
-		}	
+		}
 
 	// -------o protected
 		
@@ -125,7 +128,9 @@ class TapGesture extends GestureBase , implements ICommand{
 		*/
 		private function _onTouchBegin( e : TouchEvent ) : Void{
 			addTouchPoint( e.touchPointID , e.stageX , e.stageY , Lib.getTimer( ) );
-			_testActive( );		
+			_iTouchCount++;
+			_testActive( );
+			trace('onTouchBegin ::: '+_iTouchCount);
 		}
 
 		/**
@@ -137,9 +142,14 @@ class TapGesture extends GestureBase , implements ICommand{
 		private function _onTouchMove( e : TouchEvent ) : Void{
 			if( _bActive ){
 				var prev = _hPoints.get( e.touchPointID );
+				if( prev == null ){
+					_bActive = false;
+					return;
+				}
 				var len = BoxMath.length( e.stageX - prev.x , e.stageY - prev.y );
-				_bMoved = ( len > MIN_MOVE );
+				_bActive = ( len < MIN_MOVE );
 			}
+			
 		}
 
 		/**
@@ -149,11 +159,34 @@ class TapGesture extends GestureBase , implements ICommand{
 		* @return	void
 		*/
 		private function _onTouchEnd( e : TouchEvent ) : Void{
+			trace('_onTouchEnd ::: '+_bActive+' / '+_iTouchCount );
+			if( !_bActive ){
+				removeTouchPoint( e.touchPointID );
+				_testActive( );
+				_unTouch( );
+				return;
+			}
+			
+			var pt   = _hPoints.get( e.touchPointID );
+			var diff = Lib.getTimer( ) - pt.time;
+			if( diff < duration )
+				onTap.emit( e );
 
 			removeTouchPoint( e.touchPointID );
+			_unTouch( );
 			_testActive( );
-			if( !_bMoved && ( Lib.getTimer( ) - _iStartTime ) < 150 )
-				onTap.emit( e );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _unTouch( ) : Void{
+			_iTouchCount--;
+			if( _iTouchCount < 0 )
+				_iTouchCount = 0;
 		}
 
 		/**
@@ -163,15 +196,11 @@ class TapGesture extends GestureBase , implements ICommand{
 		* @return	void
 		*/
 		private function _testActive( ) : Void{
-			_bActive = _iCount == 1;
-			if( _bActive ){
-				_bMoved = false;
-				_iStartTime = Lib.getTimer( );
-			}
+			_bActive = _iTouchCount == 1;
 		}
 
 		#end
-		
+
 	// -------o misc
 	
 }

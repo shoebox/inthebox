@@ -1,6 +1,6 @@
 package org.shoebox.libs.nevermind.behaviors;
 
-import fr.hyperfiction.caos.core.Variables;
+
 import nme.display.Graphics;
 import nme.geom.Vector3D;
 import nme.Lib;
@@ -46,6 +46,16 @@ class AvoidCicles extends ABehavior{
 	
 		public function addCircle( dx : Float , dy : Float , radius : Float ) : Void {
 			_vCircles.push( new Circle( dx , dy , radius ) );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getCircle( id : Int ) : Circle {
+			return _vCircles[id];
 		}
 		
 		/**
