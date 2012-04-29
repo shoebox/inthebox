@@ -75,7 +75,7 @@ class ABase extends EventDispatcher{
 		* @return	void
 		*/
 		private function _getModel( ){
-			return frontController.getApp( codeName ).mod;
+			return frontController.getApp( codeName ).getSub( Tri_Mod );
 		}
 
 		/**
@@ -85,7 +85,7 @@ class ABase extends EventDispatcher{
 		* @return	void
 		*/
 		private function _getView( ){
-			return frontController.getApp( codeName ).view;
+			return frontController.getApp( codeName ).getSub( Tri_View );
 		}
 
 		/**
@@ -95,7 +95,7 @@ class ABase extends EventDispatcher{
 		* @return	void
 		*/
 		private function _getController( ){
-			return frontController.getApp( codeName ).controller;
+			return frontController.getApp( codeName ).getSub( Tri_Controller );
 		}
 
 	// -------o misc

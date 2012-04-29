@@ -52,7 +52,7 @@ class FrontController {
 
 	public var stateChanged : Signal1<String>;
 
-	private var _hTriads    : Hash<Dynamic>;
+	private var _hTriads    : Hash<MVCTriad<Dynamic,Dynamic,Dynamic>>;
 	private var _hStatesDesc: Hash<Array<String>>;
 	private var _hVariables : Hash<Array<Dynamic>>;
 	private var _sState     : String;
@@ -66,7 +66,7 @@ class FrontController {
 		* @return	void
 		*/
 		public function new( ) {
-			_hTriads     = new Hash<Dynamic>( );
+			_hTriads     = new Hash<MVCTriad<Dynamic,Dynamic,Dynamic>>( );
 			_hStatesDesc = new Hash<Array<String>>( );
 			_hVariables  = new Hash<Array<Dynamic>>( );
 			stateChanged = new Signal1( );
@@ -80,23 +80,24 @@ class FrontController {
 		* @public
 		* @return	void
 		*/
-		public function add<M,V,C>( 
-										?cM        : Class<M> , 
-										?cV        : Class<V> , 
-										?cC        : Class<C> , 
+		public function add( 
+										?cM        : Class<AModel>, 
+										?cV        : Class<AView> , 
+										?cC        : Class<AController> , 
 										?container: DisplayObjectContainer = null
 									) : String {
-			
-			if( owner == null )
-				throw new Error( );
 
-			var s = haxe.Md5.encode( cM+'-'+cV+'-'+cC );
+			if( owner == null )
+				throw new Error( 'The FrontController owner is not defined');
+
+			//var s = haxe.Md5.encode( cM+'-'+cV+'-'+cC );
 			var s = cM+'-'+cV+'-'+cC;
-			var t = MVCTriad.create( cM , cV , cC , container == null ? owner : container );
+			var t = new MVCTriad( cM , cV , cC , container == null ? owner : container );
 			
 			_hTriads.set( s , t );
 
 			return s;
+			
 		}
 
 		/**
@@ -105,7 +106,7 @@ class FrontController {
 		* @public
 		* @return	void
 		*/
-		public function get<M,V,C>( s : String ) : MVCTriad<Dynamic,Dynamic,Dynamic> {
+		public function get( s : String ) : MVCTriad<Dynamic,Dynamic,Dynamic> {
 			var t = _hTriads.get( s );
 			return t;
 		}
@@ -213,7 +214,9 @@ class FrontController {
 					
 					//
 						oTri = _hTriads.get( sApp );
+						trace('name :: '+sApp );
 						oTri.codeName = sApp;
+						trace( oTri+' - '+oTri.codeName);
 						oTri.frontController = this;
 						if( _hVariables.exists( sApp ) ){
 							oTri.setVariables( _hVariables.get( sApp ) );

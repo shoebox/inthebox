@@ -36,6 +36,9 @@ import org.shoebox.patterns.frontcontroller.FrontController;
 import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
 import org.shoebox.patterns.mvc.abstracts.AController;
+import org.shoebox.patterns.mvc.interfaces.IModel;
+import org.shoebox.patterns.mvc.interfaces.IView;
+import org.shoebox.patterns.mvc.interfaces.IController;
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
 
@@ -44,7 +47,7 @@ import org.shoebox.patterns.commands.ICommand;
  * @author shoe[box]
  */
 
-class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
+class MVCTriad<M:(AModel),V:(AView),C:(AController)> extends AbstractCommand , implements ICommand{
 
 	public var container      : DisplayObjectContainer;
 	public var codeName       : String;
@@ -101,8 +104,34 @@ class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
+		public function getSub( t : Triad ) {
+			
+			switch ( t ) {
+
+				case Tri_Mod:
+					return cast mod;
+
+				case Tri_View:
+					return cast view;
+
+				case Tri_Controller:
+					return cast controller;
+				
+			}
+
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		override public function onExecute( ? e : Event = null ) : Void {
 			
+			if( container == null )
+				throw new nme.errors.Error('Tri container is not defined');
+
 			//
 				mod = cModel == null ? null : Type.createInstance( cModel , _aVariables == null ? [ ] : _aVariables );
 
@@ -185,10 +214,11 @@ class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
 		* 
 		* @public
 		* @return	void
-		*/
+		
 		static public function create<M,V,C>( ?m : Class<M> , ?v : Class<V> , ?c : Class<C> , ?container : DisplayObjectContainer = null ) : MVCTriad<M,V,C> {
 			return new MVCTriad<M,V,C>( m , v , c , container );
-		}	
+		}
+		*/	
 
 	// -------o protected
 	
@@ -196,4 +226,9 @@ class MVCTriad<M,V,C> extends AbstractCommand , implements ICommand{
 
 	// -------o misc
 	
+}
+enum Triad{
+	Tri_Mod;
+	Tri_View;
+	Tri_Controller;
 }
