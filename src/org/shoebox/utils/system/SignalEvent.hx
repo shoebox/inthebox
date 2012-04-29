@@ -98,6 +98,16 @@ class SignalEvent<T:Event> extends Signal1<T>{
 			super.dispose( );		
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function toString( ) : String {
+			return '[SignalEvent type : '+eventType+' ]';
+		}
+
 	// -------o protected
 		
 		/**

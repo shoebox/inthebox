@@ -219,7 +219,6 @@ class TileDesc{
 		* @return	void
 		*/
 		private function _invalidate( ) : Void{
-			
 			_aDesc = [ x , y , tileId ];
 
 			var id : Int = 3;
