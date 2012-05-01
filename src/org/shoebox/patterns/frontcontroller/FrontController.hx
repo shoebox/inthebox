@@ -52,7 +52,7 @@ class FrontController {
 
 	public var stateChanged : Signal1<String>;
 
-	private var _hTriads    : Hash<MVCTriad<Dynamic,Dynamic,Dynamic>>;
+	private var _hTriads    : Hash<MVCTriad<AModel,AView,AController>>;
 	private var _hStatesDesc: Hash<Array<String>>;
 	private var _hVariables : Hash<Array<Dynamic>>;
 	private var _sState     : String;
@@ -66,7 +66,7 @@ class FrontController {
 		* @return	void
 		*/
 		public function new( ) {
-			_hTriads     = new Hash<MVCTriad<Dynamic,Dynamic,Dynamic>>( );
+			_hTriads     = new Hash<MVCTriad<AModel,AView,AController>>( );
 			_hStatesDesc = new Hash<Array<String>>( );
 			_hVariables  = new Hash<Array<Dynamic>>( );
 			stateChanged = new Signal1( );
@@ -106,9 +106,8 @@ class FrontController {
 		* @public
 		* @return	void
 		*/
-		public function get( s : String ) : MVCTriad<Dynamic,Dynamic,Dynamic> {
-			var t = _hTriads.get( s );
-			return t;
+		public function get( s : String ) {
+			return _hTriads.get( s );
 		}
 
 		/**

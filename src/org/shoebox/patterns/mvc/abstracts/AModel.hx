@@ -53,8 +53,8 @@ package org.shoebox.patterns.mvc.abstracts;
 	class AModel extends ABase {
 		
 		//public var model( _getModel , null ) : AModel;
-		public var view( _getView , null ) : Dynamic;
-		public var controller( _getController , null ) : Dynamic;
+		public var view( _getView , null ) : AView;
+		public var controller( _getController , null ) : AController;
 
 		// -------o constructor
 			
@@ -63,7 +63,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @param
 			* @return
 			*/
-			public function new(){
+			public function new( ){
 				super( );
 			}
 			

@@ -37,7 +37,7 @@ import org.shoebox.patterns.frontcontroller.FrontController;
  * @author shoe[box]
  */
 
-class ABase extends EventDispatcher{
+class ABase{
 
 	public var codeName : String;
 	public var frontController : FrontController;
@@ -51,7 +51,7 @@ class ABase extends EventDispatcher{
 		* @return	void
 		*/
 		public function new() {
-			super( );
+			
 		}
 	
 	// -------o public
@@ -74,8 +74,8 @@ class ABase extends EventDispatcher{
 		* @private
 		* @return	void
 		*/
-		private function _getModel( ){
-			return frontController.getApp( codeName ).getSub( Tri_Mod );
+		private function _getModel( ) : AModel{
+			return frontController.getApp( codeName ).mod;
 		}
 
 		/**
@@ -84,8 +84,8 @@ class ABase extends EventDispatcher{
 		* @private
 		* @return	void
 		*/
-		private function _getView( ){
-			return frontController.getApp( codeName ).getSub( Tri_View );
+		private function _getView( ) : AView{
+			return frontController.getApp( codeName ).view;
 		}
 
 		/**
@@ -94,8 +94,8 @@ class ABase extends EventDispatcher{
 		* @private
 		* @return	void
 		*/
-		private function _getController( ){
-			return frontController.getApp( codeName ).getSub( Tri_Controller );
+		private function _getController( ) : AController{
+			return frontController.getApp( codeName ).controller;
 		}
 
 	// -------o misc

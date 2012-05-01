@@ -53,11 +53,9 @@ package org.shoebox.patterns.mvc.abstracts;
 	*/
 	class AController extends ABase, implements IController {
 		
-		public var model( _getModel , null ) : Dynamic;
-		public var view( _getView , null ) : Dynamic;
+		public var model( _getModel , null ) : AModel;
+		public var view( _getView , null ) : AView;
 		//public var controller( _getController , null ) : AController;
-		
-		private var _oDico			: Hash<Dynamic> ;
 		
 		// -------o constructor
 			
@@ -68,7 +66,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			*/
 			public function new(){
 				super( );
-				_oDico			 = new Hash<Dynamic>( );
 			}
 			
 		// -------o public
@@ -106,49 +103,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			}
 			
 			/**
-			* 
-			* @param
-			* @return
-			*/
-			public function registerCommand(	command:Class<Dynamic>,
-									?props:Dynamic = null,
-									?tgt:EventDispatcher = null,
-									?sEVENTNAME:String = null, 
-									?bCAPTURE : Bool = false, 
-									?bPRIO : Int = 0, 
-									?bWEAK : Bool = false):Void{
-				
-				throw new Error('Deprecate');
-				
-				/*
-				if(tgt == null || sEVENTNAME == null)
-					throw new ArgumentError(Errors.ARGUMENTSERROR);
-				
-				var oFUNC:Function = Relegate.create( this , _onCallCommand , false , command , tgt , props );
-				if(_oDico[tgt]==undefined)
-					_oDico[tgt] = {};
-					
-				_oDico[tgt][sEVENTNAME] = oFUNC;
-				tgt.addEventListener(sEVENTNAME,oFUNC, bCAPTURE,bPRIO,bWEAK);		
-				 *
-				 */	
-			}
-
-			/**
-			* @param
-			* @return
-			*/
-			public function unRegisterCommand(command : Class<Dynamic>,
-									tgt :EventDispatcher,
-									sEVENTNAME : String) : Void {
-				/*
-				if(_oDico[tgt][sEVENTNAME]!=undefined)
-					tgt.removeEventListener(sEVENTNAME, _oDico[tgt][sEVENTNAME]);	
-				*/
-				trace('TBD');
-			}
-			
-			/**
 			* runApp function
 			* @public
 			* @param 
@@ -164,7 +118,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @public
 			* @return	void
 			*/
-			public function getView( ) {
+			public function getView( ) : AView{
 				return _getView( );
 			}
 
@@ -174,27 +128,12 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @public
 			* @return	void
 			*/
-			public function getModel( ) {
+			public function getModel( ) : AModel{
 				return _getModel( );
 			}
 
 		// -------o private
 			
-			/**
-			* Calling the command and executing it after the event
-			* @param e : Event from which the call is from
-			* @param cCOMMAND	: Command class (CLASS)
-			* @param tgt:Target on which the command will be applied
-			* @return void
-			*/
-			function _onCallCommand(e:Event , ?cCommand:Class<Dynamic> = null , ?tgt:EventDispatcher = null , ?props:Dynamic = null):Void{
-				
-				var oCom : AbstractCommand = Type.createInstance( cCommand , [] ) ;// Factory.build(cCOMMAND , props);
-				BoxObject.accessorInit( oCom , props );
-					oCom.execute(e);
-				
-			}
-		
 		// -------o misc
 			public static function trc(arguments:Dynamic) : Void {
 				//Logger.log(AController,arguments);
