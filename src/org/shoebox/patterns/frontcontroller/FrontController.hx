@@ -52,7 +52,7 @@ class FrontController {
 
 	public var stateChanged : Signal1<String>;
 
-	private var _hTriads    : Hash<MVCTriad<Dynamic,Dynamic,Dynamic>>;
+	private var _hTriads    : Hash<MVCTriad<AModel,AView,AController>>;
 	private var _hStatesDesc: Hash<Array<String>>;
 	private var _hVariables : Hash<Array<Dynamic>>;
 	private var _sState     : String;
@@ -66,7 +66,7 @@ class FrontController {
 		* @return	void
 		*/
 		public function new( ) {
-			_hTriads     = new Hash<MVCTriad<Dynamic,Dynamic,Dynamic>>( );
+			_hTriads     = new Hash<MVCTriad<AModel,AView,AController>>( );
 			_hStatesDesc = new Hash<Array<String>>( );
 			_hVariables  = new Hash<Array<Dynamic>>( );
 			stateChanged = new Signal1( );
@@ -155,7 +155,7 @@ class FrontController {
 		* @private
 		* @return	void
 		*/
-		private function _getState( ) : String{
+		private function _getState( ) : String{git 
 			return _sState;
 		}
 
@@ -214,9 +214,7 @@ class FrontController {
 					
 					//
 						oTri = _hTriads.get( sApp );
-						trace('name :: '+sApp );
 						oTri.codeName = sApp;
-						trace( oTri+' - '+oTri.codeName);
 						oTri.frontController = this;
 						if( _hVariables.exists( sApp ) ){
 							oTri.setVariables( _hVariables.get( sApp ) );

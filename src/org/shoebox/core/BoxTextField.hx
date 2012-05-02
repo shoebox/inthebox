@@ -69,20 +69,18 @@ class BoxTextField{
 		* @return	void
 		*/
 		static public function setFormat( 
-											tf : TextField , 
+											tf          : TextField , 
 											bEmbedFonts : Bool = true , 
-											sFontName : String = null, 
-											iFontSize : Int = 12 , 
-											iCol : Int , 
-											sAlign = null,
-											sAutoSize = null
+											sFontName   : String = null, 
+											iFontSize   : Int = 12 , 
+											iCol        : Int , 
+											sAlign      = null,
+											?bBold       : Bool = false
 											) : Void {
 			
-			if ( sAutoSize != null )
-				tf.autoSize = sAutoSize;
-			
 			tf.embedFonts = bEmbedFonts;
-			tf.defaultTextFormat = new TextFormat( sFontName , iFontSize , iCol , false , false , false , null , null , sAlign );
+			tf.defaultTextFormat = new TextFormat( sFontName , iFontSize , iCol , bBold , false , null , null , null , sAlign );
+		
 		}
 
 	// -------o protected

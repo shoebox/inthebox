@@ -64,6 +64,16 @@ class Test extends Sprite{
 		* @return	void
 		*/
 		private function _run( ) : Void{
+
+
+			var q = new org.shoebox.net.LoadingQueue( );
+				q.add( 0 , 'https://www.google.com/images/srpr/logo3w.png' );
+				q.add( 1 , 'https://www.google.com/images/srpr/logo3w.png' );
+				q.add( 2 , 'https://www.google.com/images/srpr/logo3w.png' );
+				q.add( 3 , 'https://www.google.com/images/srpr/logo3w.png' );
+				q.run( );
+
+			return;
 			nme.ui.Mouse.hide( );
 			var spMain = new Sprite( );
 				//spMain.scaleX = spMain.scaleY = 0.5;
