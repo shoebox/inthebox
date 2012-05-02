@@ -34,6 +34,7 @@ import nme.display.DisplayObject;
 import nme.events.Event;
 import org.shoebox.patterns.frontcontroller.FrontController;
 import org.shoebox.patterns.mvc.abstracts.AModel;
+import org.shoebox.patterns.mvc.abstracts.ABase;
 import org.shoebox.patterns.mvc.abstracts.AView;
 import org.shoebox.patterns.mvc.abstracts.AController;
 import org.shoebox.patterns.mvc.interfaces.IModel;
@@ -47,7 +48,7 @@ import org.shoebox.patterns.commands.ICommand;
  * @author shoe[box]
  */
 
-class MVCTriad<M:(AModel),V:(AView),C:(AController)> extends AbstractCommand , implements ICommand{
+class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> extends AbstractCommand , implements ICommand{
 
 	public var container      : DisplayObjectContainer;
 	public var codeName       : String;
@@ -104,80 +105,55 @@ class MVCTriad<M:(AModel),V:(AView),C:(AController)> extends AbstractCommand , i
 		* @public
 		* @return	void
 		*/
-		public function getSub( t : Triad ) {
-			
-			switch ( t ) {
-
-				case Tri_Mod:
-					return cast mod;
-
-				case Tri_View:
-					return cast view;
-
-				case Tri_Controller:
-					return cast controller;
-				
-			}
-
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
 		override public function onExecute( ? e : Event = null ) : Void {
-			
 			if( container == null )
 				throw new nme.errors.Error('Tri container is not defined');
 
 			//
-				mod = cModel == null ? null : Type.createInstance( cModel , _aVariables == null ? [ ] : _aVariables );
 
-				view = cView == null ? null : Type.createInstance( cView , [ ] );
+				if( cModel != null )
+					mod = Type.createInstance( cModel , _aVariables == null ? [ ] : _aVariables );
 
-				controller = cController == null ? null : Type.createInstance( cController , [ ] );
+				if ( cView != null )
+					view = Type.createInstance( cView , [ ] );
+				
+				if ( cController != null )
+					controller = Type.createInstance( cController , [ ] );
 
 				_aVariables = null;
 
 			//
-				var oMod = mod != null ? cast( mod , AModel ) : null;
-				var oView = view != null ? cast( view , AView ) : null ;
-				var oCtrl = controller != null ? cast( controller , AController ) : null;
 				if( mod != null ){
-					oMod.codeName = codeName;
-					oMod.frontController = frontController;
+					mod.codeName = codeName;
+					mod.frontController = frontController;
 				}
 
 				if( view != null ){
-					oView = cast( view , AView );
-					oView.container = container;
-					oView.initialize( );
+					view.container = container;
+					view.initialize( );
 				}
 
 				if( controller != null ){
-					oCtrl.codeName = codeName;
-					oCtrl.frontController = frontController;
-					oCtrl.initialize( );
+					controller.codeName = codeName;
+					controller.frontController = frontController;
+					controller.initialize( );
 				}
 
 			//
-				if( oMod != null )
-					oMod.initialize( );
+				if( mod != null )
+					mod.initialize( );
 
 			//
-				if( oMod != null )
-					oMod.startUp( );
+				if( mod != null )
+					mod.startUp( );
 
-				if( oView != null )
-					oView.startUp( );
-
-				if( oCtrl != null )
-					oCtrl.startUp( );
+				if( view != null )
+					view.startUp( );
+			
+				if( controller != null )
+					controller.startUp( );
 
 			container.addChild( cast( view , DisplayObject ) );
-			
 		}
 
 		/**
@@ -190,35 +166,23 @@ class MVCTriad<M:(AModel),V:(AView),C:(AController)> extends AbstractCommand , i
 			
 			//
 				if( mod != null )
-					cast( mod , AModel ).onCancel( );
+					mod.onCancel( );
 					mod = null;
 
 			//
 				if( controller != null )
-					cast( controller , AController ).onCancel( );
+					controller.onCancel( );
 					controller = null;
 
 			// 
 				if( view != null ){
-					cast( view , AView ).onCancel( );
+					view.onCancel( );
 					if( container != null )
-						container.removeChild( cast( view , DisplayObject ) );
+						container.removeChild( view );
 					view = null;
 				}
 
-		
 		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		
-		static public function create<M,V,C>( ?m : Class<M> , ?v : Class<V> , ?c : Class<C> , ?container : DisplayObjectContainer = null ) : MVCTriad<M,V,C> {
-			return new MVCTriad<M,V,C>( m , v , c , container );
-		}
-		*/	
 
 	// -------o protected
 	
@@ -226,9 +190,4 @@ class MVCTriad<M:(AModel),V:(AView),C:(AController)> extends AbstractCommand , i
 
 	// -------o misc
 	
-}
-enum Triad{
-	Tri_Mod;
-	Tri_View;
-	Tri_Controller;
 }

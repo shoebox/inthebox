@@ -106,9 +106,8 @@ class FrontController {
 		* @public
 		* @return	void
 		*/
-		public function get( s : String ) : MVCTriad<Dynamic,Dynamic,Dynamic> {
-			var t = _hTriads.get( s );
-			return t;
+		public function get( s : String ) {
+			return _hTriads.get( s );
 		}
 
 		/**
