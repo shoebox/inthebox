@@ -91,7 +91,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function cancel( ):Void{
-				
+				container = null;
 			}
 			
 			/**
@@ -128,7 +128,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			*/
 			public function onCancel( ?e : Event = null ) : Void {
 				
-				
+				trace('onCancel');
 				if( _vDisplayObjects == null ){
 					cancel( );
 					return;
@@ -147,7 +147,6 @@ package org.shoebox.patterns.mvc.abstracts;
 						
 						if( ( cast( d, Bitmap) ).bitmapData != null ){
 							( cast( d, Bitmap) ).bitmapData.dispose( );
-							( cast( d, Bitmap) ).bitmapData = null;
 						}
 						
 					}else if( Std.is( d, Loader) ){

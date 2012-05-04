@@ -75,6 +75,12 @@ class ABase{
 		* @return	void
 		*/
 		private function _getModel( ) : AModel{
+			if( codeName == null )
+				return null;
+
+			if( frontController == null )
+				return null;
+
 			return frontController.getApp( codeName ).mod;
 		}
 
@@ -85,6 +91,12 @@ class ABase{
 		* @return	void
 		*/
 		private function _getView( ) : AView{
+			if( codeName == null )
+				return null;
+
+			if( frontController == null )
+				return null;
+
 			return frontController.getApp( codeName ).view;
 		}
 
@@ -95,6 +107,13 @@ class ABase{
 		* @return	void
 		*/
 		private function _getController( ) : AController{
+			
+			if( codeName == null )
+				return null;
+
+			if( frontController == null )
+				return null;
+
 			return frontController.getApp( codeName ).controller;
 		}
 

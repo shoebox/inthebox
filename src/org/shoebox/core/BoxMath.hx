@@ -199,14 +199,28 @@ class BoxMath
 	}
 
    static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Dynamic {
-	   
-		var rTop : Float = (A.y-C.y)*(D.x-C.x)-(A.x-C.x)*(D.y-C.y);
-        var rBot : Float = (B.x - A.x) * (D.y - C.y) - (B.y - A.y) * (D.x - C.x);
+	   	
+
+   		var ADx = ( D.x - C.x );
+   		var ACx = ( A.x - C.x );
+   		var ACy = ( A.y - C.y );
+   		var DCy = ( D.y - C.y );
+   		var BAx = ( B.x - A.x );
+   		var BAy = ( B.y - A.y );
+
+   		var rTop : Float = ACy * ADx - ACx * DCy;
+        var rBot : Float = BAx * DCy - BAy * ADx;
 		
-		var sTop : Float = (A.y - C.y) * (B.x - A.x) - (A.x - C.x) * (B.y - A.y);
-        var sBot : Float = (B.x - A.x) * (D.y - C.y) - (B.y - A.y) * (D.x - C.x);
+		var sTop : Float = ACy * BAx - ACx * BAy;
+        var sBot : Float = BAx * DCy - BAy * ADx;
 		
-		var oObj : Dynamic = { } ;
+		/*
+		var rTop : Float = ( A.y - C.y ) * ( D.x - C.x ) - ( A.x - C.x ) * ( D.y - C.y );
+        var rBot : Float = ( B.x - A.x ) * ( D.y - C.y ) - ( B.y - A.y ) * ( D.x - C.x );
+		
+		var sTop : Float = ( A.y - C.y ) * ( B.x - A.x ) - ( A.x - C.x ) * ( B.y - A.y );
+        var sBot : Float = ( B.x - A.x ) * ( D.y - C.y ) - ( B.y - A.y ) * ( D.x - C.x );
+        */
 		
 		if ( ( rBot == 0 ) || ( sBot == 0 )) {
 			//Line are parralels
@@ -218,10 +232,11 @@ class BoxMath
 		var s : Float = sTop / sBot;
 		
 		if ( ( r > 0 ) && ( r < 1 ) && ( s > 0 ) && ( s < 1 ) ) {
-			//point = A.add( B.sub( A ).scaleBy( r ) );
-			oObj.point = ( B.sub( A ) ).scaleBy( r ).add( A );
-			oObj.dist = distance( A.x , A.y , B.x , B.y ) * r;
-			return oObj;
+			//point = A.add( B.sub( A ).scaleB.y( r ) );
+			return { 
+						point : ( B.sub( A ) ).scaleBy( r ).add( A ) , 
+						dist : distance( A.x , A.y , B.x , B.y ) * r 
+					};
 		}else {
 			return null;
 		}
@@ -229,4 +244,9 @@ class BoxMath
 		return null;
    }
 
+}
+
+typedef Intersection={
+	public var point : Vector2D;
+	public var dist : Float;
 }

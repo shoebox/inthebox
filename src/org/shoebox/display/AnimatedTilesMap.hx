@@ -4,17 +4,26 @@ import haxe.xml.Fast;
 import nme.display.BitmapData;
 import nme.geom.Point;
 import nme.geom.Rectangle;
+import org.shoebox.core.interfaces.IDispose;
+import org.shoebox.geom.IPosition;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class AnimatedTilesMap extends TilesMap{
+class AnimatedTilesMap extends TilesMap , implements IDispose{
 
+	private var _hCustomCenter : Hash<Point>;
 	private var _hCyclesFrames : Hash<Array<Int>>;
 	private var _hCyclesLen    : Hash<Int>;
-	private var _hCustomCenter : Hash<Point>;
+	private var _hFrameSize    : Hash<IPosition>;
+	#if flash
+	private var _hCache         : Hash<BitmapData>;
+	private var _hIds           : Hash<Int>;
+	private var _hFramesCenters : Hash<Point>;	
+	private static inline var POINT : Point = new Point( );
+	#end
 
 	// -------o constructor
 		
@@ -26,13 +35,92 @@ class AnimatedTilesMap extends TilesMap{
 		*/
 		public function new( bmp : BitmapData ) {
 			super( bmp );
+			_hCustomCenter = new Hash<Point>( );
 			_hCyclesFrames = new Hash<Array<Int>>( );
 			_hCyclesLen    = new Hash<Int>( );
-			_hCustomCenter = new Hash<Point>( );
+			_hFrameSize    = new Hash<IPosition>( );
+
+			#if flash
+			_hCache         = new Hash<BitmapData>( );
+			_hIds           = new Hash<Int>();
+			_hFramesCenters = new Hash<Point>();
+			#end
 		}
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		override public function dispose( ) : Void {
+			super.dispose( );
+			
+			_hCustomCenter = null;
+			_hCyclesFrames = null;
+			//_hCyclesLen    = null;
+			_hFrameSize    = null;
+
+			#if flash
+			if( _hCache != null ){
+				for( bmp in _hCache ){
+					if( bmp != null )
+						bmp.dispose( );
+				}
+			}
+
+			_hCache         = null;
+			_hIds           = null;
+			_hFramesCenters = null;
+
+			#end
+		}
+
+		#if flash
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getBitmapData( sCat : String , sSubCat : String , frameId : Int ) : BitmapData {
+			
+			var s = sCat+'|'+sSubCat+'|'+frameId;
+
+			//Check Cache
+				var bmp : BitmapData = null;
+				if( _hCache.exists( s ) ){
+					return _hCache.get( s );
+				}
+
+			//Not
+			var frameId = _hIds.get( s );
+			var rec = getRectById( frameId );
+			var center = getCenter( frameId );
+			
+			bmp = new BitmapData( Std.int( rec.width ) , Std.int( rec.height ) , true );
+			bmp.copyPixels( nmeBitmap , rec , POINT );
+			_hCache.set( s , bmp );
+			
+			return bmp;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getFrameCenter( sCat : String , sSubCat : String , frameId : Int ) : Point {
+			var s = sCat+'|'+sSubCat+'|'+frameId;	
+			return _hFramesCenters.get( s );
+		}
+
+		#end
+
 		/**
 		* 
 		* 
@@ -49,8 +137,18 @@ class AnimatedTilesMap extends TilesMap{
 		* @public
 		* @return	void
 		*/
-		public function getCycleId( sCycle : String , frame : Int ) : Int {
+		public function getCycleId( sCycle : String , frame : Int  ) : Int {
 			return _hCyclesFrames.get( sCycle )[ frame ];
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getSubCycleId( sCat : String , sCycle : String , frame : Int ) : Int {
+			return _hCyclesFrames.get( sCat+'|'+sCycle )[ frame ];
 		}
 
 		/**
@@ -61,6 +159,16 @@ class AnimatedTilesMap extends TilesMap{
 		*/
 		public function getCycleLen( sCycle : String ) : Int {
 			return _hCyclesLen.get( sCycle );						
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getSubCycleLen( sCat : String , sCycle : String ) : Int {
+			return _hCyclesLen.get( sCat+'|'+sCycle );					
 		}
 
 		/**
@@ -129,9 +237,112 @@ class AnimatedTilesMap extends TilesMap{
 
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function parseJson( s : String ) : Void {
+
+			var desc = haxe.Json.parse( s );
+			var fields = Reflect.fields ( desc.frames );
+			var entry : JSONEntry;
+
+			
+			var r1 = ~/([^\/]+)\/([^\/]+)\/([^.]+).([^\/]+)/;
+			//var r2 = ~/([^\/]+)\/([^\/]+)\/([^\/]+)/;
+
+			var aIds   : Array<Int>;
+			var iFrame : Int = 0;
+			var iLen    : Int;
+			var pt      : Point = new Point( );
+			var rec     : Rectangle = new Rectangle( );
+			var sCat    : String = '';
+			var sCycle  : String = '';
+			var sSub    : String;
+			var iEntryId : Int;
+			for( s in fields ){
+				entry = Reflect.field ( desc.frames , s );
+
+				// Parsing file name & directory to cat / subcat 
+					if( r1.match( s ) ){
+						sCat = r1.matched( 1 );
+						sSub = r1.matched( 2 );
+						iFrame = Std.parseInt( r1.matched( 3 ));
+						sCycle = sCat+'|'+sSub;
+					}				
+
+				// Cycle len inc
+					if( _hCyclesLen.exists( sCycle ) )
+						iLen = _hCyclesLen.get( sCycle );
+					else 
+						iLen = 0;
+						iLen++;
+					_hCyclesLen.set( sCycle , iLen );
+
+				//
+					rec.x      = entry.frame.x;
+					rec.y      = entry.frame.y;
+					rec.width  = entry.frame.w;
+					rec.height = entry.frame.h;
+
+				//
+					if( _hCyclesFrames.exists( sCycle ) )
+						aIds = _hCyclesFrames.get( sCycle );
+					else
+						aIds = new Array<Int>( );
+
+				//
+					var ptCenter : Point = new Point( 
+															entry.sourceSize.w / 2 - entry.spriteSourceSize.x,
+															entry.sourceSize.h / 2 - entry.spriteSourceSize.y
+															) ;
+					iEntryId = aIds[ iFrame ] = addByName( s , rec.clone( ) , ptCenter );
+					#if flash
+					_hIds.set( sCycle+'|'+iFrame , iEntryId );
+					_hFramesCenters.set( sCycle+'|'+iFrame , ptCenter );
+					#end
+					_hCyclesFrames.set( sCycle , aIds );
+
+				//
+					if( !_hFrameSize.exists( sCat ) ){
+						_hFrameSize.set( sCat , { x : entry.sourceSize.w , y : entry.sourceSize.h } );
+					}
+			}
+			
+			
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getFrameSize( sCat : String ) : IPosition {
+			return _hFrameSize.get( sCat );
+		}
 		
 	// -------o protected
 	
 	// -------o misc
 	
+}
+typedef JSONEntry={
+	public var frame : JSONRec;
+	public var rotated : Bool;
+	public var trimmed : Bool;
+	public var spriteSourceSize : JSONRec;
+	public var sourceSize : JSONSize;
+}
+typedef JSONRec={
+	public var x : Int;
+	public var y : Int;
+	public var w : Int;
+	public var h : Int;
+}
+typedef JSONSize={
+	public var w : Int;
+	public var h : Int;
 }

@@ -1,5 +1,7 @@
 package org.shoebox.display;
 
+import nme.display.Bitmap;
+import nme.display.Sprite;
 import nme.display.Tilesheet;
 import org.shoebox.display.AnimatedTilesMap;
 import org.shoebox.display.tile.TileDesc;
@@ -10,8 +12,11 @@ import org.shoebox.geom.IPosition;
  * ...
  * @author shoe[box]
  */
-
+#if flash
+class AnimatedTile extends Sprite{
+#else
 class AnimatedTile{
+#end
 
 	public var cycle( default , _setCycle ) : String;
 
@@ -19,14 +24,15 @@ class AnimatedTile{
 	private var _bInnvalidate : Bool;
 	private var _bLoop        : Bool;
 	private var _bPlaying     : Bool;
+	private var _bmp          : Bitmap;
 	private var _fCenter      : FPoint;
 	private var _fPosition    : FPoint;
 	private var _iCycleLen    : Int;
 	private var _iFrame       : Int;
 	private var _iLoopTime    : Int;
-	private var _iSize        : IPosition;
 	private var _iTimeElapsed : Int;
 	private var _refMap       : AnimatedTilesMap;
+	private var _sCat         : String;
 	private var _tileDesc     : TileDesc;
 	
 	// -------o constructor
@@ -37,7 +43,22 @@ class AnimatedTile{
 		* @param	
 		* @return	void
 		*/
-		public function new( width : Int , height : Int , refMap : AnimatedTilesMap , fps : Int = 30 ) {
+		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 12 ) {
+			
+			#if flash
+			super( );
+			_bmp = new Bitmap( );
+			addChild( _bmp );
+			//_bmp.alpha = 0.2;
+			#if debug
+			graphics.lineStyle( 0.1 , 0 );
+			graphics.moveTo( -10 , 0 );
+			graphics.lineTo( 10 , 0 );
+			graphics.moveTo( 0 , -10 );
+			graphics.lineTo( 0 , 10 );
+			#end
+			#end
+
 			_bInnvalidate = true;
 			_bLoop        = true;
 			_bPlaying     = true;
@@ -45,14 +66,25 @@ class AnimatedTile{
 			_fPosition    = { x : 0.0 , y : 0.0 };
 			_iCycleLen    = 0;
 			_iFrame       = 0;
-			_iSize        = { x : width , y : height };
 			_iTimeElapsed = 0;
 			_refMap       = refMap;
+			_sCat         = sCat;
 			_tileDesc     = new TileDesc( 0 , 0 , 0 );
 		}
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function dispose( ) : Void {
+			_refMap.dispose( );
+			_tileDesc = null;	
+		}
+
 		/**
 		* 
 		* 
@@ -183,10 +215,8 @@ class AnimatedTile{
 				if( _iFrame >= _iCycleLen )
 					_iFrame = 0;
 				_iTimeElapsed -= _iLoopTime;
-			}			
-
-
-
+			}
+			
 			//
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
 				if (fRatio >= 1) {
@@ -201,7 +231,15 @@ class AnimatedTile{
 
 			//
 				_iFrame = Math.round ( fRatio * ( _iCycleLen - 1) );
-		
+			
+			//
+				#if flash
+					var pt = _refMap.getFrameCenter(  _sCat , cycle , _iFrame );
+					var bmp = _refMap.getBitmapData( _sCat , cycle , _iFrame );
+					_bmp.x = -pt.x;
+					_bmp.y = -pt.y;
+					_bmp.bitmapData = bmp;
+				#end
 		}
 
 		/**
@@ -249,7 +287,7 @@ class AnimatedTile{
 			cycle         = s;
 			_iFrame       = 0;
 			_bInnvalidate = true;
-			_iCycleLen    = _refMap.getCycleLen( s );
+			_iCycleLen    = _refMap.getSubCycleLen( _sCat , s );
 			_iLoopTime    = Std.int( (_iCycleLen  / 30 ) * 1000);
 			
 			return s;

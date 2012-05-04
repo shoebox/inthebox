@@ -132,7 +132,7 @@ package org.shoebox.libs.nevermind.entity;
 					_vSteer.scaleBy( _nFactor );
 				}
 				
-				_vVelocity.incrementBy( _vSteer );
+				velocity.incrementBy( _vSteer );
 				
 				
 				

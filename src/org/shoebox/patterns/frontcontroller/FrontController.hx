@@ -154,7 +154,7 @@ class FrontController {
 		* @private
 		* @return	void
 		*/
-		private function _getState( ) : String{git 
+		private function _getState( ) : String{
 			return _sState;
 		}
 

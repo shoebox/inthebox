@@ -96,7 +96,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			*/
 			override public function onCancel( ) : Void {
 				
-				trace('onCancel');
 				cancel( );
 				super.onCancel( );
 				

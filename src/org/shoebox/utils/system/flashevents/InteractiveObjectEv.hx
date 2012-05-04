@@ -134,6 +134,16 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
+		static public function mouseOut( d : InteractiveObject , b : Bool = false) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.MOUSE_OUT , b );						
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		static public function mouseWheel( d : InteractiveObject , b : Bool = false ) : SignalEvent<MouseEvent> {
 			return _mouseEvCreate( d , MouseEvent.MOUSE_WHEEL , b );
 		}

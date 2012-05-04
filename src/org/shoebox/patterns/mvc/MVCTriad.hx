@@ -129,7 +129,7 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 				}
 
 				if( view != null ){
-					view.container = container;
+					//view.container = container;
 					view.initialize( );
 				}
 
@@ -167,21 +167,23 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 			//
 				if( mod != null )
 					mod.onCancel( );
-					mod = null;
-
+				
 			//
 				if( controller != null )
 					controller.onCancel( );
-					controller = null;
-
+				
 			// 
 				if( view != null ){
 					view.onCancel( );
 					if( container != null )
 						container.removeChild( view );
-					view = null;
 				}
 
+			//
+				mod        = null;
+				view       = null;
+				controller = null;
+			trace('onCancel');
 		}
 
 	// -------o protected

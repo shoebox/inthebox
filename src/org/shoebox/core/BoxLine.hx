@@ -29,7 +29,6 @@
 */
 package org.shoebox.core;
 
-import fr.hyperfiction.caos.core.Variables;
 import nme.Lib;
 import nme.display.Sprite;
 import org.shoebox.core.Vector2D;
