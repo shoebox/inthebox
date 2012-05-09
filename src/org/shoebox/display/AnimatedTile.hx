@@ -45,18 +45,23 @@ class AnimatedTile{
 		*/
 		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 12 ) {
 			
-			#if flash
 			super( );
-			_bmp = new Bitmap( );
-			addChild( _bmp );
-			//_bmp.alpha = 0.2;
-			#if debug
-			graphics.lineStyle( 0.1 , 0 );
-			graphics.moveTo( -10 , 0 );
-			graphics.lineTo( 10 , 0 );
-			graphics.moveTo( 0 , -10 );
-			graphics.lineTo( 0 , 10 );
-			#end
+
+			#if flash
+			
+				_bmp = new Bitmap( );
+				addChild( _bmp );
+			
+				#if debug
+					var spDebug = new Sprite( );
+						spDebug.graphics.lineStyle( 0.1 , 0 );
+						spDebug.graphics.moveTo( -10 , 0 );
+						spDebug.graphics.lineTo( 10 , 0 );
+						spDebug.graphics.moveTo( 0 , -10 );
+						spDebug.graphics.lineTo( 0 , 10 );
+					addChild( spDebug );
+				#end
+
 			#end
 
 			_bInnvalidate = true;
