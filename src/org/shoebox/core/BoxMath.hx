@@ -199,7 +199,7 @@ class BoxMath
 		return RAD_TO_DEG * Math.atan2( dx , dy );
 	}
 
-   inline static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Intersection {
+   static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Intersection {
 	   	
    		var ADx = ( D.x - C.x );
    		var ACx = ( A.x - C.x );
