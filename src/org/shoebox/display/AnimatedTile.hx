@@ -15,7 +15,7 @@ import org.shoebox.geom.IPosition;
 #if flash
 class AnimatedTile extends Sprite{
 #else
-class AnimatedTile{
+class AnimatedTile extends TileDesc{
 #end
 
 	public var cycle( default , _setCycle ) : String;
@@ -33,7 +33,10 @@ class AnimatedTile{
 	private var _iTimeElapsed : Int;
 	private var _refMap       : AnimatedTilesMap;
 	private var _sCat         : String;
+
+	#if flash
 	private var _tileDesc     : TileDesc;
+	#end
 	
 	// -------o constructor
 		
@@ -45,10 +48,14 @@ class AnimatedTile{
 		*/
 		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 12 ) {
 			
-			super( );
+			#if flash
+				super( );
+			#else
+				super( 0 , 0 , 0 );
+			#end
 
 			#if flash
-			
+
 				_bmp = new Bitmap( );
 				addChild( _bmp );
 			
@@ -74,7 +81,9 @@ class AnimatedTile{
 			_iTimeElapsed = 0;
 			_refMap       = refMap;
 			_sCat         = sCat;
+			#if flash
 			_tileDesc     = new TileDesc( 0 , 0 , 0 );
+			#end
 		}
 	
 	// -------o public
@@ -87,7 +96,9 @@ class AnimatedTile{
 		*/
 		public function dispose( ) : Void {
 			_refMap.dispose( );
+			#if flash
 			_tileDesc = null;	
+			#end
 		}
 
 		/**
@@ -116,80 +127,14 @@ class AnimatedTile{
 		* @public
 		* @return	void
 		*/
-		public function getTileDesc( iFlags : Int = Tilesheet.TILE_SCALE ) : TileDesc {
-			_tileDesc.x      = _fPosition.x;
-			_tileDesc.y      = _fPosition.y;
-			_tileDesc.format = iFlags;
-			_tileDesc.tileId = _refMap.getCycleId( cycle , _iFrame );	
-			return _tileDesc;	
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function getFrameArray( iFlags : Int = Tilesheet.TILE_SCALE ) : Array<Float> {
-			
-			return getTileDesc( iFlags ).getArray( );
-
-			/*
-			//if( _bInnvalidate ){
-
-			//
-				var id 			= _refMap.getCycleId( cycle , _iFrame );
-				var bounds 		= _refMap.getRectById( id );
-				var useScale 	= (iFlags & Tilesheet.TILE_SCALE) > 0;
-				var useRotation = (iFlags & Tilesheet.TILE_ROTATION) > 0;
-				var useRGB 		= (iFlags & Tilesheet.TILE_RGB) > 0;
-				var useAlpha 	= (iFlags & Tilesheet.TILE_ALPHA) > 0;
-				
-
-			//x, y, tile ID, scale, rotation, red, green, blue, alpha
-				_aFrame = [ _fPosition.x , _fPosition.y , id ];		
-				var inc = 3;
-
-			//
-				if( useScale )
-					_aFrame[ inc++ ] = 1;
-			
-			//
-				if( useRotation )
-					_aFrame[ inc++] = 0;
-
-			//
-				if( useRGB ){
-					_aFrame[ inc++] = 1;
-					_aFrame[ inc++] = 1;
-					_aFrame[ inc++] = 1;
-				}
-
-			//
-				if( useAlpha )
-					_aFrame[inc++] = 1;
-
-			_bInnvalidate = false;
-
-			return _aFrame;			
-			*/			
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
 		public function setPosition( fx : Float , fy : Float ) : Void {
 
 			if( _fPosition.x == fx && _fPosition.y == fy )
 				return;
 
-			_fPosition.x  = fx;
-			_fPosition.y  = fy;
+			x = _fPosition.x = fx;
+			y = _fPosition.y = fy;
 			_bInnvalidate = true;
-
 		}
 
 		/**

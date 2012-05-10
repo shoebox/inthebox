@@ -63,7 +63,7 @@ class ABase{
 		* @return	void
 		*/
 		public function onCancel( ) : Void {
-			frontController = null;	
+			
 		}
 
 	// -------o protected

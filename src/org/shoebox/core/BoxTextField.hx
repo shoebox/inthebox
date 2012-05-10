@@ -74,8 +74,8 @@ class BoxTextField{
 											sFontName   : String = null, 
 											iFontSize   : Int = 12 , 
 											iCol        : Int , 
-											sAlign      = null,
-											?bBold       : Bool = false
+											sAlign     = null,
+											?bBold      : Bool = false
 											) : Void {
 			
 			tf.embedFonts = bEmbedFonts;

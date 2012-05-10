@@ -31,6 +31,7 @@
 package org.shoebox.core;
 
 import org.shoebox.geom.FPoint;
+import org.shoebox.geom.AABB;
 
 /**
  * ...
@@ -198,9 +199,8 @@ class BoxMath
 		return RAD_TO_DEG * Math.atan2( dx , dy );
 	}
 
-   static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Dynamic {
+   inline static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Intersection {
 	   	
-
    		var ADx = ( D.x - C.x );
    		var ACx = ( A.x - C.x );
    		var ACy = ( A.y - C.y );
@@ -214,20 +214,11 @@ class BoxMath
 		var sTop : Float = ACy * BAx - ACx * BAy;
         var sBot : Float = BAx * DCy - BAy * ADx;
 		
-		/*
-		var rTop : Float = ( A.y - C.y ) * ( D.x - C.x ) - ( A.x - C.x ) * ( D.y - C.y );
-        var rBot : Float = ( B.x - A.x ) * ( D.y - C.y ) - ( B.y - A.y ) * ( D.x - C.x );
-		
-		var sTop : Float = ( A.y - C.y ) * ( B.x - A.x ) - ( A.x - C.x ) * ( B.y - A.y );
-        var sBot : Float = ( B.x - A.x ) * ( D.y - C.y ) - ( B.y - A.y ) * ( D.x - C.x );
-        */
-		
 		if ( ( rBot == 0 ) || ( sBot == 0 )) {
 			//Line are parralels
 			return null;
 		}
 		
-		var point : Vector2D;
 		var r : Float = rTop / rBot;
 		var s : Float = sTop / sBot;
 		
@@ -245,6 +236,8 @@ class BoxMath
    }
 
 }
+
+
 
 typedef Intersection={
 	public var point : Vector2D;

@@ -126,9 +126,10 @@ class LoaderQueueItem extends Loader{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
+			#if flash
 			if( _oLoader != null )
 				_oLoader.close( );	
-
+			#end
 			_fCallback = null;
 			contentLoaderInfo.removeEventListener( Event.COMPLETE , _onLoaded , false );
 		}

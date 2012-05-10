@@ -180,10 +180,17 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 				}
 
 			//
+				if( mod != null )
+					mod.frontController = null;
+
+				if( controller != null )
+					controller.frontController = null;
+
+			//
 				mod        = null;
 				view       = null;
 				controller = null;
-			trace('onCancel');
+		
 		}
 
 	// -------o protected

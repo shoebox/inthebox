@@ -42,11 +42,8 @@ class Vector2D {
 	public var length	( _getLength 	, _setLength ) 	: Float;
 	public var lengthSQ	( _getLengthSquare 	, null ) 	: Float;
 	public var angle	( _getAngle 	, _setAngle ) 	: Float;
-	public var x		( default 		, _setPosX ) 	: Float;
-	public var y		( default 		, _setPosY ) 	: Float;
-	
-	//public var this.x			: Float;
-	//public var this.y 			: Float;
+	public var x		( default 		, default ) 	: Float;
+	public var y		( default 		, default ) 	: Float;
 	
 	// -------o constructor
 		
@@ -443,29 +440,6 @@ class Vector2D {
 			return Math.atan2( this.y , this.x );
 		}
 		
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _setPosX( pos : Float ) : Float {
-			this.x = pos;
-			return this.x;
-		}
-		
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _setPosY( pos : Float ) : Float {
-			this.y = pos;
-			return this.y;
-		}
-		
-
 	// -------o misc
 	
 }
