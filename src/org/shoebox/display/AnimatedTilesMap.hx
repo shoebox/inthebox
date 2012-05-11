@@ -60,20 +60,21 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			
 			_hCustomCenter = null;
 			_hCyclesFrames = null;
-			//_hCyclesLen    = null;
+			_hCyclesLen    = null;
 			_hFrameSize    = null;
 
 			#if flash
-			if( _hCache != null ){
-				for( bmp in _hCache ){
-					if( bmp != null )
-						bmp.dispose( );
+			
+				if( _hCache != null ){
+					for( bmp in _hCache ){
+						if( bmp != null )
+							bmp.dispose( );
+					}
 				}
-			}
 
-			_hCache         = null;
-			_hIds           = null;
-			_hFramesCenters = null;
+				_hCache         = null;
+				_hFramesCenters = null;
+				_hIds           = null;
 
 			#end
 		}
@@ -88,8 +89,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		*/
 		public function getBitmapData( sCat : String , sSubCat : String , frameId : Int ) : BitmapData {
 			
-			var s = sCat+'|'+sSubCat+'|'+frameId;
-
+			var s = _getCode( sCat , sSubCat , frameId );
+			
 			//Check Cache
 				var bmp : BitmapData = null;
 				if( _hCache.exists( s ) ){
@@ -97,16 +98,18 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 				}
 
 			//Not
-			var frameId = _hIds.get( s );
-			var rec = getRectById( frameId );
-			var center = getCenter( frameId );
+				var frameId = _hIds.get( s );
+				var rec = getRectById( frameId );
+				var center = getCenter( frameId );
 			
-			bmp = new BitmapData( Std.int( rec.width ) , Std.int( rec.height ) , true );
-			bmp.copyPixels( nmeBitmap , rec , POINT );
-			_hCache.set( s , bmp );
+			//
+				bmp = new BitmapData( Std.int( rec.width ) , Std.int( rec.height ) , true );
+				bmp.copyPixels( nmeBitmap , rec , POINT );
+				_hCache.set( s , bmp );
 			
 			return bmp;
 		}
+
 
 		/**
 		* 
@@ -115,8 +118,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		* @return	void
 		*/
 		public function getFrameCenter( sCat : String , sSubCat : String , frameId : Int ) : Point {
-			var s = sCat+'|'+sSubCat+'|'+frameId;	
-			return _hFramesCenters.get( s );
+			return _hFramesCenters.get( _getCode( sCat , sSubCat , frameId ) );
 		}
 
 		#end
@@ -251,8 +253,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 
 			
 			var r1 = ~/([^\/]+)\/([^\/]+)\/([^.]+).([^\/]+)/;
-			//var r2 = ~/([^\/]+)\/([^\/]+)\/([^\/]+)/;
-
+			
 			var aIds   : Array<Int>;
 			var iFrame : Int = 0;
 			var iLen    : Int;
@@ -322,6 +323,16 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		*/
 		public function getFrameSize( sCat : String ) : IPosition {
 			return _hFrameSize.get( sCat );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _getCode( sCat : String , sSubCat : String , frameId : Int ) : String{
+			return sCat+'|'+sSubCat+'|'+frameId;
 		}
 		
 	// -------o protected

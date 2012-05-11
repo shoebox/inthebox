@@ -195,8 +195,6 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 
 	// -------o protected
 	
-		
-
 	// -------o misc
 	
 }

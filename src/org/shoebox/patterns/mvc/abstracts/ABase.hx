@@ -75,6 +75,7 @@ class ABase{
 		* @return	void
 		*/
 		private function _getModel( ) : AModel{
+			
 			if( codeName == null )
 				return null;
 
@@ -91,6 +92,7 @@ class ABase{
 		* @return	void
 		*/
 		private function _getView( ) : AView{
+
 			if( codeName == null )
 				return null;
 

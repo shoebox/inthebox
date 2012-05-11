@@ -123,8 +123,8 @@ package org.shoebox.libs.nevermind.entity;
 				
 				for ( o in _aBehaviors ) {
 					
-					v = o.calculate();
-					v.scaleBy(o.nWeight );
+					v = o.calculate( );
+					v = v.scaleBy(o.nWeight );
 					_vSteer.incrementBy( v );
 				}
 				
@@ -138,6 +138,7 @@ package org.shoebox.libs.nevermind.entity;
 				
 				//trace( _vVELOCITY );
 				_vSteer.reset();
+
 				super.update();
 			}
 			

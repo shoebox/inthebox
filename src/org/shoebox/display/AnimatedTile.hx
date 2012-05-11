@@ -95,7 +95,6 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			_refMap.dispose( );
 			#if flash
 			_tileDesc = null;	
 			#end
@@ -184,11 +183,13 @@ class AnimatedTile extends TileDesc{
 			
 			//
 				#if flash
-					var pt = _refMap.getFrameCenter(  _sCat , cycle , _iFrame );
+					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
 					var bmp = _refMap.getBitmapData( _sCat , cycle , _iFrame );
-					_bmp.x = -pt.x;
-					_bmp.y = -pt.y;
+					_bmp.x  = -pt.x;
+					_bmp.y  = -pt.y;
 					_bmp.bitmapData = bmp;
+				#else
+				tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
 				#end
 		}
 
