@@ -81,7 +81,7 @@ class Circle{
 			var fDem = Math.sqrt( U.x * U.x + U.y * U.y );
 			var CI = fNum / fDem;
 			return CI < radius;
-			
+
 		}
 
 		/**
@@ -118,7 +118,7 @@ class Circle{
 			if ( f1 >= 0 && f2 >= 0 )
 				return true;
 
-			return ( inCircle( A.x , A.y ) || inCircle( B.x , B.y ) );
+			return ( vsPoint( A.x , A.y ) || vsPoint( B.x , B.y ) );
 			
 		}
 
@@ -130,8 +130,30 @@ class Circle{
 		* @param 	fy : Point Y position ( Float )
 		* @return	true if collision ( Bool )
 		*/
-		public function inCircle( fx : Float , fy : Float ) : Bool {
+		public function vsPoint( fx : Float , fy : Float ) : Bool {
 			return BoxMath.lengthSq( center.x - fx , center.y - fy ) <= radius;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function vsCircle( c : Circle ) : FPoint {
+			
+			var fx = c.center.x - center.x;
+			var fy = c.center.y - center.y;
+			var rad = c.radius + radius;
+
+			if ( BoxMath.length( fx , fy ) > rad * rad )
+				return null;
+
+			var res = { 
+							x : ( c.center.x * radius + center.x * c.radius ) / ( radius + c.radius ),
+							y : ( c.center.y * radius + center.y * c.radius ) / ( radius + c.radius )
+						};
+			return res;
 		}
 
 	// -------o protected
