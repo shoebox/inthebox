@@ -31,6 +31,7 @@ package org.shoebox.geom;
 
 import nme.display.Graphics;
 import nme.geom.Rectangle;
+import org.shoebox.geom.FPoint;
 
 /**
  * ...
@@ -41,8 +42,9 @@ class AABB{
 
 	public var width( _getWidth , null ) : Float;
 	public var height( _getHeight , null ) : Float;
-	public var min : Pos;
-	public var max : Pos;
+	public var min   : FPoint;
+	public var max   : FPoint;
+	public var center: FPoint;
 
 	// -------o constructor
 		
@@ -53,8 +55,12 @@ class AABB{
 		* @return	void
 		*/
 		public function new( l : Float = 0.0 , t : Float = 0.0 , r : Float = 0.0 , b : Float = 0.0 ) {
-			min = { x : l , y : t };
-			max = { x : r , y : b };
+			min    = { x : l , y : t };
+			max    = { x : r , y : b };
+			center = { 
+						x : min.x + ( max.x - min.x ) / 2 ,
+						y : min.y + ( max.y - min.y ) / 2
+					};
 		}
 	
 	// -------o public
