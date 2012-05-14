@@ -29,9 +29,6 @@
 */
 package org.shoebox.collections;
 
-import nme.Lib;
-import nme.display.Sprite;
-import org.shoebox.geom.IPosition;
 
 /**
  * ...
@@ -47,93 +44,109 @@ private typedef Array2DDef<T> = {
 class Array2D<T>{
 
 	public var length ( _getLength , null ) : Int;
+	public var width ( default , _setWidth ) : Int;
+	public var height ( default , _setHeight ) : Int;
 	
-	var _aContent				: Array<T>;
-	var _iWidth					: Int;
-	var _iHeight				: Int;	
+	private var _aContent : Array<T>;
+	private var _iWidth   : Int;
+	private var _iHeight  : Int;	
 	
 	// -------o constructor
 		
 		/**
-		* Array 2D constructor
+		* Create a new Array2D collection
 		* 
 		* @public
-		* @param	container : optional container reference	( DisplayObjectContainer ) 
+		* @param	width  : Size X ( Int )
+		* @param	height : Size Y ( Int )
 		* @return	void
 		*/
-		public function new( iW : Int , iH : Int ) {
+		public function new( w : Int , h : Int ) {
 			_aContent = new Array<T>( );
-			_iWidth = iW;
-			_iHeight = iH;
+			_iWidth   = w;
+			_iHeight  = h;
 		}
 	
 	// -------o public
 		
 		/**
-		* 
+		* Validate than the coordinates are contained in the Array2D Bounds
 		* 
 		* @public
-		* @return	void
+		* @return	true if coordinates are valid ( Bool )
 		*/
 		public function validate( dx : Int , dy : Int ) : Bool {
 			return ( dx >= 0 && dy >= 0 && dx < _iWidth && dy < _iHeight );
 		}
 
 		/**
-		* 
+		* Convert the position to Index
 		* 
 		* @public
-		* @return	void
+		* @param 	dx : X position ( Int )
+		* @param 	dy : Y position ( Int )
+		* @return	index position in the Array ( Int )
 		*/
 		inline public function getIndex( dx : Int , dy : Int ) : Int{
 			return dy * _iWidth + dx;
 		}
 		
 		/**
+		* Set a value inside the Array
 		* 
-		* 
-		* @public
-		* @return	void
+		* @param 	dx : X position 		( Int )
+		* @param 	dy : Y position 		( Int )
+		* @param	value : Value to insert ( T )
+		* @return	true if valid 			( Bool )
 		*/
 		inline public function set( dx : Int , dy : Int , value : T ) : Bool{
 			return _set( dx , dy , value );
 		}
 		
 		/**
-		* 
+		* Get the value at position
 		* 
 		* @public
-		* @return	void
+		* @param 	dx : X position 		( Int )
+		* @param 	dy : Y position 		( Int )
+		* @return	value at position		( Int )
 		*/
 		inline public function get( dx : Int , dy : Int ) : T{
 			return _get( dx , dy );
 		}
 
 		/**
-		* 
+		* Iterator of the Array2D content
 		* 
 		* @public
-		* @return	void
+		* @return	iterator of the Array2D content ( Array2DIterator<T> )
 		*/
 		public function iterator() : Array2DIterator<T>{
 			return new Array2DIterator<T>( this );
 		}
 
 		/**
-		* 
+		* Check if the content at position is not null
 		* 
 		* @public
-		* @return	void
+		* @param 	dx : X position 		( Int )
+		* @param 	dy : Y position 		( Int )
+		* @return	true if not null		( Bool )
 		*/
 		inline public function hasContentAt( dx : Int , dy : Int ) : Bool {
 			return _aContent[getIndex( dx , dy )] != null;
 		}
 
 		/**
-		* Getting a region of the Array with the default concat
+		* Get the content of a region of the Array2D
 		* 
 		* @public
-		* @return	void
+		* @param 	minX : AABB min X ( Int )
+		* @param 	minY : AABB min Y ( Int )
+		* @param 	maxX : AABB max X ( Int )
+		* @param 	maxY : AABB max Y ( Int )
+		* @param	res  : Optional Array to be populated ( Array<T> )
+		* @return	content of the region Array<T>
 		*/
 		public function getRegion( minX : Int , minY : Int , maxX : Int , maxY : Int , res : Array<T> = null ) : Array<T> {
 
@@ -146,10 +159,16 @@ class Array2D<T>{
 		}
 
 		/**
-		* 
+		* Get the content of a region of the Array2D with a custom Concatenator
 		* 
 		* @public
-		* @return	void
+		* @param 	minX : AABB min X ( Int )
+		* @param 	minY : AABB min Y ( Int )
+		* @param 	maxX : AABB max X ( Int )
+		* @param 	maxY : AABB max Y ( Int )
+		* @param	res  : Optional Array to be populated ( Array<T> )
+		* @param	fContent  : Optional Concat function ( Array<T> -> Array<B> -> Array<B> )
+		* @return	content of the region Array<T>
 		*/
 		public function getRegionCustom<B>( minX : Int , minY : Int , maxX : Int , maxY : Int , res : Array<B> , fConcat : Array<T> -> Array<B> -> Array<B> = null ) : Array<B> {
 			
@@ -160,7 +179,7 @@ class Array2D<T>{
 		}	
 
 		/**
-		* 
+		* Trace the Array2D content
 		* 
 		* @public
 		* @return	void
@@ -182,31 +201,58 @@ class Array2D<T>{
 	// -------o protected
 		
 		/**
-		* 
+		* Size X of the Array2D
 		* 
 		* @private
-		* @return	void
+		* @param 	w : X size of the Array2D ( Int )
+		* @return	Int
+		*/
+		private function _setWidth( w : Int ) : Int{
+			return _iWidth = w;
+		}
+
+		/**
+		* Size Y of the Array2D
+		* 
+		* @private
+		* @param 	h : Y size of the Array2D ( Int )
+		* @return	Int
+		*/
+		private function _setHeight( h : Int ) : Int{
+			return _iHeight = h;
+		}
+
+		/**
+		* Getter of the Array2D length;
+		* 
+		* @private
+		* @return	Array2D length ( Int )
 		*/
 		inline private function _getLength( ) : Int{
 			return _iWidth * _iHeight;
 		}
 	
 		/**
-		* 
+		* Setter of the content at position
 		* 
 		* @private
-		* @return	void
+		* @param 	dx : X position 		( Int )
+		* @param 	dy : Y position 		( Int )
+		* @param 	value : Value to insert	( T )
+		* @return	Bool
 		*/
 		inline private function _set( dx : Int , dy : Int , value : T ) : Bool{
-			_aContent[getIndex( dx , dy )] = value;
+			_aContent[ getIndex( dx , dy ) ] = value;
 			return true;
 		}
 		
 		/**
-		* 
+		* Get the content at position
 		* 
 		* @private
-		* @return	void
+		* @param 	dx : X position 		( Int )
+		* @param 	dy : Y position 		( Int )
+		* @return	value at position		( T )
 		*/
 		inline private function _get( dx : Int , dy : Int ) : T{
 			return _aContent [ getIndex( dx , dy ) ];

@@ -7,6 +7,7 @@ import org.shoebox.display.AnimatedTilesMap;
 import org.shoebox.display.tile.TileDesc;
 import org.shoebox.geom.FPoint;
 import org.shoebox.geom.IPosition;
+import org.shoebox.utils.system.Signal;
 
 /**
  * ...
@@ -17,17 +18,20 @@ class AnimatedTile extends Sprite{
 #else
 class AnimatedTile extends TileDesc{
 #end
-
+	
+	public var loop( default , default ) : Bool;
 	public var cycle( default , _setCycle ) : String;
+
+	public var onComplete : Signal;
 
 	private var _aFrame       : Array<Float>;
 	private var _bInnvalidate : Bool;
-	private var _bLoop        : Bool;
 	private var _bPlaying     : Bool;
 	private var _bmp          : Bitmap;
 	private var _fCenter      : FPoint;
 	private var _fPosition    : FPoint;
 	private var _iCycleLen    : Int;
+	private var _iFps         : Int;
 	private var _iFrame       : Int;
 	private var _iLoopTime    : Int;
 	private var _iTimeElapsed : Int;
@@ -46,7 +50,7 @@ class AnimatedTile extends TileDesc{
 		* @param	
 		* @return	void
 		*/
-		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 12 ) {
+		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 30 ) {
 			
 			#if flash
 				super( );
@@ -72,7 +76,7 @@ class AnimatedTile extends TileDesc{
 			#end
 
 			_bInnvalidate = true;
-			_bLoop        = true;
+			loop          = true;
 			_bPlaying     = true;
 			_fCenter      = { x : 0.0 , y : 0.0 };
 			_fPosition    = { x : 0.0 , y : 0.0 };
@@ -81,6 +85,7 @@ class AnimatedTile extends TileDesc{
 			_iTimeElapsed = 0;
 			_refMap       = refMap;
 			_sCat         = sCat;
+			_iFps         = fps;
 			#if flash
 			_tileDesc     = new TileDesc( 0 , 0 , 0 );
 			#end
@@ -170,11 +175,14 @@ class AnimatedTile extends TileDesc{
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
 				if (fRatio >= 1) {
 					
-					if( _bLoop ){
+					if( loop ){
 						fRatio -= Math.floor (fRatio);
 					} else {
 						_bPlaying = false;
 						fRatio = 1;
+						if( onComplete == null )
+							onComplete = new Signal( );
+							onComplete.emit( );
 					}
 				}
 
@@ -189,7 +197,7 @@ class AnimatedTile extends TileDesc{
 					_bmp.y  = -pt.y;
 					_bmp.bitmapData = bmp;
 				#else
-				tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
+					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
 				#end
 		}
 
@@ -239,7 +247,7 @@ class AnimatedTile extends TileDesc{
 			_iFrame       = 0;
 			_bInnvalidate = true;
 			_iCycleLen    = _refMap.getSubCycleLen( _sCat , s );
-			_iLoopTime    = Std.int( (_iCycleLen  / 30 ) * 1000);
+			_iLoopTime    = Std.int( ( _iCycleLen  / _iFps ) * 1000);
 			
 			return s;
 		}

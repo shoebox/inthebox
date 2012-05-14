@@ -49,9 +49,12 @@ class AABB{
 	// -------o constructor
 		
 		/**
-		* constructor
+		* AABB contructor
 		*
-		* @param	
+		* @param 	l : Top Left X Position 		( Float )
+		* @param 	t : Top Left Y Position 		( Float )
+		* @param 	r : Bottom Right X Position 	( Float )
+		* @param 	b : Bottom Right Y Position 	( Float )
 		* @return	void
 		*/
 		public function new( l : Float = 0.0 , t : Float = 0.0 , r : Float = 0.0 , b : Float = 0.0 ) {
@@ -66,6 +69,17 @@ class AABB{
 	// -------o public
 		
 		/**
+		* Create an AABB from a Rectangle
+		* 
+		* @public
+		* @param 	r : Rectangle to convert to AABB 	( Rectangle )
+		* @return	converted rectangle 				( AABB )
+		*/
+		public function clone( ) : AABB {
+			return new AABB( min.x , min.y , max.x , max.y );
+		}
+
+		/**
 		* 
 		* 
 		* @public
@@ -76,10 +90,11 @@ class AABB{
 		}
 
 		/**
-		* 
+		* Test if the AABB intersect with another AABB
 		* 
 		* @public
-		* @return	void
+		* @param 	aabb : AABB to be tested 	( AABB )
+		* @return	true if the AABB intersects ( Bool )
 		*/
 		inline public function intersect( aabb : AABB ) : Bool {
 		
@@ -103,27 +118,29 @@ class AABB{
 		}
 
 		/**
-		* 
+		* Test if the AABB contains the point
 		* 
 		* @public
-		* @return	void
+		* @param 	dx : Point X position 	( Float )
+		* @param 	dy : Point Y position 	( Float )
+		* @return	true if contained		( Bool )
 		*/
 		inline public function containPoint( dx : Float , dy : Float ) : Bool {
 			return ( dx >= min.x && dx <= max.x && dy >= min.y && dy <= max.y );
 		}
 
 		/**
-		* 
+		* Trace the AABB
 		* 
 		* @public
-		* @return	void
+		* @return	AABB to string 			( String )
 		*/
 		public function toString( ) : String {
 			return '[ AABB > [ min : '+min.x+' '+min.y+' | max '+max.x+' '+max.y+' ] ]';
 		}
 
 		/**
-		* 
+		* Draw a debug graphics
 		* 
 		* @public
 		* @return	void
@@ -133,19 +150,22 @@ class AABB{
 		}
 
 		/**
-		* 
+		* Test if the AABB contains another AABB
 		* 
 		* @public
-		* @return	void
+		* @param 	aabb : AABB to be tested	( AABB )
+		* @return	true if contained			( Bool )
 		*/
 		inline public function containAABB( aabb : AABB ) : Bool {
 			return ( aabb.max.x <= max.x && aabb.max.y <= max.y && aabb.min.x >= min.x && aabb.min.y >= min.y );
 		}
 
 		/**
-		* 
+		* Translate the AABB with
 		* 
 		* @public
+		* @param 	fx : Translate by X 	( Float )
+		* @param 	fx : Translate by Y 	( Float )
 		* @return	void
 		*/
 		inline public function translate( fx : Float , fy : Float ) : Void {
@@ -158,20 +178,20 @@ class AABB{
 	// -------o protected
 		
 		/**
-		* 
+		* Getter of the AABB width
 		* 
 		* @private
-		* @return	void
+		* @return	AABB width ( Float )
 		*/
 		private function _getWidth( ) : Float{
 			return max.x - min.x;
 		}
 
 		/**
-		* 
+		* Getter of the AABB height
 		* 
 		* @private
-		* @return	void
+		* @return	AABB height ( Float )
 		*/
 		private function _getHeight( ) : Float{
 			return max.y - min.y;

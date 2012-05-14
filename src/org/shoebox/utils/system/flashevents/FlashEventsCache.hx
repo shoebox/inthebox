@@ -33,7 +33,7 @@ class FlashEventsCache{
 		* @public
 		* @return	void
 		*/
-		public function purgeTarget(  chan : Int , target : EventDispatcher ) : Void {
+		public function purgeTarget( chan : Int , target : EventDispatcher ) : Void {
 			if( _cache == null )
 				return;
 

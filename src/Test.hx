@@ -18,6 +18,7 @@ import org.shoebox.display.particles.ParticleEmitter;
 import org.shoebox.ui.gestures.TapGesture;
 import org.shoebox.ui.gestures.TwoFingersSwipeGesture;
 
+import org.shoebox.display.AnimatedTile;
 import org.shoebox.libs.nevermind.entity.SteeringEntity;
 import org.shoebox.libs.nevermind.behaviors.Arrive;
 import org.shoebox.libs.nevermind.behaviors.Seek;
@@ -31,7 +32,7 @@ import nme.display.JointStyle;
 import nme.display.CapsStyle;
 import nme.display.LineScaleMode;
 import org.shoebox.core.BoxMath;
-
+import org.shoebox.display.containers.Parallax;
 /**
  * ...
  * @author shoe[box]
@@ -40,9 +41,9 @@ import org.shoebox.core.BoxMath;
 class Test extends Sprite{
 
 	private var _aParticles  : Array<CustomParticle>;
-	private var _aParticles2  : Array<CustomParticle2>;
+	private var _aParticles2 : Array<CustomParticle2>;
 	private var _bmpPion     : Bitmap;
-	private var _bmpParticle     : BitmapData;
+	private var _bmpParticle : BitmapData;
 	private var _bMouseDown  : Bool;
 	private var _iPrev       : Int;
 	private var _oCircle     : AvoidCicles;
@@ -50,8 +51,8 @@ class Test extends Sprite{
 	private var _sp          : Sprite;
 	private var _spDragged   : Sprite;
 	private var _spParticles : Sprite;
-	private var _spTrail : Sprite;
-	private var _spTest : Sprite;
+	private var _spTrail     : Sprite;
+	private var _spTest      : Sprite;
 
 	private var _fStart    : FPoint;
 	private var _fPrev     : FPoint;
@@ -60,6 +61,7 @@ class Test extends Sprite{
 	private var _fSize     : Float;
 	private var _fPrevDist : Float;
 	private var _oMat : Matrix;
+	private var _aColors : Array<Int>;
 
 	public var MIN_MOVE : Float;
 
@@ -77,7 +79,8 @@ class Test extends Sprite{
 			Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 			Lib.current.stage.align     = StageAlign.TOP_LEFT;
 			MIN_MOVE = 30 / 254 * nme.system.Capabilities.screenDPI;
-			_run( );
+			_aColors = [ 0x000000,0x691316,0x00743F,0x91BB35,0xFFD41F,0xEF9400,0xDF031C,0xEA9A6A,0xB8A7D1,0x03B3E4,0x044390,0x5A287F,0x9E9DA5,0x1FB9A1,0x6A9F13,0xDE8215,0xFDE648,0xE82D28,0xF9A5B5,0xE73E77,0xEA1081,0x80D6EF,0x04B5E9,0x1B58AB ];
+ 			_run( );
 		}
 
 	// -------o public
@@ -146,11 +149,34 @@ class Test extends Sprite{
 			_bmpPion.y = -90 * _bmpPion.scaleX;
 			_spDragged.addChild( _bmpPion );
 
-			Lib.current.stage.mouseDown( ).connect( _onMouseDown );
-			Lib.current.stage.mouseUp( ).connect( _onMouseUp );
+			
 
 			addChild( new org.shoebox.utils.Perf( ) );
 			_aParticles2 = new Array<CustomParticle2>( );
+			
+			
+			_spTest = new Sprite( );
+			addChild( _spTest );
+			Lib.current.stage.mouseDown( ).connect( _onMouseDown );
+			Lib.current.stage.mouseUp( ).connect( _onMouseUp );
+
+			var btnClear = new Sprite( );
+				btnClear.x = btnClear.y = 10;
+				btnClear.graphics.beginFill( 0xEAEAEA );
+				btnClear.graphics.drawRect( 0 , 0 , 50 , 50 );
+				btnClear.onClick( ).connect( _clear );
+			addChild( btnClear );
+			
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _clear( _ ) : Void{
+			_spTest.graphics.clear( );
 		}
 
 		/**
@@ -160,10 +186,10 @@ class Test extends Sprite{
 		* @return	void
 		*/
 		private function _onMouseDown( e : MouseEvent ) : Void{
-			_spTest.graphics.clear( );
+			//_spTest.graphics.clear( );
+			/*
 			_aParticles2 = [ ];
-			//_iColor   = Std.int( Math.random( ) * 0xFFFFFF );
-			_iColor = 0x66FFFFFF;
+			_iColor   = _aColors[ Std.int( Math.random( ) * _aColors.length ) ];
 			_fStart.x = e.stageX;
 			_fPrev.x  = e.stageX;
 			_fStart.y = e.stageY;
@@ -171,6 +197,7 @@ class Test extends Sprite{
 			_fPrevDist = -1;
 			_fSize = 10;
 			Lib.current.stage.addEventListener( MouseEvent.MOUSE_MOVE , _onMouseMove , false );
+			*/
 
 			nme.ui.Mouse.hide( );
 			_bMouseDown = true;
@@ -178,6 +205,7 @@ class Test extends Sprite{
 			_spDragged.y = Lib.current.stage.mouseY;
 			_spDragged.startDrag( );
 			//_onFrame( );
+
 		}
 
 		/**
@@ -187,8 +215,8 @@ class Test extends Sprite{
 		* @return	void
 		*/
 		private function _onMouseMove( e : MouseEvent ) : Void{
-			
 			/*
+			
 			var len = BoxMath.length( e.stageX - _fPrev.x , e.stageY - _fPrev.y );
 			
 			if( len < MIN_MOVE )
@@ -205,7 +233,7 @@ class Test extends Sprite{
 					_fSize *= 0.95;
 				else
 					_fSize *= 1.05;
-					_fSize = BoxMath.clamp( _fSize , 5 , 50 );
+					_fSize = BoxMath.clamp( _fSize , 1 , 30 );
 			}
 
 			_fPrevDist = fDist;
@@ -219,15 +247,15 @@ class Test extends Sprite{
 			_fPrev.x = e.stageX;
 			_fPrev.y = e.stageY;
 			
-			_spTest.graphics.lineStyle( _fSize , 0 , 1 , false, LineScaleMode.NONE , CapsStyle.ROUND , JointStyle.BEVEL , 10  );    
+			_spTest.graphics.lineStyle( _fSize , _iColor , 1 , false, LineScaleMode.NONE , CapsStyle.ROUND , JointStyle.BEVEL , 10  );    
 			_spTest.graphics.moveTo( _fStart.x , _fStart.y);
 			//_spTest.graphics.curveTo( _fDist.x , _fDist.y , _fPrev.x , _fPrev.y );
 			_spTest.graphics.lineTo( _fPrev.x , _fPrev.y );
-			*/
+			
 
+			*/
 			var p = { x : e.stageX , y : e.stageY , life : 30 };
 			_aParticles2.push( p );
-
 
 		}
 
@@ -293,7 +321,9 @@ class Test extends Sprite{
 			//ID / scale / rot / g / b / b / a
 
 			_spTrail.graphics.clear();
+			#if !flash
 			_oSheet.drawTiles( _spTrail.graphics , b , false , Tilesheet.TILE_ALPHA | Tilesheet.TILE_SCALE  | Tilesheet.TILE_BLEND_ADD );
+			#end
 		}
 
 	// -------o misc

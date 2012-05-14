@@ -1,3 +1,32 @@
+/**
+*  HomeMade by shoe[box]
+*
+*  Redistribution and use in source and binary forms, with or without 
+*  modification, are permitted provided that the following conditions are
+*  met:
+*
+* Redistributions of source code must retain the above copyright notice, 
+*   this list of conditions and the following disclaimer.
+*  
+* Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the 
+*    documentation and/or other materials provided with the distribution.
+*  
+* Neither the name of shoe[box] nor the names of its 
+* contributors may be used to endorse or promote products derived from 
+* this software without specific prior written permission.
+* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+* IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+* THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+* EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+* PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+* PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+* LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+* NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+* SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 package org.shoebox.geom;
 
 import org.shoebox.core.BoxMath;
@@ -10,8 +39,10 @@ import org.shoebox.geom.FPoint;
 
 class Circle{
 
-	public var radius : Float;
+	public var radius ( default , _setRadius ) : Float;
 	public var center : FPoint;
+
+	private var _fRadius2 : Float;
 
 	// -------o constructor
 		
@@ -35,7 +66,7 @@ class Circle{
 		* @param 	vs : Test collision with ( AABB )
 		* @return	collision position ( FPoint )
 		*/
-		public function vsAABB( vs : AABB ) : FPoint {
+		inline public function vsAABB( vs : AABB ) : FPoint {
 			
 			var clone = { 
 							x : BoxMath.clamp( center.x , vs.min.x , vs.max.x ), 
@@ -56,6 +87,20 @@ class Circle{
 		}
 
 		/**
+		* Collision vs AABB without intersection point calculation
+		* for quickier calculation if not needed
+		* 
+		* @public
+		* @param 	vs : Test collision with ( AABB )
+		* @return	collision or not ( Bool )
+		*/
+		public function vsAABB2( vs : AABB ) : Bool {
+			var DX = BoxMath.clamp( center.x , vs.min.x , vs.max.x ) - center.x;	
+			var DY = BoxMath.clamp( center.y , vs.min.y , vs.max.y ) - center.y;	
+			return ( BoxMath.length( DX , DY ) < _fRadius2 );
+		}
+
+		/**
 		* Collision with a line ( infinite line collision )
 		* 
 		* @public
@@ -63,26 +108,45 @@ class Circle{
 		* @param 	B : Point on line B ( FPoint )
 		* @return	true if collision ( Bool )
 		*/
-		public function vsLine( A : FPoint , B : FPoint ) : Bool {
+		inline public function vsLine( A : FPoint , B : FPoint ) : Bool {
 
-			var U = { 
-						x : B.x - A.x , 
-						y : B.y - A.y 
-					};
-			var AC = { 
-						x : center.x - A.x,
-						y : center.y - A.y
-					};
+			var UX = B.x - A.x;
+			var UY = B.y - A.y;
+			
+			var ACX = center.x - A.x;
+			var ACY = center.y - A.y;
 
-			var fNum = U.x * AC.y - U.y * AC.x;
+			var fNum = UX * ACY - UY * ACX;
 			if ( fNum < 0 )
 				fNum = -fNum;
 
-			var fDem = Math.sqrt( U.x * U.x + U.y * U.y );
+			var fDem = Math.sqrt( UX * UX + UY * UY );
 			var CI = fNum / fDem;
 			return CI < radius;
 
 		}
+
+		/**
+		* Check Intersection with a line ( infinite )
+		* 
+		* @public
+		* @param  A : Point on line 1 ( FPoint )
+		* @param  B : Point on line 2 ( FPoint )
+		* @return intersection ( FPoint )
+		*/
+		public function intersectionVsLine( A : FPoint , B : FPoint ) : FPoint {
+			
+			var u  = { x : B.x - A.x , y : B.y - A.y };
+			var AC = { x : center.x - A.x , y : center.y - A.y };
+
+			var ti : Float = ( u.x * AC.x + u.y * AC.y ) / ( u.x * u.x + u.y * u.y );
+
+			return { 
+							x : A.x + ti * u.x,
+							y : A.y + ti * u.y
+						};
+		}
+
 
 		/**
 		* Collision with a line segment
@@ -97,23 +161,17 @@ class Circle{
 			if ( !vsLine( A , B ) )
 				return false;
 
-			var AB = {
-						x : B.x - A.x,
-						y : B.y - A.y
-					};
+			var ABX = B.x - A.x;
+			var ABY = B.y - A.y;
+			
+			var ACX = center.x - A.x;
+			var ACY = center.y - A.y;
 
-			var AC = {
-						x : center.x - A.x,
-						y : center.y - A.y
-					};
-
-			var BC = {
-						x : center.x - B.x,
-						y : center.y - B.y
-					};
-
-			var f1 = AB.x * AC.x + AB.y * AC.y; // Scalar
-			var f2 = -AB.x * BC.x + -AB.y * BC.y; // Scalar
+			var BCX = center.x - B.x;
+			var BCY = center.y - B.y;
+			
+			var f1 = ABX * ACX + ABY * ACY; // Scalar
+			var f2 = -ABX * BCX + -ABY * BCY; // Scalar
 
 			if ( f1 >= 0 && f2 >= 0 )
 				return true;
@@ -157,7 +215,18 @@ class Circle{
 		}
 
 	// -------o protected
-	
+		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _setRadius( f : Float ) : Float{
+			_fRadius2 = f * f;
+			return this.radius = f;
+		}
+
 	// -------o misc
 	
 }

@@ -128,7 +128,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			*/
 			public function onCancel( ?e : Event = null ) : Void {
 				
-				trace('onCancel');
 				if( _vDisplayObjects == null ){
 					cancel( );
 					return;
