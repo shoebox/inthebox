@@ -189,7 +189,7 @@ class AnimatedTile extends TileDesc{
 					_bmp.y  = -pt.y;
 					_bmp.bitmapData = bmp;
 				#else
-				tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
+					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
 				#end
 		}
 
