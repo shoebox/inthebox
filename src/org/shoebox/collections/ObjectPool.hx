@@ -38,11 +38,9 @@ import nme.errors.Error;
 
 class ObjectPool<T>{
 
-	private var _aPool : Array<Dynamic>;
-	private var _aArgs : Array<Dynamic>;
-	private var _cClass : Class<Dynamic>;
-	private var _iLen : Int;
-	private var _iUsed : Int;
+	private var _aContent  : Array<T>;
+	private var _cClass    : Class<T>;
+	private var _iAllocate : Int;
 
 	// -------o constructor
 		
@@ -52,102 +50,81 @@ class ObjectPool<T>{
 		* @param	
 		* @return	void
 		*/
-		public function new( cClass : Class<Dynamic> , iLen : Int , args : Array<Dynamic> = null ) {
-			
-			_aPool 	= new Array<Dynamic>( );
-			
-			_cClass = cClass;
-			_iLen 	= iLen;
-			_aArgs 	= args;
-			_iUsed 	= 0;
-
+		public function new( cClass : Class<T> ) {
+			_cClass   = cClass;
+			_aContent = [ ];
+			_iAllocate = 0;
 		}
 	
 	// -------o public
-			
+		
 		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function allocate( ) : Void {
-
-			trace('allocate');
-			for( i in 0..._iLen ){
-				_aPool[ i ] = _createInstance( _cClass , _aArgs );
-			}
-
-		}
-			
-		/**
-		* 
+		* Get a T instance from the ObjectPool
 		* 
 		* @public
 		* @return	void
 		*/
 		inline public function get( ) : T {
-			
-			if( ( _iUsed + 1 ) > _iLen )
-				throw new Error( 'Pool is empty' );
+			_iAllocate--;
+			if( _aContent.length == 0 )
+				return _create( );
 
-			return _pop( );
+			return _aContent.shift( );
 		}
 
 		/**
-		* 
+		* Repool a T instance
 		* 
 		* @public
+		* @param	d : Instance to be pooled ( T )
 		* @return	void
 		*/
 		inline public function put( d : T ) : Void {
-			_iUsed--;
-			_aPool.push( d );
+			_aContent.push( d );
+			_iAllocate --;
 		}
 
 		/**
-		* 
+		* Dispose of the pool content
 		* 
 		* @public
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			for( i in 0..._iLen )
-				_aPool[ i ] = null;
-				_aPool = null;
+			_aContent = null; 
+		}
+
+		/**
+		* Getter of the remaining pool content
+		* 
+		* @public
+		* @return	content of the Pool ( Array<T> )
+		*/
+		public function getContent( ) : Array<T> {
+			return _aContent;
 		}
 
 	// -------o protected
-		
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _pop( ) : T{
 
-			if( _iUsed >= _iLen )
-				return null;
-			
-			var o : T = _aPool.pop( );
-			if( o == null )
-				o = _createInstance( _cClass , _aArgs );
-			
-			_iUsed++;
-			return o;
+		/**
+		* Setter of the pool size
+		* 
+		* @private	
+		* @param	i : New size of the Pool ( Int )
+		* @return	new size ( Int )
+		*/
+		private function _setSize( i : Int ) : Int{
+			return i;
 		}
 
 		/**
-		* 
+		* Create a new instance of the reference Class
 		* 
 		* @private
-		* @return	void
+		* @return	new instance of T ( T )
 		*/
-		private function _createInstance<T>( c : Class<T> , a : Array<Dynamic> ) : T{
-			if( a == null )
-				a = [ ];
-			return Type.createInstance( c , a );
+		private function _create( ) : T{
+			return Type.createInstance( _cClass , [ ] );
 		}
 
 	// -------o misc
