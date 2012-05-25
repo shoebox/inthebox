@@ -142,6 +142,7 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @return	void
 		*/
 		private function _onStatus( e : HTTPStatusEvent ) : Void{
+
 			if( e.status > 400 ){
 				#if debug
 				trace( e );

@@ -69,21 +69,21 @@ class AABB{
 	// -------o public
 		
 		/**
-		* Create an AABB from a Rectangle
+		* Clone of the current AABB
 		* 
 		* @public
-		* @param 	r : Rectangle to convert to AABB 	( Rectangle )
-		* @return	converted rectangle 				( AABB )
+		* @return	clone ( AABB )
 		*/
 		public function clone( ) : AABB {
 			return new AABB( min.x , min.y , max.x , max.y );
 		}
 
 		/**
-		* 
-		* 
+		* Create an AABB from a Rectangle
+		*
 		* @public
-		* @return	void
+		* @param 	r : Rectangle to convert to AABB 	( Rectangle )
+		* @return	converted rectangle 				( AABB )
 		*/
 		static public function fromRect( r : Rectangle ) : AABB {			
 			return new AABB( r.x , r.y , r.x + r.width , r.y + r.height );
