@@ -166,21 +166,24 @@ class AnimatedTile extends TileDesc{
 			_iTimeElapsed += iDelay;
 			if( _iTimeElapsed > _iLoopTime ){
 				_iFrame++;
-				if( _iFrame >= _iCycleLen )
-					_iFrame = 0;
+				if( _iFrame >= _iCycleLen ){
+					if( !loop ){
+						onComplete.emit( );
+						_bPlaying = false
+					}else
+						_iFrame = 0;
+				}
 				_iTimeElapsed -= _iLoopTime;
 			}
 			
 			//
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
-				if (fRatio >= 1) {
+				if (fRatio >= 1 ) {
 					
 					if( loop ){
 						fRatio -= Math.floor (fRatio);
 					} else {
-						_bPlaying = false;
-						fRatio = 1;
-						onComplete.emit( );
+						fRatio = 1;						
 					}
 				}
 
