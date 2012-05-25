@@ -74,7 +74,7 @@ class AnimatedTile extends TileDesc{
 				#end
 
 			#end
-
+			onComplete = new Signal( );
 			_bInnvalidate = true;
 			loop          = true;
 			_bPlaying     = true;
@@ -180,9 +180,7 @@ class AnimatedTile extends TileDesc{
 					} else {
 						_bPlaying = false;
 						fRatio = 1;
-						if( onComplete == null )
-							onComplete = new Signal( );
-							onComplete.emit( );
+						onComplete.emit( );
 					}
 				}
 
