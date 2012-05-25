@@ -169,7 +169,7 @@ class AnimatedTile extends TileDesc{
 				if( _iFrame >= _iCycleLen ){
 					if( !loop ){
 						onComplete.emit( );
-						_bPlaying = false
+						_bPlaying = false;
 					}else
 						_iFrame = 0;
 				}
