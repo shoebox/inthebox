@@ -19,24 +19,24 @@ class AnimatedTile extends Sprite{
 class AnimatedTile extends TileDesc{
 #end
 	
-	public var loop( default , default ) : Bool;
 	public var cycle( default , _setCycle ) : String;
-
 	public var onComplete : Signal;
 
-	private var _aFrame       : Array<Float>;
-	private var _bInnvalidate : Bool;
-	private var _bPlaying     : Bool;
-	private var _bmp          : Bitmap;
-	private var _fCenter      : FPoint;
-	private var _fPosition    : FPoint;
-	private var _iCycleLen    : Int;
-	private var _iFps         : Int;
-	private var _iFrame       : Int;
-	private var _iLoopTime    : Int;
-	private var _iTimeElapsed : Int;
-	private var _refMap       : AnimatedTilesMap;
-	private var _sCat         : String;
+	private var _aFrame        : Array<Float>;
+	private var _bInnvalidate  : Bool;
+	private var _bMaxLoopCount : Bool;
+	private var _bPlaying      : Bool;
+	private var _bmp           : Bitmap;
+	private var _fCenter       : FPoint;
+	private var _fPosition     : FPoint;
+	private var _iCycleLen     : Int;
+	private var _iFps          : Int;
+	private var _iFrame        : Int;
+	private var _iLoopTime     : Int;
+	private var _iLoops        : Int;
+	private var _iTimeElapsed  : Int;
+	private var _refMap        : AnimatedTilesMap;
+	private var _sCat          : String;
 
 	#if flash
 	private var _tileDesc     : TileDesc;
@@ -75,8 +75,8 @@ class AnimatedTile extends TileDesc{
 
 			#end
 
+			onComplete = new Signal( );
 			_bInnvalidate = true;
-			loop          = true;
 			_bPlaying     = true;
 			_fCenter      = { x : 0.0 , y : 0.0 };
 			_fPosition    = { x : 0.0 , y : 0.0 };
@@ -111,7 +111,9 @@ class AnimatedTile extends TileDesc{
 		* @public
 		* @return	void
 		*/
-		public function gotoAndPlay( frameId : Int , sCycle : String = null ) : Void {
+		public function gotoAndPlay( frameId : Int , sCycle : String = null , loopCount : Int = -1 ) : Void {
+			_iLoops        = loopCount;
+			_bMaxLoopCount = loopCount != -1;
 			_gotoAnd( true , frameId , sCycle );
 		}
 
@@ -123,6 +125,27 @@ class AnimatedTile extends TileDesc{
 		*/
 		public function gotoAndStop( frameId : Int , sCycle : String = null ) : Void {
 			_gotoAnd( false , frameId , sCycle );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function stop( ) : Void {
+			_bPlaying = false;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function play( ) : Void {
+			_bPlaying = true;
+			_bMaxLoopCount = false;
 		}
 
 		/**
@@ -165,18 +188,37 @@ class AnimatedTile extends TileDesc{
 
 			_iTimeElapsed += iDelay;
 			if( _iTimeElapsed > _iLoopTime ){
-				_iFrame++;
-				if( _iFrame >= _iCycleLen )
-					_iFrame = 0;
+
+				var f = _iFrame + 1;
+				if( f >= _iCycleLen ){
+					
+					if( _bMaxLoopCount ){
+						_iLoops --;
+						if( _iLoops == 0 ){
+							stop( );
+							onComplete.emit( );
+							f = _iFrame;
+							
+						}else
+							f = 0;
+					}else{
+						f = 0;
+					}
+
+				}
+				_iFrame = f;
 				_iTimeElapsed -= _iLoopTime;
 			}
+
+			if( !_bPlaying )
+				return;
 			
 			//
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
 				if (fRatio >= 1) {
 					
-					if( loop ){
-						fRatio -= Math.floor (fRatio);
+					fRatio -= Math.floor (fRatio);
+					/*
 					} else {
 						_bPlaying = false;
 						fRatio = 1;
@@ -184,6 +226,7 @@ class AnimatedTile extends TileDesc{
 							onComplete = new Signal( );
 							onComplete.emit( );
 					}
+					*/
 				}
 
 			//
