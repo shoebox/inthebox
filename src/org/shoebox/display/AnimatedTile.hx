@@ -191,7 +191,6 @@ class AnimatedTile extends TileDesc{
 
 				var f = _iFrame + 1;
 				if( f >= _iCycleLen ){
-					
 					if( _bMaxLoopCount ){
 						_iLoops --;
 						if( _iLoops == 0 ){
@@ -216,22 +215,20 @@ class AnimatedTile extends TileDesc{
 			//
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
 				if (fRatio >= 1) {
-					
 					fRatio -= Math.floor (fRatio);
-					/*
-					} else {
-						_bPlaying = false;
-						fRatio = 1;
-						if( onComplete == null )
-							onComplete = new Signal( );
+					if( _bMaxLoopCount ){
+						_iLoops --;
+						if( _iLoops == 0 ){
+							stop( );
 							onComplete.emit( );
+						}
 					}
-					*/
+				
 				}
 
 			//
-				_iFrame = Math.round ( fRatio * ( _iCycleLen - 1) );
-			
+				_iFrame = Math.ceil ( fRatio * ( _iCycleLen - 1) );
+				trace('_iFrame ::: '+_iFrame);
 			//
 				#if flash
 					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );

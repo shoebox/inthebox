@@ -34,7 +34,7 @@ package org.shoebox.utils.system;
  * @author shoe[box]
  */
 
-class Signal1<T> extends ASignal<T->Void>{
+class Signal4<A1,A2,A3,A4> extends ASignal<A1->A2->A3->A4->Void>{
 
 	// -------o constructor
 		
@@ -56,10 +56,11 @@ class Signal1<T> extends ASignal<T->Void>{
 		* @public
 		* @return	void
 		*/
-		public function emit( arg : T ) : Void {
-			trace('emit ::: '+arg);
+		public function emit( a1 : A1 , a2 : A2 , a3 : A3 , a4 : A4 , b : Bool = false ) : Void {
 			for( l in _oQueue ){
-				l.listener( arg );
+				if( b )
+					trace( l.listener );
+				l.listener( a1 , a2 , a3 , a4 );
 				_check( l );
 			}
 		}
