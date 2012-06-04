@@ -57,7 +57,7 @@ class Signal1<T> extends ASignal<T->Void>{
 		* @return	void
 		*/
 		public function emit( arg : T ) : Void {
-			trace('emit ::: '+arg);
+			
 			for( l in _oQueue ){
 				l.listener( arg );
 				_check( l );

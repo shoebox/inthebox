@@ -187,6 +187,7 @@ class AnimatedTile extends TileDesc{
 				return;
 
 			_iTimeElapsed += iDelay;
+			var bComplete = false;
 			if( _iTimeElapsed > _iLoopTime ){
 
 				var f = _iFrame + 1;
@@ -195,9 +196,8 @@ class AnimatedTile extends TileDesc{
 						_iLoops --;
 						if( _iLoops == 0 ){
 							stop( );
-							onComplete.emit( );
 							f = _iFrame;
-							
+							bComplete = true;			
 						}else
 							f = 0;
 					}else{
@@ -207,6 +207,12 @@ class AnimatedTile extends TileDesc{
 				}
 				_iFrame = f;
 				_iTimeElapsed -= _iLoopTime;
+			}
+
+
+			if( bComplete ){
+				onComplete.emit( );				
+				bComplete = false;
 			}
 
 			if( !_bPlaying )
@@ -220,7 +226,7 @@ class AnimatedTile extends TileDesc{
 						_iLoops --;
 						if( _iLoops == 0 ){
 							stop( );
-							onComplete.emit( );
+							bComplete = true;
 						}
 					}
 				
@@ -228,7 +234,7 @@ class AnimatedTile extends TileDesc{
 
 			//
 				_iFrame = Math.ceil ( fRatio * ( _iCycleLen - 1) );
-				trace('_iFrame ::: '+_iFrame);
+			
 			//
 				#if flash
 					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
@@ -239,6 +245,10 @@ class AnimatedTile extends TileDesc{
 				#else
 					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
 				#end
+
+			//
+				if( bComplete )
+					onComplete.emit( );				
 		}
 
 		/**
