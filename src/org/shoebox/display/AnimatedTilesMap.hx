@@ -88,9 +88,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		* @return	void
 		*/
 		public function getBitmapData( sCat : String , sSubCat : String , frameId : Int ) : BitmapData {
-			
 			var s = _getCode( sCat , sSubCat , frameId );
-			
+
 			//Check Cache
 				var bmp : BitmapData = null;
 				if( _hCache.exists( s ) ){
@@ -245,7 +244,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		* @public
 		* @return	void
 		*/
-		public function parseJson( s : String ) : Void {
+		public function parseJson( s : String , fDecalX : Float = 0.0 , fDecalY : Float = 0.0 ) : Void {
 
 			var desc = haxe.Json.parse( s );
 			var fields = Reflect.fields ( desc.frames );
@@ -261,18 +260,19 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			var rec     : Rectangle = new Rectangle( );
 			var sCat    : String = '';
 			var sCycle  : String = '';
-			var sSub    : String;
+			var sSub    : String = '';
 			var iEntryId : Int;
 			for( s in fields ){
 				entry = Reflect.field ( desc.frames , s );
 
 				// Parsing file name & directory to cat / subcat 
+					
 					if( r1.match( s ) ){
 						sCat = r1.matched( 1 );
 						sSub = r1.matched( 2 );
 						iFrame = Std.parseInt( r1.matched( 3 ));
 						sCycle = sCat+'|'+sSub;
-					}				
+					}
 
 				// Cycle len inc
 					if( _hCyclesLen.exists( sCycle ) )
@@ -283,8 +283,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 					_hCyclesLen.set( sCycle , iLen );
 
 				//
-					rec.x      = entry.frame.x;
-					rec.y      = entry.frame.y;
+					rec.x      = entry.frame.x + fDecalX;
+					rec.y      = entry.frame.y + fDecalY;
 					rec.width  = entry.frame.w;
 					rec.height = entry.frame.h;
 
@@ -302,7 +302,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 					iEntryId = aIds[ iFrame ] = addByName( s , rec.clone( ) , ptCenter );
 					#if flash
 					_hIds.set( sCycle+'|'+iFrame , iEntryId );
-					_hFramesCenters.set( sCycle+'|'+iFrame , ptCenter );
+					_hFramesCenters.set( _getCode( sCat , sSub , iFrame ) , ptCenter );
 					#end
 					_hCyclesFrames.set( sCycle , aIds );
 

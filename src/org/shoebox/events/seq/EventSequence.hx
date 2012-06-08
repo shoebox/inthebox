@@ -161,8 +161,8 @@ package org.shoebox.events.seq;
 
 				}else if( Std.is( next , SeqEvent ) ){
 
-					next.addEventListener( SeqEvent.DONE , _onEvent , false );
-					next.start( );
+					//next.addEventListener( SeqEvent.DONE , _onEvent , false );
+					//next.start( );
 
 					_oCurrent = next;
 				}
@@ -232,8 +232,8 @@ package org.shoebox.events.seq;
 					return;
 				
 				_oCurrent.cancel( );
-				if( _oCurrent.hasEventListener( SeqEvent.DONE ) )
-					_oCurrent.removeEventListener( SeqEvent.DONE , _onEvent , false );
+				//if( _oCurrent.hasEventListener( SeqEvent.DONE ) )
+					//_oCurrent.removeEventListener( SeqEvent.DONE , _onEvent , false );
 			}
 
 			/**

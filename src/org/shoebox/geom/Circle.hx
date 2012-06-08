@@ -160,8 +160,8 @@ class Circle{
 
 			if ( !vsLine( A , B ) )
 				return false;
-
-			var ABX = B.x - A.x;
+		  
+		  	var ABX = B.x - A.x;
 			var ABY = B.y - A.y;
 			
 			var ACX = center.x - A.x;
@@ -171,13 +171,13 @@ class Circle{
 			var BCY = center.y - B.y;
 			
 			var f1 = ABX * ACX + ABY * ACY; // Scalar
-			var f2 = -ABX * BCX + -ABY * BCY; // Scalar
-
+			var f2 = (-ABX) * BCX + (-ABY) * BCY; // Scalar
+		
 			if ( f1 >= 0 && f2 >= 0 )
 				return true;
 
 			return ( vsPoint( A.x , A.y ) || vsPoint( B.x , B.y ) );
-			
+	
 		}
 
 		/**
@@ -189,7 +189,8 @@ class Circle{
 		* @return	true if collision ( Bool )
 		*/
 		public function vsPoint( fx : Float , fy : Float ) : Bool {
-			return BoxMath.lengthSq( center.x - fx , center.y - fy ) <= radius;
+			var f = ( fx - center.x ) * ( fx - center.x ) + ( fy - center.y ) * ( fy - center.y );
+			return ( f < _fRadius2 );			
 		}
 
 		/**
@@ -212,6 +213,22 @@ class Circle{
 							y : ( c.center.y * radius + center.y * c.radius ) / ( radius + c.radius )
 						};
 			return res;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function vsCircle2( c : Circle ) : Bool {
+			
+			var fx = c.center.x - center.x;
+			var fy = c.center.y - center.y;
+			var rad = c.radius + radius;
+
+			return BoxMath.length( fx , fy ) < rad * rad;
+
 		}
 
 	// -------o protected

@@ -63,7 +63,6 @@ package org.shoebox.display.containers;
 		private var _fRefHeight : Float;
 		private var _fSpeed     : Float;
 		private var _tmpPos     : FPoint;
-		private var _bMaxLoop : Bool;
 
 		// -------o constructor
 		
@@ -124,6 +123,7 @@ package org.shoebox.display.containers;
 
 
 			public function setTransform( dx : Float = 0.0 , dy : Float = 0.0 , fScaleX : Float = 1.0 , fScaleY : Float = 1.0 ) : Void{
+				trace('setTransform ::: '+fScaleX);
 				position = { x : dx , y : dy };
 				_fDx = x = dx;
 				_fDy = y = dy;
@@ -153,7 +153,7 @@ package org.shoebox.display.containers;
 			*/
 			public function translate( dx : Float , dy : Float ) : Bool{
 				
-				if( _oLimits != null && !bLoop ){
+				if( _oLimits != null ){
 					_tmpPos.x = position.x + dx * _fSpeed;
 					_tmpPos.y = position.y + dy * _fSpeed;
 					
@@ -165,11 +165,12 @@ package org.shoebox.display.containers;
 				position.y += dy * _fSpeed;
 				
 				if( bLoop ){
-					position.x = _modulate( position.x  , _fRefWidth );
+					position.x = _modulate( position.x , _fRefWidth );
 					position.y = _modulate( position.y , _fRefHeight );
 				}
-				x = position.x + _fDx;
-				y = position.y + _fDy;
+				
+				x = position.x;
+				y = position.y;
 				return true;
 			}
 			
@@ -181,12 +182,10 @@ package org.shoebox.display.containers;
 				var fHeight	: Float = _fRefHeight;
 				var iBlocW	: Int = 1;
 				var iBlocH 	: Int = 1;
-				
-				if( _fRefWidth <= Lib.current.stage.stageWidth ){
+				if( _fRefWidth < Lib.current.stage.stageWidth ){
+					
 					iBlocW = Math.ceil( Lib.current.stage.stageWidth * 1.5 / _fRefWidth );
 					fHeight = iBlocW * _fRefWidth;
-				}else{
-					return bRef.clone( );
 				}
 				
 				
@@ -206,7 +205,7 @@ package org.shoebox.display.containers;
 			}
 			
 			private function _modulate( fValue : Float , fModulo : Float ) : Float{
-				/*
+				
 				#if iphone
 					var b : Bool = false;
 					var diff : Float = fValue - fModulo;
@@ -220,9 +219,8 @@ package org.shoebox.display.containers;
 					return fValue;
 					
 				#else
-				#end
-				*/
 				return ( fValue - fModulo ) % fModulo;
+				#end
 			}
 			
 		// -------o misc

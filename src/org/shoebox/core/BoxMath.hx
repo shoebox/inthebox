@@ -81,7 +81,6 @@ class BoxMath
 	* @return
 	*/
 	inline static public function distance( x1 : Float , y1 : Float , x2 : Float , y2 : Float ) : Float {
-		
 		var dx : Float = Math.abs( x1 - x2 );
 		var dy : Float = Math.abs( y1 - y2 );
 		return Math.sqrt( dx * dx + dy * dy );

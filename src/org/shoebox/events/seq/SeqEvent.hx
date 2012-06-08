@@ -41,7 +41,7 @@ package org.shoebox.events.seq;
 		
 		public var iPrio  : Int;
 		public var sType  : String;
-		public var signal : Signal1;		
+		//public var signal : Signal1;		
 		public var target : EventDispatcher;
 		
 		private var _bBubble : Bool;
@@ -63,7 +63,7 @@ package org.shoebox.events.seq;
 				this.target = target;
 				this.sType 	= sType;
 
-				doneSignal = new Signal( );
+				//doneSignal = new Signal( );
 			}
 
 		// -------o public
@@ -109,8 +109,8 @@ package org.shoebox.events.seq;
 			* @return	void
 			*/
 			private function _onEvent( e : Event ) : Void{
-				var eCustom : CustomEvent = new CustomEvent( DONE , false , true , e );
-				dispatchEvent( eCustom );
+				//var eCustom : CustomEvent = new CustomEvent( DONE , false , true , e );
+				//dispatchEvent( eCustom );
 				
 			}
 

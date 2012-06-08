@@ -133,14 +133,17 @@ class PriorityQueue<T>{
 		* Test for invalidation and return the content Iterator
 		* 
 		* @public
-		* @return	queue content iterator ( PrioQueueIterator<T> )
+		* @return	queue content iterator ( PrioQueueIterator<T> ) );
 		*/
 		public function iterator(  ) : PrioQueueIterator<T> {
 
-			if( !_bInvalidate )
+			if( !_bInvalidate ){
+				_oIterator.reset( );
 				return _oIterator;
+			}
 
 			_oIterator = new PrioQueueIterator<T>( _aContent );
+			_bInvalidate = false;
 			return _oIterator;
 		}
 
