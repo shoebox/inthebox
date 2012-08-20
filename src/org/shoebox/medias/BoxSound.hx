@@ -1,5 +1,6 @@
 package org.shoebox.medias;
 
+import nme.events.Event;
 import nme.errors.Error;
 import nme.media.Sound;
 import nme.media.SoundChannel;
@@ -7,6 +8,7 @@ import nme.media.SoundTransform;
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.geom.FPoint;
 import org.shoebox.medias.SoundTrack;
+import org.shoebox.utils.system.Signal;
 
 /**
  * ...
@@ -14,6 +16,8 @@ import org.shoebox.medias.SoundTrack;
  */
 
 class BoxSound implements IDispose{
+
+	public var onSoundComplete : Signal;
 
 	public var isPaused( _get_is_paused , null )   			: Bool;
 	public var isPlaying( default 		, _set_isPlaying ) 	: Bool;
@@ -43,6 +47,7 @@ class BoxSound implements IDispose{
 			_fVol       = 1;
 			_fPan       = 0;
 			_oTransform = new SoundTransform( );
+			onSoundComplete = new Signal( );
 		}
 	
 	// -------o public
@@ -67,6 +72,7 @@ class BoxSound implements IDispose{
 			}
 			
 			_oChannel = media.play( startTime , iLoops , _oTransform );
+			_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 			return isPlaying = true;
 		}
 
@@ -81,6 +87,7 @@ class BoxSound implements IDispose{
 			if( !isPlaying )
 				return false;
 			
+			_oChannel.removeEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 			_oChannel.stop( );
 
 			return true;
@@ -118,6 +125,9 @@ class BoxSound implements IDispose{
 			
 			if( isPlaying )
 				stop( );
+
+			if( _oChannel != null )
+				_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 
 			media       = null;			
 			_oChannel   = null;
@@ -250,6 +260,16 @@ class BoxSound implements IDispose{
 			if( _oChannel != null )
 				_oChannel.soundTransform = _oTransform;
 
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onSound_Complete( _ ) : Void{
+			onSoundComplete.emit( );
 		}
 
 	// -------o misc

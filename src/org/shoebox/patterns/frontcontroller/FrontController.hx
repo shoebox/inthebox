@@ -29,35 +29,33 @@
 */
 package org.shoebox.patterns.frontcontroller;
 
+import haxe.rtti.Meta;
 import nme.display.DisplayObjectContainer;
-import nme.errors.Error;
 import org.shoebox.core.BoxArray;
-import org.shoebox.patterns.commands.ICommand;
-import org.shoebox.patterns.mvc.MVCTriad;
-import org.shoebox.patterns.mvc.abstracts.AController;
+import org.shoebox.core.interfaces.IDispose;
+import org.shoebox.patterns.frontcontroller.Injector;
 import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
-import org.shoebox.utils.system.Signal1;
+import org.shoebox.patterns.mvc.abstracts.AController;
+import org.shoebox.patterns.mvc.interfaces.IController;
+import org.shoebox.patterns.mvc.interfaces.IModel;
+import org.shoebox.patterns.mvc.interfaces.IView;
+import org.shoebox.patterns.mvc.interfaces.IInit;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class FrontController {
+class FrontController{
 
-	static inline public var CHANGE_STATE : String = 'CHANGE_STATE';
+	public var owner ( default , default ) : DisplayObjectContainer;
+	public var state ( default , _setState) : String;
 
-	public var owner ( default , default ) 		: DisplayObjectContainer;
-	public var state ( _getState , _setState ) 	: String;
-
-	public var stateChanged : Signal1<String>;
-
-	private var _hCommands   : Hash<ICommand>;
-	private var _hStatesDesc : Hash<Array<String>>;
-	private var _hTriads     : Hash<MVCTriad<AModel,AView,AController>>;
-	private var _hVariables  : Hash<Array<Dynamic>>;
-	private var _sState      : String;
+	private var _aCurrent: Array<String>;
+	private var _hStates : Hash<Array<String>>;
+	private var _hTriads : Hash<MVCTriad>;
+	private var _injector: Injector;
 
 	// -------o constructor
 		
@@ -67,16 +65,15 @@ class FrontController {
 		* @param	
 		* @return	void
 		*/
-		public function new( ) {
-			_hCommands   = new Hash<ICommand>( );
-			_hStatesDesc = new Hash<Array<String>>( );
-			_hTriads     = new Hash<MVCTriad<AModel,AView,AController>>( );
-			_hVariables  = new Hash<Array<Dynamic>>( );
-			stateChanged = new Signal1( );
+		public function new() {
+			_aCurrent      = [ ];
+			_injector = new Injector( );
+			_hStates       = new Hash<Array<String>>( );
+			_hTriads       = new Hash<MVCTriad>( );
 		}
 	
 	// -------o public
-		
+				
 		/**
 		* 
 		* 
@@ -84,87 +81,24 @@ class FrontController {
 		* @return	void
 		*/
 		public function add( 
-										?cM        : Class<AModel>, 
-										?cV        : Class<AView> , 
-										?cC        : Class<AController> , 
-										?container: DisplayObjectContainer = null
-									) : String {
-
-			if( owner == null )
-				throw new Error( 'The FrontController owner is not defined');
-
-			//var s = haxe.Md5.encode( cM+'-'+cV+'-'+cC );
-			var s = cM+'-'+cV+'-'+cC;
-			var t = new MVCTriad( cM , cV , cC , container == null ? owner : container );
+								cMod        : Class<IModel>,
+								cView       : Class<IView>,
+								cController : Class<IController>
+							) : String {
 			
+			if( owner == null )
+				throw new nme.errors.Error('DisplayObjectContainer is not defined');
+
+			var s = cMod + '|' + cView + ' - '+cController;
+
+			var t = new MVCTriad( );
+				t.classModel      = cMod;
+				t.classView       = cView;
+				t.classController = cController;
+				t.container = owner;
 			_hTriads.set( s , t );
 
-			return s;			
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function addCommand( com : Class<ICommand> ) : String {
-			var sCode = haxe.Md5.encode( Type.getClassName( com ) );
-
-			var com = Type.createInstance( com , [ ] );
-				com.frontController = this;
-				com.execute( );
-			_hCommands.set( sCode , com );
-			return sCode;
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function getCommand( sCode : String ) {
-			var com = _hCommands.get( sCode );
-			if( !com.isRunning )
-				com.execute( );
-			return com;						
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function get( s : String ) {
-			return _hTriads.get( s );
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function registerState( aCodes : Array<String> , sCodeName : String = null ) : String {
-			
-			if( sCodeName == null )
-				sCodeName = haxe.Md5.encode( aCodes.join('-') );
-
-			_hStatesDesc.set( sCodeName , aCodes );
-
-			return sCodeName;
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function setAppVariables( sAppCode : String , vars : Array<Dynamic> ) : Void {
-			_hVariables.set( sAppCode , vars );
+			return s;
 		}
 
 		/**
@@ -177,6 +111,50 @@ class FrontController {
 			return _hTriads.get( sAppCode );				
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function registerState( aCodes : Array<String> ) : String {
+			
+			var sCode = aCodes.join('|');
+			_hStates.set( sCode , aCodes );
+			return sCode;
+
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function register_dependency<T>( for_type : Class<T> , ?value : T , ?optional_name : String ) : Void {
+			_injector.register_dependency( for_type , value , optional_name );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function inject_dependencies_on<T>( instance : T , ?typ : Class<T> ) : Void {
+			_injector.inject_dependencies_on( instance , typ );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function setAppVariables( target_app_name : String , variables : Array<Dynamic> ) : Void {			
+			getApp( target_app_name ).variables = variables;
+		}
+
 	// -------o protected
 	
 		/**
@@ -185,29 +163,13 @@ class FrontController {
 		* @private
 		* @return	void
 		*/
-		private function _getState( ) : String{
-			return _sState;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
 		private function _setState( s : String ) : String{
-			//trace('setState ::: '+s);
 
-			if( !_hStatesDesc.exists( s ) )
-				throw new Error('State '+s+' is not registered');
-
-			if( _sState == s )
+			if( this.state == s || !_hStates.exists( s ) )
 				return s;
 
-			_drawState( _hStatesDesc.get( s ) );
-			//emit( CHANGE_STATE , [ s ] );
-			stateChanged.emit( _sState = s );
-			return s;
+			_drawState( _hStates.get( s ) );
+			return this.state = s;
 		}
 
 		/**
@@ -218,55 +180,288 @@ class FrontController {
 		*/
 		private function _drawState( a : Array<String> ) : Void{
 			
-			var oTri;
+			if( _aCurrent != null )
+				_cancelPrevious( a );
 			
-			if( _sState != null ){
-				
-				//
-					var aPrev : Array<String> = _hStatesDesc.get( _sState );
-					
-
-				// Canceling previous apps
-					var aDiff = BoxArray.difference( aPrev , a );
-					for( sApp in aDiff ){
-						oTri = _hTriads.get( sApp );
-						if( oTri.isRunning )
-							oTri.cancel( );						
-					}
+			var tri : MVCTriad;
+			var d = 0;
+			for( s in a ){
+				tri = _getTriad( s );
+				tri.create( this );
+				if( owner != null )
+					owner.setChildIndex( cast( tri.instance.view , DisplayObjectContainer ) , d++ );
 			}
 
-			nme.system.System.gc( );
-			
-			// Executing the new apps
-				var hDepth : Hash<Int> = new Hash<Int>( );
-				var d : Int;
-				for( sApp in a ){
-					
-					//
-						oTri = _hTriads.get( sApp );
-						oTri.codeName = sApp;
-						oTri.frontController = this;
-						if( _hVariables.exists( sApp ) ){
-							oTri.setVariables( _hVariables.get( sApp ) );
-							_hVariables.remove( sApp );
-						}
-						if( !oTri.isRunning )
-							oTri.execute( );
-
-					//
-						d = hDepth.get( oTri.container.name );
-						oTri.container.setChildIndex( oTri.view , d++ );
-
-					//
-						hDepth.set( oTri.container.name , d );
-
-				}
-
-				
 		}
 
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _cancelPrevious( a : Array<String> ) : Void{
+			
+			var tri : MVCTriad;
+			for( s in _aCurrent ){
+
+				if( Lambda.has( a , s ) )
+					continue;
+
+				tri = _getTriad( s );
+				tri.cancel( );
+				
+			}
+
+			_aCurrent = a;
+			#if cpp
+			cpp.vm.Gc.run( true );
+			#else
+			nme.system.System.gc( );
+			#end
+
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _getTriad( s : String ) : MVCTriad{
+			return _hTriads.get( s );
+		}
+
+	// -------o misc
+	
+}
+
+import org.shoebox.patterns.commands.AbstractCommand;
+import org.shoebox.patterns.commands.ICommand;
+
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class MVCTriad{
+
+	public var classController: Class<IController>;
+	public var classModel     : Class<IModel>;
+	public var classView      : Class<IView>;
+	public var container      : DisplayObjectContainer;
+	public var frontController: FrontController;
+	public var instance       : MVCTriadInstance;
+	public var variables      : Array<Dynamic>;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new( ) {
+			
+		}
+	
+	// -------o public
+		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function add_runtime_variable( value : Dynamic ) : Void {
+			if( variables == null )
+				variables.push( value );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function create( fc : FrontController ) : Void {
+		
+			//
+				if( instance != null )
+					return;
+
+			//
+				instance        = new MVCTriadInstance( );
+				frontController = fc;
+
+			//
+				if( classModel != null ){
+					instance.model = Type.createInstance( classModel , variables == null ? [ ] : variables );
+					fc.inject_dependencies_on( instance.model , classModel );
+				}
+
+				if ( classView != null ){
+					instance.view = Type.createInstance( classView , [ ] );
+					fc.inject_dependencies_on( instance.view , classView );
+				}
+				
+				if ( classController != null ){
+					instance.controller = Type.createInstance( classController , [ ] );
+					fc.inject_dependencies_on( instance.controller , classController );
+				}
+
+				variables = null;
+
+			//
+				_inject_triad_class_metas_on( fc , classModel , instance.model );
+				_inject_triad_class_metas_on( fc , classController , instance.controller );
+
+			//
+				_initialize_instance( instance.model );
+				_initialize_instance( instance.view );
+				_initialize_instance( instance.controller );
+
+			//
+				if( instance.model != null )
+					cast( instance.model , AModel ).startUp( );
+
+				if( instance.view != null )
+					cast( instance.view , AView).startUp( );
+
+				if( instance.controller != null )
+					cast( instance.controller , AController ).startUp( );
+			
+			//
+				if( instance.view != null )
+					container.addChild( cast( instance.view , AView ) );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function cancel( ) : Void {
+			instance.dispose( );
+			instance = null;
+		}
+
+	// -------o protected
+		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _initialize_instance( val : IInit = null ) : Void{
+			if( val != null )
+				val.initialize( );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _inject_triad_class_metas_on( fc : FrontController , c : Class<Dynamic> , onwhat : Dynamic ) : Void{
+			
+			if( c == null || onwhat == null )
+				return;
+
+			var meta = Meta.getFields( c );
+			var m;
+			var metaname;
+			var varname;
+			for( v in Reflect.fields( meta ) ){
+				m = Reflect.field( meta , v );
+				metaname = Reflect.fields( m )[ 0 ];
+				varname = Std.string( v );
+				
+				switch( metaname ){
+
+					case 'model':
+						Reflect.setField( onwhat , varname , instance.model );
+						
+					case 'view':
+						Reflect.setField( onwhat , varname , instance.view );
+
+					case 'controller':
+						Reflect.setField( onwhat , varname , instance.controller );
+						
+					case 'frontcontroller':
+						Reflect.setField( onwhat , varname , fc );
+				}
+				
+			}
+			
+		}
+
+	// -------o misc
+	
+}
+
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class MVCTriadInstance implements IDispose{
+
+	public var model     : IModel;
+	public var view      : IView;
+	public var controller: IController;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new() {
+			
+		}
+	
+	// -------o public
+				
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function dispose( ) : Void {
+
+			if( model != null )
+				model.cancel( );
+
+			if( controller != null )
+				controller.cancel( );
+
+			if( view != null ){
+				view.cancel( );
+				var v = cast( view , AView );
+					v.onCancel( );
+
+				if( v != null )
+					v.parent.removeChild( v );
+			}
+
+			model = null;
+			view = null;
+			controller = null;
+		}
+
+	// -------o protected
+	
 		
 
 	// -------o misc
 	
 }
+

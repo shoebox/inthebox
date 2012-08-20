@@ -51,10 +51,10 @@ package org.shoebox.patterns.mvc.abstracts;
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
-	class AController extends ABase, implements IController {
+	class AController implements IController {
 		
-		public var model( _getModel , null ) : AModel;
-		public var view( _getView , null ) : AView;
+		//public var model( _getModel , null ) : AModel;
+		//public var view( _getView , null ) : AView;
 		//public var controller( _getController , null ) : AController;
 		
 		// -------o constructor
@@ -65,7 +65,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function new(){
-				super( );
+				
 			}
 			
 		// -------o public
@@ -87,20 +87,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			public function cancel( ):Void{
 				
 			}
-			
-			/**
-			* onCancel function
-			* @public
-			* @param 
-			* @return
-			*/
-			override public function onCancel( ) : Void {
-				
-				cancel( );
-				super.onCancel( );
-				
-			}
-			
+						
 			/**
 			* runApp function
 			* @public
@@ -111,26 +98,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			
 			}
 			
-			/**
-			* 
-			* 
-			* @public
-			* @return	void
-			*/
-			public function getView( ) : AView{
-				return _getView( );
-			}
-
-			/**
-			* 
-			* 
-			* @public
-			* @return	void
-			*/
-			public function getModel( ){
-				return cast _getModel( );
-			}
-
 		// -------o private
 			
 		// -------o misc

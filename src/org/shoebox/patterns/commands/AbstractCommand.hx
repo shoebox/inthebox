@@ -1,7 +1,6 @@
 package org.shoebox.patterns.commands;
 
 import nme.errors.Error;
-import nme.events.Event;
 import nme.events.EventDispatcher;
 import org.shoebox.patterns.commands.ICommand;
 import org.shoebox.patterns.frontcontroller.FrontController;
@@ -12,11 +11,12 @@ import org.shoebox.utils.system.Signal;
  * @author shoe[box]
  */
 
-class AbstractCommand implements ICommand{
+class AbstractCommand extends EventDispatcher , implements ICommand{
 
 	public var frontController : FrontController;
 	public var isRunning : Bool;
-	
+	public var cancelable ( default , default )     : Bool; //TODO : Deprecated
+
 	// -------o constructor
 		
 		/**
@@ -26,7 +26,7 @@ class AbstractCommand implements ICommand{
 		* @return	void
 		*/
 		public function new() {
-		
+			super( );
 		}
 	
 	// -------o public
@@ -37,7 +37,7 @@ class AbstractCommand implements ICommand{
 		* @public
 		* @return	void
 		*/
-		public function execute( ) : Void {
+		public function execute(  ) : Void {
 			
 			if( isRunning )
 				throw new Error('Error : Command is already running');

@@ -126,8 +126,8 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @param 
 			* @return
 			*/
-			public function onCancel( ) : Void {
-				
+			public function onCancel( ?e : Event = null ) : Void {
+				trace('onCanel');
 				if( _vDisplayObjects == null ){
 					cancel( );
 					return;
@@ -140,26 +140,18 @@ package org.shoebox.patterns.mvc.abstracts;
 					
 					if( Std.is( d , IDispose ) ){
 						cast( d , IDispose ).dispose( );
-						continue;
 					}
 
 					if( Std.is( d, Bitmap) ){
-
-						if( d.parent != null )
-							d.parent.removeChild( d );
-
+						
 						if( ( cast( d, Bitmap) ).bitmapData != null ){
 							( cast( d, Bitmap) ).bitmapData.dispose( );
-							( cast( d, Bitmap) ).bitmapData = null;
 						}
-						continue;						
-					}
-
-					if( Std.is( d, Loader) ){
+						
+					}else if( Std.is( d, Loader) ){
 						#if (flash || mobile )
 						( cast( d, Loader) ).unload( );
 						#end
-						continue;
 					}
 					
 					if( Std.is( d, MovieClip) ){
@@ -172,12 +164,12 @@ package org.shoebox.patterns.mvc.abstracts;
 				
 				_vDisplayObjects = null;
 				cancel( );
-				nme.system.System.gc( );
 			
 			}
 			
 		// -------o private
 			
+
 		// -------o misc
 		
 			public static function trc(arguments:Dynamic) : Void {

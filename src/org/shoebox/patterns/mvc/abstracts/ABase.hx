@@ -29,7 +29,6 @@
 */
 package org.shoebox.patterns.mvc.abstracts; 
 
-import nme.errors.Error;
 import nme.events.EventDispatcher;
 import org.shoebox.patterns.frontcontroller.FrontController;
 
@@ -78,10 +77,10 @@ class ABase{
 		private function _getModel( ) : AModel{
 			
 			if( codeName == null )
-				throw new Error('The codeName is null');
-				
+				return null;
+
 			if( frontController == null )
-				throw new Error('The FrontController is null');
+				return null;
 
 			return frontController.getApp( codeName ).mod;
 		}
@@ -95,10 +94,10 @@ class ABase{
 		private function _getView( ) : AView{
 
 			if( codeName == null )
-				throw new Error('The codeName is null');
-				
+				return null;
+
 			if( frontController == null )
-				throw new Error('The FrontController is null');
+				return null;
 
 			return frontController.getApp( codeName ).view;
 		}
@@ -112,10 +111,10 @@ class ABase{
 		private function _getController( ) : AController{
 			
 			if( codeName == null )
-				throw new Error('The codeName is null');
-				
+				return null;
+
 			if( frontController == null )
-				throw new Error('The FrontController is null');
+				return null;
 
 			return frontController.getApp( codeName ).controller;
 		}

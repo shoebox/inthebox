@@ -3,8 +3,8 @@ package org.shoebox.patterns.mvc.interfaces;
 	/**
 	 * @author shoe[box]
 	 */
-	interface IModel implements IInit {
+	interface IInit {
 		
-		function cancel( ):Void;
-		
+		function initialize( ):Void;
+				
 	}
