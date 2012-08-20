@@ -244,9 +244,9 @@ class BoxSound implements IDispose{
 			#if !flash
 			_oTransform = _oTransform.clone( );
 			#end
-			_oTransform.volume = track.volume * _fVol;
+			_oTransform.volume = _fVol;
 			//_oTransform.pan    = _fPan;
-			return;
+			
 			if( _oChannel != null )
 				_oChannel.soundTransform = _oTransform;
 

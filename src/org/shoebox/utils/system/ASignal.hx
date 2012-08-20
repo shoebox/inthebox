@@ -103,6 +103,16 @@ class ASignal<T>{
 			_oQueue = null;
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function hasListener( ) : Bool {
+			return _oQueue.length > 0;
+		}
+
 	// -------o protected
 		
 		/**

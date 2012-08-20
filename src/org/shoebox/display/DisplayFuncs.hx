@@ -28,6 +28,8 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.shoebox.display;
+
+import nme.Lib;
 import nme.display.DisplayObject;
 import nme.display.StageAlign;
 import nme.geom.Rectangle;
@@ -50,8 +52,11 @@ class DisplayFuncs{
 		* @param 
 		* @return
 		*/
-		static public function align( o : DisplayObject , aabb : AABB , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
+		static public function align( o : DisplayObject , aabb : AABB = null , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
 			
+			if( aabb == null )
+				aabb = new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
+
 			var centerX : Float = aabb.min.x + ( aabb.max.x - aabb.min.x - o.width ) / 2;
 			var centerY : Float = aabb.min.y + ( aabb.max.y - aabb.min.y - o.height ) / 2;
 

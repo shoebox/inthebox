@@ -19,6 +19,10 @@ class AnimatedTile extends Sprite{
 class AnimatedTile extends TileDesc{
 #end
 	
+	#if !flash
+	public var name( default , default ) : String;
+	#end
+
 	public var cycle( default , _setCycle ) : String;
 	public var onComplete : Signal;
 
@@ -41,9 +45,9 @@ class AnimatedTile extends TileDesc{
 	#if flash
 	private var _tileDesc     : TileDesc;
 	#end
-	
+
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
@@ -51,7 +55,7 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 30 ) {
-			
+
 			#if flash
 				super( );
 			#else
@@ -62,7 +66,7 @@ class AnimatedTile extends TileDesc{
 
 				_bmp = new Bitmap( );
 				addChild( _bmp );
-			
+
 				#if debug
 					var spDebug = new Sprite( );
 						spDebug.graphics.lineStyle( 0.1 , 0 );
@@ -90,9 +94,9 @@ class AnimatedTile extends TileDesc{
 			_tileDesc     = new TileDesc( 0 , 0 , 0 );
 			#end
 		}
-	
+
 	// -------o public
-		
+
 		/**
 		* 
 		* 
@@ -182,7 +186,6 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		public function update( iDelay : Int ) : Void {
-			
 			if( !_bPlaying )
 				return;
 
@@ -198,8 +201,9 @@ class AnimatedTile extends TileDesc{
 							stop( );
 							f = _iFrame;
 							bComplete = true;			
-						}else
+						}else{
 							f = 0;
+						}
 					}else{
 						f = 0;
 					}
@@ -210,13 +214,6 @@ class AnimatedTile extends TileDesc{
 			}
 
 
-			if( bComplete ){
-				onComplete.emit( );				
-				bComplete = false;
-			}
-
-			if( !_bPlaying )
-				return;
 			
 			//
 				var fRatio : Float = _iTimeElapsed / _iLoopTime;
@@ -229,8 +226,16 @@ class AnimatedTile extends TileDesc{
 							bComplete = true;
 						}
 					}
-				
+
 				}
+
+			if( bComplete ){
+				onComplete.emit( );				
+				bComplete = false;
+			}
+
+			if( !_bPlaying )
+				return;
 
 			//
 				_iFrame = Math.ceil ( fRatio * ( _iCycleLen - 1) );
@@ -239,8 +244,10 @@ class AnimatedTile extends TileDesc{
 				#if flash
 					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
 					var bmp = _refMap.getBitmapData( _sCat , cycle , _iFrame );
-					//_bmp.x  = -pt.x;
-					//_bmp.y  = -pt.y;
+					if( pt != null ){
+						_bmp.x  = -pt.x;
+						_bmp.y  = -pt.y;
+					}
 					_bmp.bitmapData = bmp;
 				#else
 					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
@@ -262,7 +269,7 @@ class AnimatedTile extends TileDesc{
 		}
 
 	// -------o protected
-		
+
 		/**
 		* 
 		* 
@@ -270,7 +277,7 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		private function _gotoAnd( bPlay : Bool , frameId : Int , sCycle : String = null ) : Void{
-			
+
 			if( sCycle != null )
 				cycle = sCycle;
 
@@ -298,10 +305,10 @@ class AnimatedTile extends TileDesc{
 			_bInnvalidate = true;
 			_iCycleLen    = _refMap.getSubCycleLen( _sCat , s );
 			_iLoopTime    = Std.int( ( _iCycleLen  / _iFps ) * 1000);
-			
+
 			return s;
 		}
 
 	// -------o misc
-	
+
 }

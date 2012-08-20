@@ -96,7 +96,7 @@ class AABB{
 		* @param 	aabb : AABB to be tested 	( AABB )
 		* @return	true if the AABB intersects ( Bool )
 		*/
-		inline public function intersect( aabb : AABB ) : Bool {
+		public function intersect( aabb : AABB ) : Bool {
 		
 			if( min.x >= aabb.max.x || max.x <= aabb.min.x ) 
 				return false;
@@ -105,6 +105,24 @@ class AABB{
            else
 				return true;
 			
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function intersection( aabb : AABB ) : AABB {
+			if( !intersect( aabb ) )
+				return null;
+
+			var res = new AABB( );
+				res.min.x = aabb.min.x > min.x ? aabb.min.x : min.x;
+				res.max.x = aabb.max.x < max.x ? aabb.max.x : max.x;
+				res.min.y = aabb.min.y > min.y ? aabb.min.y : min.y;
+				res.max.y = aabb.max.y < max.y ? aabb.max.y : max.y;
+			return res;
 		}
 
 		/**

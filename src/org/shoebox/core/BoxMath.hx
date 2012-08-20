@@ -198,6 +198,57 @@ class BoxMath
 		return RAD_TO_DEG * Math.atan2( dx , dy );
 	}
 
+	/**
+	* Intersection point between 2 Lines
+	* 
+	* @public
+	* @return	Intersection point or null if no intersection ( FPoint )
+	*/
+	static public function intersection( 
+											AX : Float , AY : Float , 
+											BX : Float , BY : Float , 
+											CX : Float , CY : Float , 
+											DX : Float , DY : Float 
+										) : FPoint {
+		
+		var ADx = ( DX - CX );
+   		var ACx = ( AX - CX );
+   		var ACy = ( AY - CY );
+   		var DCy = ( DY - CY );
+   		var BAx = ( BX - AX );
+   		var BAy = ( BY - AY );
+
+   		var rTop : Float = ACy * ADx - ACx * DCy;
+        var rBot : Float = BAx * DCy - BAy * ADx;
+		
+		var sTop : Float = ACy * BAx - ACx * BAy;
+        var sBot : Float = BAx * DCy - BAy * ADx;
+		
+		if ( ( rBot == 0 ) || ( sBot == 0 )) {
+			//Line are parralels
+			return null;
+		}
+		
+		var r : Float = rTop / rBot;
+		var s : Float = sTop / sBot;
+		
+		if ( ( r > 0 ) && ( r < 1 ) && ( s > 0 ) && ( s < 1 ) ) {
+			//point = A.add( B.sub( A ).scaleB.y( r ) );
+			return { x : ( BX - AX ) * r  , y : ( BY - AY ) * r };
+
+		}else {
+			return null;
+		}
+		
+		return null;
+	}
+
+	/**
+	* Intersection point between 2 Lines
+	* 
+	* @public
+	* @return	Intersection point or null if no intersection ( FPoint )
+	*/
    static public function lineIntersection2D( A : Vector2D , B : Vector2D , C : Vector2D , D : Vector2D ) : Intersection {
 	   	
    		var ADx = ( D.x - C.x );
@@ -235,8 +286,6 @@ class BoxMath
    }
 
 }
-
-
 
 typedef Intersection={
 	public var point : Vector2D;

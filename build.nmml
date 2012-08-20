@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<app title="shoebox" file="Test" main="TestAnimatedTile" package="org.shoebox.intheboxtest" version="1.0.0" company="shoe[box]" debug="true"hardware="true"/>
+	<app title="shoebox" file="TestMacro" main="TestMacro" package="org.shoebox.intheboxtest" version="1.0.0" company="shoe[box]" debug="true" hardware="true"/>
 	
 	<window width="800" height="600" fps="60" orientation="landscape" resizable="true" if="target_flash" background="0xFFFFFF" hardware="true"/>
+	
 	<window width="800" height="600" fps="60" orientation="landscape" resizable="true" unless="target_flash" background="0xFFFFFF" hardware="true"/>
  	
 	<set name="BUILD_DIR" value="Export" />
@@ -11,20 +12,21 @@
 	
 	<classpath name="src" />
 
-	
-	<haxelib name="actuate" />
 	<haxelib name="nme" />
-	<haxelib name="polygonal" />
+	<haxelib name="actuate" />
 		
 	<assets path="assets" rename="assets" include="*" exclude="*.fla" />
 	
-	<icon name="assets/nme.svg" />
+	<icon name="assets/hypicon.svg" />
 	
 	<ndll name="std" />
 	<ndll name="regexp" />
 	<ndll name="zlib" />	
 	<ndll name="nme" haxelib="nme" />
-	<!-- <template path="AndroidManifest.xml" if="android" />-->
+	<!--
+	<include path="../HyperTouch/extensions/hypertouch" if="mobile"/>
+
+	 <template path="AndroidManifest.xml" if="android" />-->
 	<set name="SHOW_CONSOLE" value="1" if="cpp"/>
 	<haxedef name="SHOW_CONSOLE" if="cpp"/>
 </project>

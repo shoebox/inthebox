@@ -29,7 +29,8 @@
 */
 
 package org.shoebox.libs.nevermind.entity;
-
+	
+	import org.shoebox.geom.Circle;
 	import org.shoebox.core.BoxArray;
 	import org.shoebox.core.Vector2D;
 	import org.shoebox.libs.nevermind.behaviors.ABehavior;
@@ -40,6 +41,8 @@ package org.shoebox.libs.nevermind.entity;
 	*/
 	class SteeringEntity extends MovingEntity {
 		
+		public var circle : Circle;
+
 		public var maxForce	( getMaxForce 	, setMaxForce ) 	: Float;
 		public var steer	( getSteer 		, setSteer ) 		: Vector2D;
 		
@@ -161,6 +164,16 @@ package org.shoebox.libs.nevermind.entity;
 			public function addBehavior( o : ABehavior ) : Void {
 				o.entity = this;
 				_aBehaviors.push( o );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function getBehavior( id : Int ) : ABehavior {
+				return _aBehaviors[ id ];
 			}
 			
 			/**

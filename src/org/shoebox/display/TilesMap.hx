@@ -58,7 +58,7 @@ class TilesMap extends Tilesheet , implements IDispose{
 		* @return	void
 		*/
 		public function new( bmp : BitmapData ) {
-			super( bmp );			
+			super( bmp );	
 			_hNames   = new Hash<Int>( );
 			_hBounds  = new Hash<Rectangle>( );
 			_hCenters = new Hash<Point>( );
@@ -74,9 +74,7 @@ class TilesMap extends Tilesheet , implements IDispose{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			if( nmeBitmap != null )
-				nmeBitmap.dispose( );
-				nmeBitmap = null;
+			
 			_hCycles  = null;
 			_hNames   = null;
 			_hBounds  = null;

@@ -29,13 +29,14 @@
 */
 package org.shoebox.patterns.frontcontroller;
 
-import flash.display.DisplayObjectContainer;
+import nme.display.DisplayObjectContainer;
 import nme.errors.Error;
 import org.shoebox.core.BoxArray;
+import org.shoebox.patterns.commands.ICommand;
+import org.shoebox.patterns.mvc.MVCTriad;
+import org.shoebox.patterns.mvc.abstracts.AController;
 import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
-import org.shoebox.patterns.mvc.abstracts.AController;
-import org.shoebox.patterns.mvc.MVCTriad;
 import org.shoebox.utils.system.Signal1;
 
 /**
@@ -52,10 +53,11 @@ class FrontController {
 
 	public var stateChanged : Signal1<String>;
 
-	private var _hTriads    : Hash<MVCTriad<AModel,AView,AController>>;
-	private var _hStatesDesc: Hash<Array<String>>;
-	private var _hVariables : Hash<Array<Dynamic>>;
-	private var _sState     : String;
+	private var _hCommands   : Hash<ICommand>;
+	private var _hStatesDesc : Hash<Array<String>>;
+	private var _hTriads     : Hash<MVCTriad<AModel,AView,AController>>;
+	private var _hVariables  : Hash<Array<Dynamic>>;
+	private var _sState      : String;
 
 	// -------o constructor
 		
@@ -66,8 +68,9 @@ class FrontController {
 		* @return	void
 		*/
 		public function new( ) {
-			_hTriads     = new Hash<MVCTriad<AModel,AView,AController>>( );
+			_hCommands   = new Hash<ICommand>( );
 			_hStatesDesc = new Hash<Array<String>>( );
+			_hTriads     = new Hash<MVCTriad<AModel,AView,AController>>( );
 			_hVariables  = new Hash<Array<Dynamic>>( );
 			stateChanged = new Signal1( );
 		}
@@ -96,8 +99,36 @@ class FrontController {
 			
 			_hTriads.set( s , t );
 
-			return s;
-			
+			return s;			
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function addCommand( com : Class<ICommand> ) : String {
+			var sCode = haxe.Md5.encode( Type.getClassName( com ) );
+
+			var com = Type.createInstance( com , [ ] );
+				com.frontController = this;
+				com.execute( );
+			_hCommands.set( sCode , com );
+			return sCode;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function getCommand( sCode : String ) {
+			var com = _hCommands.get( sCode );
+			if( !com.isRunning )
+				com.execute( );
+			return com;						
 		}
 
 		/**
@@ -175,8 +206,8 @@ class FrontController {
 
 			_drawState( _hStatesDesc.get( s ) );
 			//emit( CHANGE_STATE , [ s ] );
-			stateChanged.emit( s );
-			return _sState = s;
+			stateChanged.emit( _sState = s );
+			return s;
 		}
 
 		/**

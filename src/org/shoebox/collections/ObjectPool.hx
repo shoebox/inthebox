@@ -64,7 +64,7 @@ class ObjectPool<T>{
 		* @public
 		* @return	void
 		*/
-		inline public function get( ) : T {
+		public function get( ) : T {
 			_iAllocate--;
 			if( _aContent.length == 0 )
 				return _create( );
@@ -79,7 +79,7 @@ class ObjectPool<T>{
 		* @param	d : Instance to be pooled ( T )
 		* @return	void
 		*/
-		inline public function put( d : T ) : Void {
+		public function put( d : T ) : Void {
 			_aContent.push( d );
 			_iAllocate --;
 		}

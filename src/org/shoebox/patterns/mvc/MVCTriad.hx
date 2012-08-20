@@ -29,19 +29,20 @@
 */
 package org.shoebox.patterns.mvc;
 
-import flash.display.DisplayObjectContainer;
+import nme.display.DisplayObjectContainer;
+import nme.Lib;
 import nme.display.DisplayObject;
 import nme.events.Event;
-import org.shoebox.patterns.frontcontroller.FrontController;
-import org.shoebox.patterns.mvc.abstracts.AModel;
-import org.shoebox.patterns.mvc.abstracts.ABase;
-import org.shoebox.patterns.mvc.abstracts.AView;
-import org.shoebox.patterns.mvc.abstracts.AController;
-import org.shoebox.patterns.mvc.interfaces.IModel;
-import org.shoebox.patterns.mvc.interfaces.IView;
-import org.shoebox.patterns.mvc.interfaces.IController;
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
+import org.shoebox.patterns.frontcontroller.FrontController;
+import org.shoebox.patterns.mvc.abstracts.ABase;
+import org.shoebox.patterns.mvc.abstracts.AController;
+import org.shoebox.patterns.mvc.abstracts.AModel;
+import org.shoebox.patterns.mvc.abstracts.AView;
+import org.shoebox.patterns.mvc.interfaces.IController;
+import org.shoebox.patterns.mvc.interfaces.IModel;
+import org.shoebox.patterns.mvc.interfaces.IView;
 
 /**
  * ...
@@ -77,8 +78,6 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 							) {
 			super( );
 
-			cancelable = false;
-			
 			this.cModel      = cModel;
 			this.cView       = cView;
 			this.cController = cController;
@@ -105,7 +104,9 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ? e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
+
+			Lib.current.stage.removeEventListener( Event.ENTER_FRAME , _nullify , false );
 			if( container == null )
 				throw new nme.errors.Error('Tri container is not defined');
 
@@ -162,7 +163,7 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 			
 			//
 				if( mod != null )
@@ -179,6 +180,21 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 						container.removeChild( view );
 				}
 
+
+			//
+				Lib.current.stage.addEventListener( Event.ENTER_FRAME , _nullify , false );
+		}
+
+	// -------o protected
+		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _nullify( _ ) : Void{
+			
 			//
 				if( mod != null )
 					mod.frontController = null;
@@ -186,15 +202,14 @@ class MVCTriad<M:(AModel,ABase),V:(AView,DisplayObject),C:(AController,ABase)> e
 				if( controller != null )
 					controller.frontController = null;
 
-			//
-				mod        = null;
-				view       = null;
-				controller = null;
-		
+			Lib.current.stage.removeEventListener( Event.ENTER_FRAME , _nullify , false );
+			
+
+			mod        = null;
+			view       = null;
+			controller = null;		
 		}
 
-	// -------o protected
-	
 	// -------o misc
 	
 }

@@ -1,16 +1,12 @@
 -main ApplicationMain
 -D nme_install_tool
 -cp src
--lib actuate
 -lib nme
--lib polygonal
+-lib actuate
 -D web
 -swf-version 10.1
--swf9 Export/flash/bin/shoebox.swf
--swf-header 800:600:60:333333
+-swf9 Export/flash/bin/TestPar.swf
+-swf-header 800:600:60:FFFFFF
 -cp Export/flash/haxe
--D fdb
--D mobile
 --no-inline
 -debug
---connect 6000

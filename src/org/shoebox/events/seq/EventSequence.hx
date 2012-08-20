@@ -104,7 +104,7 @@ package org.shoebox.events.seq;
 			* @public
 			* @return	void
 			*/
-			override public function onExecute( ?e : Event = null ) : Void {
+			override public function onExecute( ) : Void {
 				_iPos = 0;
 				_next( );
 			}
@@ -115,7 +115,7 @@ package org.shoebox.events.seq;
 			* @public
 			* @return	void
 			*/
-			override public function onCancel( ?e : Event = null ) : Void {
+			override public function onCancel( ) : Void {
 
 				if( _aContent != null ){
 

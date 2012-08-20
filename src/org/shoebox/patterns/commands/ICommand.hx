@@ -1,15 +1,20 @@
 package org.shoebox.patterns.commands; 
-
-	import nme.events.Event;
+	
+	import org.shoebox.patterns.frontcontroller.FrontController;
 	import nme.events.IEventDispatcher;
 	
 	/**
 	 * @author shoe[box]
 	 */
-	interface ICommand implements IEventDispatcher{
+	interface ICommand{
 		
-		function onExecute( ?e : Event = null ) : Void;
+		function execute( ) : Void;
+		function cancel( ) : Void;
 
-		function onCancel( ?e : Event = null ) : Void;
+		function onExecute( ) : Void;
+		function onCancel( ) : Void;
+
+		var frontController : FrontController;
+		var isRunning : Bool;
 		
 	}

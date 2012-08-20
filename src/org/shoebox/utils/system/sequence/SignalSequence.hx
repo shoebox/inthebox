@@ -56,7 +56,7 @@ class SignalSequence extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ?e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
 			_run( );
 		}
 
@@ -66,7 +66,7 @@ class SignalSequence extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 			if( _oCurrent != null )
 				_disconnect( _oCurrent );
 			_resetDelayer( );

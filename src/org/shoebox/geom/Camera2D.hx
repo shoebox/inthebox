@@ -34,7 +34,6 @@ import nme.geom.Matrix;
 import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
 
-
 /**
  * ...
  * @author shoe[box]
@@ -42,15 +41,19 @@ import org.shoebox.geom.FPoint;
 
 class Camera2D{
 
-	private var _bInvalidate   : Bool;
-	private var _fAngle        : Float;
-	private var _fZoom         : Float;
-	private var _fViewPort     : FPoint;
-	private var _FPoint        : FPoint;
-	private var _fHalfViewPort : FPoint;
-	private var _fLimits       : FPoint;
-	private var _mProj         : Matrix;
+	public var x( default , _setXPosition ) : Float;
+	public var y( default , _setYPosition ) : Float;
+	public var zoom( default , _setZoom )   : Float;
+	public var minZoom( default , default ) : Float;
+	public var maxZoom( default , default ) : Float;
 
+	private var _bInvalidate   : Bool;
+	private var _fCanvasSize   : FPoint;
+	private var _fHalfViewport : FPoint;
+	private var _fViewport     : FPoint;
+	private var _mMatrix       : Matrix;
+	private var _mMatrixProj   : Matrix;
+	
 	// -------o constructor
 		
 		/**
@@ -59,31 +62,33 @@ class Camera2D{
 		* @param	
 		* @return	void
 		*/
-		public function new( ) {
-			_fViewPort     = { x : 0.0 , y : 0.0 };
-			_FPoint     = { x : 0.0 , y : 0.0 };
-			_fHalfViewPort = { x : 0.0 , y : 0.0 };
-			_fZoom         = 1.0;
-			_fAngle        = 0;
-			_mProj         = new Matrix() ;
+		public function new() {
+			trace('constructor');
 			_bInvalidate   = true;
+			_fCanvasSize   = { x : 0.0 , y : 0.0 };
+			_fHalfViewport = { x : 0.0 , y : 0.0 };
+			_fViewport     = { x : 0.0 , y : 0.0 };
+			_mMatrix       = new Matrix( );
+			_mMatrixProj   = new Matrix( );
+			this.zoom      = 1.0;
+			this.minZoom   = 1.0;
+			this.maxZoom   = 5.0;
 		}
 	
 	// -------o public
-	
+			
 		/**
 		* 
 		* 
 		* @public
 		* @return	void
 		*/
-		public function setViewPort( w : Float , h : Float ) : Void {
-			_fViewPort.x     = w;
-			_fViewPort.y     = h;	
-			_fHalfViewPort.x = w / 2;
-			_fHalfViewPort.y = h / 2;
-			_bInvalidate = true;
-		}
+		public function setViewport( w : Float , h : Float ) : Void {
+			_fViewport.x = w;
+			_fViewport.y = h;
+			_fHalfViewport.x = w / 2;
+			_fHalfViewport.y = h / 2;
+		}	
 
 		/**
 		* 
@@ -91,21 +96,9 @@ class Camera2D{
 		* @public
 		* @return	void
 		*/
-		public function setPosition( x : Float , y : Float ) : Void {
-			_FPoint.x = x;
-			_FPoint.y = y;
-			//_limits( );
-			_bInvalidate = true;
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function move( dx : Float , dy : Float ) : Void {
-			setPosition( _FPoint.x + dx , _FPoint.y + dy );
+		public function setCanvasSize( w : Float , h : Float ) : Void {
+			_fCanvasSize.x = w;
+			_fCanvasSize.y = h;	
 		}
 
 		/**
@@ -115,22 +108,20 @@ class Camera2D{
 		* @return	void
 		*/
 		public function getMatrix( ) : Matrix {
-			
-			if( !_bInvalidate )
-				return _mProj;
-			
-			_FPoint.x = _limit( _FPoint.x , _fLimits.x * _fZoom , _fHalfViewPort.x );
-			_FPoint.y = _limit( _FPoint.y , _fLimits.y * _fZoom , _fHalfViewPort.y );
+			if( _bInvalidate )
+				_invalidate( );
+			return _mMatrix;
+		}	
 
-			_mProj.identity( );
-			_mProj.scale( _fZoom , _fZoom );
-			_mProj.translate( _fHalfViewPort.x , _fHalfViewPort.y );
-			trace( _FPoint );
-			_mProj.translate( -_FPoint.x , -_FPoint.y );
-			//_mProj.rotate( 0 );
-			
-			return _mProj;
-			
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function setPosition( fx : Float , fy : Float ) : Void {
+			this.x = fx;
+			this.y = fy;
 		}
 
 		/**
@@ -139,34 +130,9 @@ class Camera2D{
 		* @public
 		* @return	void
 		*/
-		public function setLimits( fMaxX : Float , fMaxY : Float ) : Void {
-
-			_fLimits = { x : fMaxX , y : fMaxY };
+		public function prependZoom( f : Float ) : Void {
+			zoom *= f;
 			_bInvalidate = true;
-
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function zoom( f : Float ) : Void {
-
-			_fZoom *= f;
-			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
-			_bInvalidate = true;
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function getZoom( ) : Float {
-			return _fZoom;
 		}
 
 		/**
@@ -176,35 +142,15 @@ class Camera2D{
 		* @return	void
 		*/
 		public function appendZoom( f : Float ) : Void {
-
-			_fZoom += _fZoom * f;
-			_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
-			trace('_fZoom ::: '+_fZoom);
+			trace('appendZoom ::: '+f+' - '+zoom);
+			zoom += zoom * f;
+			//_fZoom = BoxMath.clamp( _fZoom , 1 , 10 );
+			trace('_fZoom ::: '+zoom);
 			_bInvalidate = true;
 		}
 
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function moveTo( dx : Float , dy : Float , nDur : Float = 1 ) : Void {
-			Actuate.tween( _FPoint , nDur , { x : dx , y : dy } , false ).onUpdate( _invalidate );
-		}
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function zoomTo( z : Float = 1.0 , nDur : Float = 1.0 ) : Void {
-			Actuate.tween( this , nDur , { _fZoom : z } , false ).onUpdate( _invalidate );
-		}
-
 	// -------o protected
-		
+	
 		/**
 		* 
 		* 
@@ -212,17 +158,52 @@ class Camera2D{
 		* @return	void
 		*/
 		private function _invalidate( ) : Void{
-			_bInvalidate = true;
+			trace('invalidate ---- '+x+' - '+y);
+			_mMatrixProj.identity( );
+			_mMatrixProj.translate( -x , -y );// - _fHalfViewport.x , -y - _fHalfViewport.y );
+			_mMatrixProj.scale( zoom , zoom );
+			_mMatrixProj.translate( _fHalfViewport.x , _fHalfViewport.y );
+
+			_mMatrix.identity( );
+			_mMatrix.concat( _mMatrixProj );
+			_bInvalidate = false;
+
 		}
-		
+
 		/**
 		* 
 		* 
 		* @private
 		* @return	void
 		*/
-		private function _limit( num : Float , all : Float , r : Float ) : Float{
-			return BoxMath.clamp( num , r / _fZoom , ( all  - r ) / _fZoom );
+		private function _setXPosition( f : Float ) : Float{
+			_bInvalidate = true;
+			return this.x = BoxMath.clamp( f , _fHalfViewport.x / zoom , _fCanvasSize.x - _fHalfViewport.x / zoom );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _setYPosition( f : Float ) : Float{
+			_bInvalidate = true;
+			return this.y = BoxMath.clamp( f , _fHalfViewport.y / zoom , _fCanvasSize.y - _fHalfViewport.y / zoom );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _setZoom( f : Float ) : Float{
+			trace('setZoom ::: '+f);
+			_bInvalidate = true;
+			_setXPosition( this.x );
+			_setYPosition( this.y );
+			return this.zoom = BoxMath.clamp( f , minZoom , maxZoom );
 		}
 
 	// -------o misc

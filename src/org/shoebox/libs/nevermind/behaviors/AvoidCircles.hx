@@ -14,7 +14,7 @@ import org.shoebox.libs.nevermind.behaviors.ABehavior;
  * @author shoe[box]
  */
 
-class AvoidCicles extends ABehavior{
+class AvoidCircles extends ABehavior{
 
 	public static var AVOID_BUFFER			: Int = 25;
 	
@@ -46,6 +46,16 @@ class AvoidCicles extends ABehavior{
 	
 		public function addCircle( dx : Float , dy : Float , radius : Float ) : Void {
 			_vCircles.push( new Circle( dx , dy , radius ) );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function addCircleInstance( c : Circle ) : Void {
+			_vCircles.push( c );
 		}
 
 		/**

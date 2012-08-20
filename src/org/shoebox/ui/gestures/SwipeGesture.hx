@@ -94,7 +94,7 @@ class SwipeGesture extends GestureBase , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ?e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
 			trace('onExecute');
 
 			#if !mobile
@@ -115,7 +115,7 @@ class SwipeGesture extends GestureBase , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 			#if mobile
 				_oTarget.removeEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , false );
 				_oTarget.removeEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , false );

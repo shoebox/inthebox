@@ -55,6 +55,7 @@ class SoundTrack{
 		* @return	void
 		*/
 		private function _set_volume( v : Float ) : Float{
+			trace('_set_volume ::: '+v);
 			return transform.volume = volume = v;
 		}
 

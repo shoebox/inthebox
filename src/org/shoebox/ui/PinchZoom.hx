@@ -86,7 +86,7 @@ class PinchZoom extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ?e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
 			
 			#if mobile
 				
@@ -112,7 +112,7 @@ class PinchZoom extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 			#if mobile
 			_oTarget.touchBegin( ).disconnect( _onTouchBegin );
 			_oTarget.touchMove( ).disconnect( _onTouchMove );

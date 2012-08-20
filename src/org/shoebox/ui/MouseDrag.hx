@@ -88,7 +88,7 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ?e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
 
 			_fStart = { x : 0.0 , y : 0.0 };
 			_fPrev  = { x : 0.0 , y : 0.0 };
@@ -107,7 +107,7 @@ class MouseDrag extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 
 			if( _oTarget == null )
 				return;

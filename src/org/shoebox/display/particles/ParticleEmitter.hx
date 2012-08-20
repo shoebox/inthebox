@@ -29,6 +29,7 @@
 */
 package org.shoebox.display.particles;
 
+import nme.errors.Error;
 import nme.display.Sprite;
 import nme.display.Sprite;
 import nme.display.Tilesheet;
@@ -44,6 +45,7 @@ import org.shoebox.libs.nevermind.entity.SteeringEntity;
 class ParticleEmitter extends Sprite{
 
 	private var _aParticle : Array<Particle>;
+	private var _iFormat   : Int;
 	private var _oSheet    : Tilesheet;
 
 	// -------o constructor
@@ -54,10 +56,11 @@ class ParticleEmitter extends Sprite{
 		* @param	
 		* @return	void
 		*/
-		public function new( sheet : Tilesheet ) {
+		public function new( sheet : Tilesheet ,format : Int = 0 ) {
 			super( );
 			_oSheet = sheet;
 			_aParticle = [ ];
+			_iFormat = format;
 		}
 	
 	// -------o public
@@ -68,15 +71,15 @@ class ParticleEmitter extends Sprite{
 		* @public
 		* @return	void
 		*/
-		public function emit( posX : Float , posY : Float , fx : Float , fy : Float , ttl : Float , tileId : Int = 0 , format : Int = 0 ) : Particle {
+		public function emit( posX : Float , posY : Float , fx : Float , fy : Float , ttl : Float , tileId : Int = 0 ) : Particle {
 
 			var w =  new Wander( Math.random( ) );
 				
-			var p = new Particle( format );
+			var p = new Particle( _iFormat );
 				p.position.x = posX;
 				p.position.y = posY;
-				p.fTtl = ttl;
-				p.tileId = tileId;
+				p.fTtl       = ttl;
+				p.tileId     = tileId;
 				p.velocity.x = fx;
 				p.velocity.y = fy;
 				p.addBehavior( w );
@@ -91,20 +94,32 @@ class ParticleEmitter extends Sprite{
 		* @public
 		* @return	void
 		*/
-		public function update( delay : Int ) : Void {
+		public function update( delay : Int , updateFunc : Particle -> Void = null ) : Void {
 			
+			if( _aParticle.length == 0 )
+				return;
+
 			var res : Array<Float> = [ ];
+			
 			for( p in _aParticle ){
 				p.fTtl -= delay;
-				if( p.fTtl < 0 ){
+				if( updateFunc != null )
+					updateFunc( p );
+
+				if( p.fTtl <= 0 ){
 					_aParticle.remove( p );
 					continue;
 				}
 				p.update( );
 				res = res.concat( p.desc.getArray( ) );
 			}
-			graphics.clear( );
-			_oSheet.drawTiles( graphics , res , false );
+			
+			
+			//try{
+				graphics.clear( );
+				if( res.length > 0 )
+					_oSheet.drawTiles( graphics , res , false , _iFormat );
+			
 		}
 
 	// -------o protected

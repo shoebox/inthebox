@@ -83,7 +83,7 @@ class Keys extends AbstractCommand , implements ICommand{
 			* @public
 			* @return  void
 			*/
-			override public function onExecute( ?e : Event = null ) : Void{
+			override public function onExecute( ) : Void{
 				Lib.current.stage.addEventListener( KeyboardEvent.KEY_DOWN , _onKeyDown , false );
 				Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP , _onKeyUp , false );
 			}
@@ -94,7 +94,7 @@ class Keys extends AbstractCommand , implements ICommand{
 			* @public
 			* @return	void
 			*/
-			override public function onCancel( ?e : Event = null ) : Void {
+			override public function onCancel( ) : Void {
 				Lib.current.stage.removeEventListener( KeyboardEvent.KEY_DOWN , _onKeyDown , false );
 				Lib.current.stage.removeEventListener( KeyboardEvent.KEY_UP , _onKeyUp , false );	
 			}

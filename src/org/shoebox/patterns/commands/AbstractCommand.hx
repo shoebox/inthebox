@@ -12,12 +12,11 @@ import org.shoebox.utils.system.Signal;
  * @author shoe[box]
  */
 
-class AbstractCommand extends EventDispatcher , implements ICommand{
+class AbstractCommand implements ICommand{
 
 	public var frontController : FrontController;
 	public var isRunning : Bool;
-	public var cancelable ( default , default )     : Bool; //TODO : Deprecated
-
+	
 	// -------o constructor
 		
 		/**
@@ -27,7 +26,7 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @return	void
 		*/
 		public function new() {
-			super( );
+		
 		}
 	
 	// -------o public
@@ -38,13 +37,13 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		public function execute( ?e : Event = null ) : Void {
+		public function execute( ) : Void {
 			
 			if( isRunning )
 				throw new Error('Error : Command is already running');
 
 			isRunning = true;
-			onExecute( e );
+			onExecute( );
 
 		}
 
@@ -54,12 +53,12 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		public function cancel( ?e : Event = null ) : Void {
+		public function cancel( ) : Void {
 			if( !isRunning )
 				throw new Error('Error : Command is not running');
 
 			isRunning = false;
-			onCancel( e );
+			onCancel( );
 		}
 
 		/**
@@ -68,7 +67,7 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		public function onExecute( ? e : Event = null  ) : Void {
+		public function onExecute( ) : Void {
 			
 		}
 
@@ -78,7 +77,7 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		public function onCancel( ?e : Event = null ) : Void {
+		public function onCancel( ) : Void {
 			
 		}
 

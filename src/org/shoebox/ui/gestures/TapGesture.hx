@@ -82,7 +82,7 @@ class TapGesture extends GestureBase , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ?e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
 			trace('onExecute');
 			_iTouchCount = 0;
 
@@ -108,7 +108,7 @@ class TapGesture extends GestureBase , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 			#if mobile
 				_oTarget.removeEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , true );
 				_oTarget.removeEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , true );

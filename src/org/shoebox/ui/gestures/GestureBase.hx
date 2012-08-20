@@ -78,7 +78,7 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onExecute( ?e : Event = null ) : Void {
+		override public function onExecute( ) : Void {
 			
 		}
 
@@ -88,7 +88,7 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		* @public
 		* @return	void
 		*/
-		override public function onCancel( ?e : Event = null ) : Void {
+		override public function onCancel( ) : Void {
 			
 		}		
 

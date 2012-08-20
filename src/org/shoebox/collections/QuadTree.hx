@@ -150,11 +150,11 @@ class QuadTreeNode<T>{
 					sub.dispose( );
 				}
 
-				_aSubs = null;
+				_aSubs = [ ];
 			}
 
 			if( _bHasContent ){
-				_aContent = null;
+				_aContent = [ ];
 			}
 		}
 
@@ -250,7 +250,7 @@ class QuadTreeNode<T>{
 			if( !bounds.intersectCoords( dx1 , dy1 , dx2 , dy2 ) )
 				return;
 
-			if( _bHasChilds ){
+			if( _bHasChilds && _aSubs != null ){
 				for( sub in _aSubs ){
 
 					if( sub == null )

@@ -14,11 +14,14 @@ import org.shoebox.geom.IPosition;
 
 class AnimatedTilesMap extends TilesMap , implements IDispose{
 
+	public var name( default , default ) : String;
+
 	private var _hCustomCenter : Hash<Point>;
 	private var _hCyclesFrames : Hash<Array<Int>>;
 	private var _hCyclesLen    : Hash<Int>;
 	private var _hFrameSize    : Hash<IPosition>;
 	#if flash
+	private var _bmpRef : BitmapData;
 	private var _hCache         : Hash<BitmapData>;
 	private var _hIds           : Hash<Int>;
 	private var _hFramesCenters : Hash<Point>;	
@@ -41,6 +44,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			_hFrameSize    = new Hash<IPosition>( );
 
 			#if flash
+			_bmpRef = bmp;
 			_hCache         = new Hash<BitmapData>( );
 			_hIds           = new Hash<Int>();
 			_hFramesCenters = new Hash<Point>();
@@ -103,7 +107,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			
 			//
 				bmp = new BitmapData( Std.int( rec.width ) , Std.int( rec.height ) , true );
-				bmp.copyPixels( nmeBitmap , rec , POINT );
+				bmp.copyPixels( _bmpRef , rec , POINT );
 				_hCache.set( s , bmp );
 			
 			return bmp;
@@ -245,7 +249,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		* @return	void
 		*/
 		public function parseJson( s : String , fDecalX : Float = 0.0 , fDecalY : Float = 0.0 ) : Void {
-
+			
 			var desc = haxe.Json.parse( s );
 			var fields = Reflect.fields ( desc.frames );
 			var entry : JSONEntry;

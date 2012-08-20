@@ -127,8 +127,8 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @public
 			* @return	void
 			*/
-			public function getModel( ) : AModel{
-				return _getModel( );
+			public function getModel( ){
+				return cast _getModel( );
 			}
 
 		// -------o private

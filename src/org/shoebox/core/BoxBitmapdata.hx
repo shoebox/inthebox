@@ -48,7 +48,7 @@ class BoxBitmapdata {
 		var fRatio : Float = getRatio ( source.width , source.height , w , h , bMax , bZoom );
 
 		var oB : BitmapData = new BitmapData ( Std.int( source.width * fRatio ) , Std.int( source.height * fRatio ) , source.transparent , 0 );
-			oB.draw ( source , resizeMatrix( source.width , source.height , w , h , bMax , bZoom ) );
+			oB.draw ( source , resizeMatrix( source.width , source.height , w , h , bMax , bZoom ) , null , null , null , bSmooth );
 
 		return oB;
 	}	

@@ -27,21 +27,21 @@
 * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.shoebox.patterns.mvc.abstracts; 
+package org.shoebox.geom;
 
-import nme.errors.Error;
-import nme.events.EventDispatcher;
-import org.shoebox.patterns.frontcontroller.FrontController;
+import nme.display.Graphics;
+import org.shoebox.geom.AABB;
 
 /**
  * ...
  * @author shoe[box]
  */
 
-class ABase{
+class Parallax{
 
-	public var codeName : String;
-	public var frontController : FrontController;
+	public var fov( default , default ) : Float;
+
+	private var _aLayer : Array<ParallaxLayer>;
 
 	// -------o constructor
 		
@@ -52,7 +52,7 @@ class ABase{
 		* @return	void
 		*/
 		public function new() {
-			
+			reset( );
 		}
 	
 	// -------o public
@@ -63,63 +63,87 @@ class ABase{
 		* @public
 		* @return	void
 		*/
-		public function onCancel( ) : Void {
+		public function reset( ) : Void {
+			this.fov = 60;
+			_aLayer = [ ];
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function addLayer( index : Int , bounds : AABB , fDistance : Float = 1.0 ) : Void {
+			_aLayer[ index ] = { bounds : bounds , fDistance : fDistance };
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function move( fx : Float , fy : Float ) : Void {
 			
+			var fTan = Math.tan( fov );
+			for( l in _aLayer ){
+
+				if( l == null )
+					continue;
+
+				l.bounds.translate( Math.round( l.fDistance * fTan * fx ) , 0 );
+			}
+
+		}
+
+		#if debug
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function debug( g : Graphics ) : Void {
+			for( l in _aLayer ){
+				if( l == null )
+					continue;
+				g.lineStyle( 1 , 0 );
+				g.moveTo( l.bounds.min.x , l.bounds.min.y );
+				g.lineTo( l.bounds.max.x , l.bounds.max.y );
+				g.drawRect( l.bounds.min.x , l.bounds.min.y , l.bounds.width , l.bounds.height );
+				g.endFill( );
+			}
+		}
+		#end
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function get_aabb_intersection_with( aabb : AABB , layerIndex : Int ) : AABB {
+			
+			var l = _aLayer[ layerIndex ];
+			if( !aabb.intersect( l.bounds ) )
+				return null;
+
+			var res = aabb.intersection( l.bounds );
+				res.translate( -l.bounds.min.x , -l.bounds.min.y );
+			
+			return res;
 		}
 
 	// -------o protected
 	
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getModel( ) : AModel{
-			
-			if( codeName == null )
-				throw new Error('The codeName is null');
-				
-			if( frontController == null )
-				throw new Error('The FrontController is null');
-
-			return frontController.getApp( codeName ).mod;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getView( ) : AView{
-
-			if( codeName == null )
-				throw new Error('The codeName is null');
-				
-			if( frontController == null )
-				throw new Error('The FrontController is null');
-
-			return frontController.getApp( codeName ).view;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _getController( ) : AController{
-			
-			if( codeName == null )
-				throw new Error('The codeName is null');
-				
-			if( frontController == null )
-				throw new Error('The FrontController is null');
-
-			return frontController.getApp( codeName ).controller;
-		}
+		
 
 	// -------o misc
 	
+}
+
+typedef ParallaxLayer={
+	public var bounds : AABB;
+	public var fDistance : Float;
 }

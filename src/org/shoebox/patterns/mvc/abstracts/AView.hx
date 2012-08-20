@@ -126,7 +126,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @param 
 			* @return
 			*/
-			public function onCancel( ?e : Event = null ) : Void {
+			public function onCancel( ) : Void {
 				
 				if( _vDisplayObjects == null ){
 					cancel( );
@@ -140,18 +140,26 @@ package org.shoebox.patterns.mvc.abstracts;
 					
 					if( Std.is( d , IDispose ) ){
 						cast( d , IDispose ).dispose( );
+						continue;
 					}
 
 					if( Std.is( d, Bitmap) ){
-						
+
+						if( d.parent != null )
+							d.parent.removeChild( d );
+
 						if( ( cast( d, Bitmap) ).bitmapData != null ){
 							( cast( d, Bitmap) ).bitmapData.dispose( );
+							( cast( d, Bitmap) ).bitmapData = null;
 						}
-						
-					}else if( Std.is( d, Loader) ){
+						continue;						
+					}
+
+					if( Std.is( d, Loader) ){
 						#if (flash || mobile )
 						( cast( d, Loader) ).unload( );
 						#end
+						continue;
 					}
 					
 					if( Std.is( d, MovieClip) ){
@@ -164,31 +172,12 @@ package org.shoebox.patterns.mvc.abstracts;
 				
 				_vDisplayObjects = null;
 				cancel( );
+				nme.system.System.gc( );
 			
 			}
 			
 		// -------o private
 			
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			
-			private function _getFc( ) : FrontController{
-				return ref.frontController;
-			}*/
-
-			/**
-			* 
-			* 
-			* @private
-			* @return	void
-			
-			private function _getContainer( ) : DisplayObjectContainer{
-				return ref.container;
-			}*/
-
 		// -------o misc
 		
 			public static function trc(arguments:Dynamic) : Void {
