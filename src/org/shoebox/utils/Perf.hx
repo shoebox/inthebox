@@ -30,12 +30,11 @@ class Perf extends Sprite{
 	private var _nMemory    : Float;
 	private var _iPrevDelay : Int;
 	private var _iStart     : Int;
-	private var _tfMs       : TextField;
 	private var _tfFps      : TextField;
 	private var _oFormat    : TextFormat;
 	
 	private static var WIDTH			: Int = 100;
-	private static var HEIGHT			: Int = 40;	
+	private static var HEIGHT			: Int = 50;	
 	
 	// -------o constructor
 		
@@ -97,24 +96,16 @@ class Perf extends Sprite{
 			
 			//
 				_tfFps = new TextField ();
-				_tfMs = new TextField ();
-				_oFormat = new TextFormat ( null , 14 );
-	
+		
 			//
-				_tfFps.defaultTextFormat = _tfMs.defaultTextFormat = _oFormat;
-				_tfFps.width             = _tfMs.width = WIDTH;
-				_tfFps.height            = _tfMs.height = 20;
-				_tfFps.selectable        = _tfMs.selectable = false;
+				_tfFps.autoSize          = nme.text.TextFieldAutoSize.LEFT;
+				_tfFps.defaultTextFormat = new TextFormat('Consolas',12,0xFFFFFF);
+				_tfFps.width             = WIDTH;
+				_tfFps.wordWrap          = true;
+				_tfFps.selectable        = false;
 				_tfFps.textColor         = 0xFFFF00;
-				_tfFps.text              = "FPS: ";
 				addChild ( _tfFps );
 			
-			//
-				_tfMs.y         = 15;
-				_tfMs.textColor = 0x00FF00;
-				_tfMs.text      = "MS: ";
-				//_tfFps.autoSize = _tfMs.autoSize = TextFieldAutoSize.NONE;
-				addChild ( _tfMs );
 		
 		}
 		
@@ -132,9 +123,18 @@ class Perf extends Sprite{
 			while( _aTimes[ 0 ] < now - 1)
 				_aTimes.shift();
 			
+			#if flash
+			//var mem = Math.round( nme.system.System.totalMemoryNumber * 0.000000954 * 100 ) / 100;
+			var mem : Float = flash.system.System.totalMemoryNumber;
+			#else
+			var mem : Float = cpp.vm.Gc.memUsage( );
+			#end
+				mem = Math.round( mem * 0.000000954 * 1000 ) / 1000;
+
+
 			iTimer      = Lib.getTimer();
-			_tfFps.text = "FPS: " + _aTimes.length + " / " + stage.frameRate;
-			_tfMs.text  = "MS: " + (iTimer - iMs);
+			_tfFps.text = "FPS: " + _aTimes.length + " / " + stage.frameRate+'\nMEM:'+mem+'\n'+"MS: " + (iTimer - iMs);
+
 
 			iMs = iTimer;
 		}

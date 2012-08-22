@@ -42,7 +42,6 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		public function new( m : Sound ) {
-			trace('constructor ::: '+m);
 			media       = m;
 			_fVol       = 1;
 			_fPan       = 0;
@@ -72,7 +71,8 @@ class BoxSound implements IDispose{
 			}
 			
 			_oChannel = media.play( startTime , iLoops , _oTransform );
-			_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
+			if( _oChannel != null )
+				_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 			return isPlaying = true;
 		}
 

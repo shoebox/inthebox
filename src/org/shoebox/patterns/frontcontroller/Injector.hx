@@ -58,18 +58,6 @@ class Injector{
 	
 	// -------o public
 		
-		
-
-		/**
-		* 
-		* 
-		* @public
-		* @return	void
-		*/
-		public function add_injection_point( c : Class<Dynamic> , varName : String , varType : Dynamic ) : Void {
-						
-		}
-
 		/**
 		* 
 		* 
@@ -150,7 +138,6 @@ class Injector{
 					break;
 				}
 			}
-			trace( dep );
 			return dep;
 		}
 
@@ -199,7 +186,6 @@ class Dependency<T>{
 
 			if( value == null ){
 				value = Type.createInstance( type , [ ] );
-				trace('create instance');
 			}
 
 			return value;

@@ -346,7 +346,6 @@ class TileDesc{
 			a[ id++ ] = y;
 			a[ id++ ] = tileId;
 
-			var id : Int = 3;
 			if( _bUseScale )
 				a[ id++ ] = scale;
 
@@ -372,7 +371,7 @@ class TileDesc{
 
 			if( _bUseAlpha )
 				a[ id++ ] = alpha;
-
+			
 			_bInvalidate = false;
 			return a;
 		}
