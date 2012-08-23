@@ -3,7 +3,6 @@ package org.shoebox.utils.frak;
 import nme.display.Sprite;
 import nme.events.Event;
 import org.shoebox.patterns.frontcontroller.FrontController;
-import org.shoebox.patterns.mvc.MVCTriad;
 
 /**
  * ...
@@ -12,9 +11,9 @@ import org.shoebox.patterns.mvc.MVCTriad;
 
 class Frak extends Sprite{
 
-	private var _oComm : MVCTriad<MFrak,VFrak,CFrak>;
-	private var _oFC : FrontController;
+	public var fc : FrontController;
 
+	private static var _sTriad : String;
 	private static var __instance 		: Frak;
 
 	// -------o constructor
@@ -32,11 +31,11 @@ class Frak extends Sprite{
 			if( e == null )
 				throw new nme.errors.Error( );
 			
-			_oFC = new FrontController( );
-			_oFC.owner = this;
+			fc = new FrontController( );
+			fc.owner = this;
 			
-			var s = _oFC.add( MFrak , VFrak , CFrak );
-			_oFC.state = _oFC.registerState( [ s ] );
+			_sTriad = fc.add( MFrak , VFrak , CFrak );
+			fc.state = fc.registerState( [ _sTriad ] );
 			
 			
 		}
@@ -102,7 +101,7 @@ class Frak extends Sprite{
 		* @return	void
 		*/
 		static private function _getModel( ) : MFrak{
-			return getInstance( )._oComm.mod;
+			return cast getInstance( ).fc.getApp( _sTriad ).instance.model;
 		}
 
 	// -------o misc

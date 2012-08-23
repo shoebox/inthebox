@@ -35,6 +35,7 @@ package org.shoebox.utils.frak;
 	import org.shoebox.patterns.commands.AbstractCommand;
 	import org.shoebox.patterns.mvc.abstracts.AModel;
 	import org.shoebox.patterns.mvc.interfaces.IModel;
+	import org.shoebox.utils.frak.VFrak;
 	import org.shoebox.utils.Perf;
 
 	/**
@@ -44,6 +45,9 @@ package org.shoebox.utils.frak;
 	*/
 	class MFrak extends AModel , implements IModel {
 		
+		@view
+		public var view : VFrak;
+
 		private var _aBuffer    : Array<String>;
 		private var _hAlias     : Hash<Alias>;
 		private var _hVariables : Hash<Variable>;		

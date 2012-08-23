@@ -127,7 +127,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function onCancel( ?e : Event = null ) : Void {
-				trace('onCanel');
+				
 				if( _vDisplayObjects == null ){
 					cancel( );
 					return;
@@ -143,9 +143,9 @@ package org.shoebox.patterns.mvc.abstracts;
 					}
 
 					if( Std.is( d, Bitmap) ){
-						
 						if( ( cast( d, Bitmap) ).bitmapData != null ){
 							( cast( d, Bitmap) ).bitmapData.dispose( );
+							( cast( d, Bitmap) ).bitmapData = null;
 						}
 						
 					}else if( Std.is( d, Loader) ){

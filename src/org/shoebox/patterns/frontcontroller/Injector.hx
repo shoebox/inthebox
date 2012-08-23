@@ -141,6 +141,18 @@ class Injector{
 			return dep;
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function set_dependency_value<T>( for_type : Class<T> , value : T , ?optional_name : String ) : Void {
+			inject_dependencies_on( value , for_type );
+			var dep = get_dependency( for_type , optional_name );
+				dep.value = value;
+		}
+
 	// -------o protected
 	
 		

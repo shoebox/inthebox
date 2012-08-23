@@ -151,6 +151,16 @@ class FrontController{
 		* @public
 		* @return	void
 		*/
+		public function set_dependency_value<T>( for_type : Class<T> , value : T , ?optional_name : String ) : Void {
+			_injector.set_dependency_value( for_type , value , optional_name );					
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		public function setAppVariables( target_app_name : String , variables : Array<Dynamic> ) : Void {			
 			getApp( target_app_name ).variables = variables;
 		}
@@ -440,8 +450,10 @@ class MVCTriadInstance implements IDispose{
 			if( model != null )
 				model.cancel( );
 
+
 			if( controller != null )
 				controller.cancel( );
+				
 
 			if( view != null ){
 				view.cancel( );
@@ -452,14 +464,41 @@ class MVCTriadInstance implements IDispose{
 					v.parent.removeChild( v );
 			}
 
-			model = null;
-			view = null;
-			controller = null;
+			haxe.Timer.delay( function( ){
+											_purge( model );
+											_purge( view );
+											_purge( controller );
+
+											model = null;
+											view = null;
+											controller = null;
+											},100);
 		}
 
 	// -------o protected
-	
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _purge( o : Dynamic = null ) : Void{
+
+			if( o == null )
+				return;
+
+			var typ = Type.getClass( o );
+			var a = Type.getInstanceFields( typ );
+			for( f in a ){
+				try{
+					if( Reflect.isObject( Reflect.field( o , f ) ) )
+						Reflect.setField( o , f , null );
+				}catch( e : nme.errors.Error ){
+
+				}
+			}
+		}
 
 	// -------o misc
 	
