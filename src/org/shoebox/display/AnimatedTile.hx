@@ -36,7 +36,7 @@ class AnimatedTile extends TileDesc{
 	private var _iCycleLen     : Int;
 	private var _iFps          : Int;
 	private var _iFrame        : Int;
-	private var _iLoopTime     : Int;
+	private var _fLoopTime     : Float;
 	private var _iLoops        : Int;
 	private var _iTimeElapsed  : Int;
 	private var _refMap        : AnimatedTilesMap;
@@ -191,7 +191,7 @@ class AnimatedTile extends TileDesc{
 
 			_iTimeElapsed += iDelay;
 			var bComplete = false;
-			if( _iTimeElapsed > _iLoopTime ){
+			if( _iTimeElapsed > _fLoopTime ){
 
 				var f = _iFrame + 1;
 				if( f >= _iCycleLen ){
@@ -210,13 +210,11 @@ class AnimatedTile extends TileDesc{
 
 				}
 				_iFrame = f;
-				_iTimeElapsed -= _iLoopTime;
+				_iTimeElapsed -= Std.int( _fLoopTime );
 			}
-
-
 			
 			//
-				var fRatio : Float = _iTimeElapsed / _iLoopTime;
+				var fRatio : Float = _iTimeElapsed / _fLoopTime;
 				if (fRatio >= 1) {
 					fRatio -= Math.floor (fRatio);
 					if( _bMaxLoopCount ){
@@ -304,7 +302,7 @@ class AnimatedTile extends TileDesc{
 			_iFrame       = 0;
 			_bInnvalidate = true;
 			_iCycleLen    = _refMap.getSubCycleLen( _sCat , s );
-			_iLoopTime    = Std.int( ( _iCycleLen  / _iFps ) * 1000);
+			_fLoopTime    = ( _iCycleLen  / _iFps ) * 1000;
 
 			return s;
 		}

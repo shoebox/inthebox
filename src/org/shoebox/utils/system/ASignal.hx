@@ -81,12 +81,13 @@ class ASignal<T>{
 		* @return	void
 		*/
 		public function disconnect( f : T , prio : Int = 0 ) : Void {
-			
+		
 			var content = _oQueue.getContent( );
 			for( o in content ){
 
 				if( o.content.listener == f && o.prio == prio ){
 					content.remove( o );
+					_oQueue.remove( o.content );
 					break;
 				}
 			}

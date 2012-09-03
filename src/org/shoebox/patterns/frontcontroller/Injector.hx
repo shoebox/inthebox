@@ -51,7 +51,6 @@ class Injector{
 		* @return	void
 		*/
 		public function new() {
-			trace('constructor');
 			_aDependencies = [ ];
 			InjectorMacro.generate( );
 		}
