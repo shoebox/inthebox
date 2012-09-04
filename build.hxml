@@ -1,6 +1,7 @@
 -main ApplicationMain
 -D nme_install_tool
 -cp src
+-cp tests
 -lib nme
 -lib actuate
 -D web

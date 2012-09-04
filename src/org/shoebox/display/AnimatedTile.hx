@@ -186,58 +186,63 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		public function update( iDelay : Int ) : Void {
+
 			if( !_bPlaying )
 				return;
 
-			_iTimeElapsed += iDelay;
 			var bComplete = false;
-			if( _iTimeElapsed > _fLoopTime ){
-
-				var f = _iFrame + 1;
-				if( f >= _iCycleLen ){
-					if( _bMaxLoopCount ){
-						_iLoops --;
-						if( _iLoops == 0 ){
-							stop( );
-							f = _iFrame;
-							bComplete = true;			
-						}else{
-							f = 0;
-						}
-					}else{
-						f = 0;
-					}
-
-				}
-				_iFrame = f;
-				_iTimeElapsed -= Std.int( _fLoopTime );
-			}
-			
-			//
-				var fRatio : Float = _iTimeElapsed / _fLoopTime;
-				if (fRatio >= 1) {
-					fRatio -= Math.floor (fRatio);
-					if( _bMaxLoopCount ){
-						_iLoops --;
-						if( _iLoops == 0 ){
-							stop( );
-							bComplete = true;
-						}
-					}
-
+			_iTimeElapsed += iDelay;
+			var len = _iCycleLen - 1;
+			var fps = 1000 / _iFps;
+			//End of the frame ?
+				var iFrames = 0;
+				if( _iTimeElapsed >= fps ){
+					
+					var diff = Std.int( _iTimeElapsed % fps );
+					iFrames = Std.int( ( _iTimeElapsed - diff ) / fps );
+					_iTimeElapsed = diff;
 				}
 
-			if( bComplete ){
-				onComplete.emit( );				
-				bComplete = false;
-			}
-
-			if( !_bPlaying )
-				return;
+				if( iFrames == 0 )
+					return;
 
 			//
-				_iFrame = Math.ceil ( fRatio * ( _iCycleLen - 1) );
-			
+				
+				if( iFrames > len ){
+					var diff = iFrames - ( iFrames % len );
+					_iFrame -= diff;
+					_iLoops-= Std.int( diff / len );
+					_iLoops = Std.int( Math.max( _iLoops , 0 ) );
+					if( _iLoops == 0 ){
+						stop( );
+						_iFrame = len;
+					}
+				}
+
+				_iFrame += iFrames;
+
+
+				if( _iFrame > ( len ) ){
+					
+					if( _bMaxLoopCount ){
+						_iLoops--;
+						_iLoops = Std.int( Math.max( _iLoops , 0 ) );
+						if( _iLoops == 0 ){
+							stop( );
+							_iFrame = len;
+						}else
+							_iFrame = _iFrame - _iCycleLen;
+						
+					}else
+						_iFrame = 0;
+				}
+	
+			//
+				if( bComplete ){
+					onComplete.emit( );				
+					bComplete = false;
+				}
+
 			//
 				#if flash
 					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
@@ -303,7 +308,6 @@ class AnimatedTile extends TileDesc{
 			_bInnvalidate = true;
 			_iCycleLen    = _refMap.getSubCycleLen( _sCat , s );
 			_fLoopTime    = ( _iCycleLen  / _iFps ) * 1000;
-
 			return s;
 		}
 

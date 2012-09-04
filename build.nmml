@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<app title="shoebox" file="TestMacro" main="TestMacro" package="org.shoebox.intheboxtest" version="1.0.0" company="shoe[box]" debug="true" hardware="true"/>
+	<app title="shoebox" file="TestMacro" main="TestAnimatedTile" package="org.shoebox.intheboxtest" version="1.0.0" company="shoe[box]" debug="true" hardware="true"/>
 	
 	<window width="800" height="600" fps="60" orientation="landscape" resizable="true" if="target_flash" background="0xFFFFFF" hardware="true"/>
 	
@@ -11,6 +11,7 @@
 	<set name="SWF_VERSION" value="10.1" />
 	
 	<classpath name="src" />
+	<classpath name="tests/" />
 
 	<haxelib name="nme" />
 	<haxelib name="actuate" />

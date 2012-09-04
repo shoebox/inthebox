@@ -462,6 +462,11 @@ class MVCTriadInstance implements IDispose{
 
 				if( v != null )
 					v.parent.removeChild( v );
+
+				//
+					while( v.numChildren > 0 ){
+						v.removeChildAt( 0 );
+					}
 			}
 
 			haxe.Timer.delay( function( ){
