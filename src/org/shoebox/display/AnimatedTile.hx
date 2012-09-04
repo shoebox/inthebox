@@ -85,7 +85,7 @@ class AnimatedTile extends TileDesc{
 			_fCenter      = { x : 0.0 , y : 0.0 };
 			_fPosition    = { x : 0.0 , y : 0.0 };
 			_iCycleLen    = 0;
-			_iFrame       = 0;
+			_iFrame       = 1;
 			_iTimeElapsed = 0;
 			_refMap       = refMap;
 			_sCat         = sCat;
@@ -116,9 +116,11 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		public function gotoAndPlay( frameId : Int , sCycle : String = null , loopCount : Int = -1 ) : Void {
-			_iLoops        = loopCount;
-			_bMaxLoopCount = loopCount != -1;
-			_gotoAnd( true , frameId , sCycle );
+			_bPlaying		= true;
+			_iLoops			= loopCount;
+			_bMaxLoopCount	= loopCount != -1;
+			_gotoAnd		( true , frameId , sCycle );
+			_redraw			( );
 		}
 
 		/**
@@ -129,6 +131,8 @@ class AnimatedTile extends TileDesc{
 		*/
 		public function gotoAndStop( frameId : Int , sCycle : String = null ) : Void {
 			_gotoAnd( false , frameId , sCycle );
+			_bPlaying = false;
+			_redraw( );
 		}
 
 		/**
@@ -244,17 +248,7 @@ class AnimatedTile extends TileDesc{
 				}
 
 			//
-				#if flash
-					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
-					var bmp = _refMap.getBitmapData( _sCat , cycle , _iFrame );
-					if( pt != null ){
-						_bmp.x  = -pt.x;
-						_bmp.y  = -pt.y;
-					}
-					_bmp.bitmapData = bmp;
-				#else
-					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
-				#end
+				_redraw( );
 
 			//
 				if( bComplete )
@@ -309,6 +303,28 @@ class AnimatedTile extends TileDesc{
 			_iCycleLen    = _refMap.getSubCycleLen( _sCat , s );
 			_fLoopTime    = ( _iCycleLen  / _iFps ) * 1000;
 			return s;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _redraw( ) : Void{
+
+			//
+				#if flash
+					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
+					var bmp = _refMap.getBitmapData( _sCat , cycle , _iFrame );
+					if( pt != null ){
+						_bmp.x  = -pt.x;
+						_bmp.y  = -pt.y;
+					}
+					_bmp.bitmapData = bmp;
+				#else
+					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
+				#end
 		}
 
 	// -------o misc
