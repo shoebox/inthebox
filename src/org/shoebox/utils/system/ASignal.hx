@@ -114,6 +114,16 @@ class ASignal<T>{
 			return _oQueue.length > 0;
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function exists( f : T , prio : Int = 0 ) : Bool {
+			return _exist( f , prio );		
+		}
+
 	// -------o protected
 		
 		/**

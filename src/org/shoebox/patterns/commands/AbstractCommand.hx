@@ -38,7 +38,6 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @return	void
 		*/
 		public function execute(  ) : Void {
-			
 			if( isRunning )
 				throw new Error('Error : Command is already running');
 
@@ -54,6 +53,7 @@ class AbstractCommand extends EventDispatcher , implements ICommand{
 		* @return	void
 		*/
 		public function cancel( ) : Void {
+			
 			if( !isRunning )
 				throw new Error('Error : Command is not running');
 

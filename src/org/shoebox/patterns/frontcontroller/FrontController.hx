@@ -460,7 +460,7 @@ class MVCTriadInstance implements IDispose{
 				var v = cast( view , AView );
 					v.onCancel( );
 
-				if( v != null )
+				if( v != null && v.parent !=null )
 					v.parent.removeChild( v );
 
 				//
