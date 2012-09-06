@@ -210,10 +210,12 @@ class AnimatedTile extends TileDesc{
 				if( iFrames == 0 )
 					return;
 
-			//
-				
+
+			//				
 				if( iFrames > len ){
-					var diff = iFrames - ( iFrames % len );
+					var diff = 0;
+					if( len != 0 )
+						diff = iFrames - ( iFrames % len );
 					_iFrame -= diff;
 					_iLoops-= Std.int( diff / len );
 					_iLoops = Std.int( Math.max( _iLoops , 0 ) );
@@ -250,9 +252,6 @@ class AnimatedTile extends TileDesc{
 			//
 				_redraw( );
 
-			//
-				if( bComplete )
-					onComplete.emit( );				
 		}
 
 		/**
@@ -312,7 +311,7 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		private function _redraw( ) : Void{
-
+			
 			//
 				#if flash
 					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
@@ -325,6 +324,7 @@ class AnimatedTile extends TileDesc{
 				#else
 					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
 				#end
+				
 		}
 
 	// -------o misc

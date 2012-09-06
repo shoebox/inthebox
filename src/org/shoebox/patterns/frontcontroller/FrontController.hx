@@ -500,7 +500,7 @@ class MVCTriadInstance implements IDispose{
 					if( Reflect.isObject( Reflect.field( o , f ) ) )
 						Reflect.setField( o , f , null );
 				}catch( e : nme.errors.Error ){
-
+					trace( e );
 				}
 			}
 		}
