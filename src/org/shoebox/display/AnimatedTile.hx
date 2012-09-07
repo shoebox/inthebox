@@ -190,7 +190,7 @@ class AnimatedTile extends TileDesc{
 		* @return	void
 		*/
 		public function update( iDelay : Int ) : Void {
-
+			
 			if( !_bPlaying )
 				return;
 
@@ -219,7 +219,7 @@ class AnimatedTile extends TileDesc{
 					_iFrame -= diff;
 					_iLoops-= Std.int( diff / len );
 					_iLoops = Std.int( Math.max( _iLoops , 0 ) );
-					if( _iLoops == 0 ){
+					if( _iLoops == 0 && _bMaxLoopCount ){
 						stop( );
 						_iFrame = len;
 					}
@@ -242,7 +242,7 @@ class AnimatedTile extends TileDesc{
 					}else
 						_iFrame = 0;
 				}
-	
+			
 			//
 				if( bComplete ){
 					onComplete.emit( );				
