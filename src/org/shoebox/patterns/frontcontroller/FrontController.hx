@@ -32,15 +32,16 @@ package org.shoebox.patterns.frontcontroller;
 import haxe.rtti.Meta;
 import nme.display.DisplayObjectContainer;
 import org.shoebox.core.BoxArray;
+import org.shoebox.core.BoxObject;
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.patterns.frontcontroller.Injector;
+import org.shoebox.patterns.mvc.abstracts.AController;
 import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
-import org.shoebox.patterns.mvc.abstracts.AController;
 import org.shoebox.patterns.mvc.interfaces.IController;
+import org.shoebox.patterns.mvc.interfaces.IInit;
 import org.shoebox.patterns.mvc.interfaces.IModel;
 import org.shoebox.patterns.mvc.interfaces.IView;
-import org.shoebox.patterns.mvc.interfaces.IInit;
 
 /**
  * ...
@@ -489,20 +490,7 @@ class MVCTriadInstance implements IDispose{
 		* @return	void
 		*/
 		private function _purge( o : Dynamic = null ) : Void{
-
-			if( o == null )
-				return;
-
-			var typ = Type.getClass( o );
-			var a = Type.getInstanceFields( typ );
-			for( f in a ){
-				try{
-					if( Reflect.isObject( Reflect.field( o , f ) ) )
-						Reflect.setField( o , f , null );
-				}catch( e : nme.errors.Error ){
-					trace( e );
-				}
-			}
+			BoxObject.purge( o );
 		}
 
 	// -------o misc

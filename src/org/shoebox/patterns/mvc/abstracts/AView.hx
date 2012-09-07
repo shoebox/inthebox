@@ -29,15 +29,16 @@
 */
 package org.shoebox.patterns.mvc.abstracts; 
 
-	import org.shoebox.core.interfaces.IDispose;
-	import org.shoebox.patterns.frontcontroller.FrontController;
-	import org.shoebox.patterns.mvc.interfaces.IView;
 	import nme.display.Bitmap;
 	import nme.display.DisplayObject;
 	import nme.display.DisplayObjectContainer;
 	import nme.display.Loader;
 	import nme.display.MovieClip;
 	import nme.events.Event;
+	import org.shoebox.core.BoxObject;
+	import org.shoebox.core.interfaces.IDispose;
+	import org.shoebox.patterns.frontcontroller.FrontController;
+	import org.shoebox.patterns.mvc.interfaces.IView;
 
 	/**
 	 * ABSTRACT VIEW (MVC PACKAGE)
@@ -134,32 +135,39 @@ package org.shoebox.patterns.mvc.abstracts;
 				}
 				
 				for( d in _vDisplayObjects ){
-					
-					if( d == null )
-						continue;
-					
-					if( Std.is( d , IDispose ) ){
-						cast( d , IDispose ).dispose( );
-					}
+						if( d == null )
+							continue;
+						
+						if( Std.is( d , IDispose ) ){
+							cast( d , IDispose ).dispose( );
+						}
 
-					if( Std.is( d, Bitmap) ){
-						if( ( cast( d, Bitmap) ).bitmapData != null ){
-							( cast( d, Bitmap) ).bitmapData.dispose( );
-							( cast( d, Bitmap) ).bitmapData = null;
+						if( Std.is( d, Bitmap) ){
+							if( ( cast( d, Bitmap) ).bitmapData != null ){
+								( cast( d, Bitmap) ).bitmapData.dispose( );
+								( cast( d, Bitmap) ).bitmapData = null;
+							}
+							
+						}else if( Std.is( d, Loader) ){
+							#if (flash || mobile )
+							( cast( d, Loader) ).unload( );
+							#end
 						}
 						
-					}else if( Std.is( d, Loader) ){
-						#if (flash || mobile )
-						( cast( d, Loader) ).unload( );
-						#end
+						if( Std.is( d, MovieClip) ){
+							( cast( d, MovieClip) ).stop( );
+						}
+					try{
+
+						if( d.parent != null )
+							d.parent.removeChild( d );
+							
+						BoxObject.purge( d );
+						d = null;
+
+					}catch( e : nme.errors.Error ){
+
 					}
-					
-					if( Std.is( d, MovieClip) ){
-						( cast( d, MovieClip) ).stop( );
-					}
-					
-					if( d.parent != null )
-						d.parent.removeChild( d );
 				}
 				
 				_vDisplayObjects = null;
