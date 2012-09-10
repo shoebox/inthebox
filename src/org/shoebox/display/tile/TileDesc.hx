@@ -201,6 +201,10 @@ class TileDesc{
 		* @return	void
 		*/
 		private function _setFormat( i : Int ) : Int{
+
+			if( this.format == i )
+				return i;
+
 			_bInvalidate = true;
 			#if cpp
 			_bUseAlpha   = ( i & Graphics.TILE_ALPHA) > 0;
@@ -368,7 +372,7 @@ class TileDesc{
 				a[ id++ ] = g;
 				a[ id++ ] = b;
 			}
-
+			
 			if( _bUseAlpha )
 				a[ id++ ] = alpha;
 			

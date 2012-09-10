@@ -127,12 +127,7 @@ class Perf extends Sprite{
 			while( _aTimes[ 0 ] < now - 1)
 				_aTimes.shift();
 			
-			#if flash
-			//var mem = Math.round( nme.system.System.totalMemoryNumber * 0.000000954 * 100 ) / 100;
-			var mem : Float = flash.system.System.totalMemoryNumber;
-			#else
-			var mem : Float = cpp.vm.Gc.memUsage( );
-			#end
+			var mem : Float = nme.system.System.totalMemory;
 				mem = Math.round( mem * 0.000000954 * 1000 ) / 1000;
 
 
