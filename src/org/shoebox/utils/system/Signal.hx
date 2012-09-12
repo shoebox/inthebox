@@ -58,8 +58,8 @@ class Signal extends ASignal<Void->Void>{
 		*/
 		public function emit( ) : Void {
 			for( l in _oQueue ){
-				l.listener( );
 				_check( l );
+				l.listener( );
 			}
 		}
 

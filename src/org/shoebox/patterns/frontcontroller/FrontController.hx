@@ -408,6 +408,12 @@ class MVCTriad{
 				}
 				
 			}
+
+
+			//
+				var csuper = Type.getSuperClass( c );				
+				if( csuper != null )
+					_inject_triad_class_metas_on( fc , csuper , onwhat );
 			
 		}
 

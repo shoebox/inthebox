@@ -65,7 +65,7 @@ class ASignal<T>{
 		* @return	void
 		*/
 		public function connect( f : T , prio : Int = 0 , count : Int = -1 ) : Void {
-
+			
 			if( _exist( f , prio ) )
 				return;
 
@@ -154,8 +154,9 @@ class ASignal<T>{
 		*/
 		private function _check( l : SignalListener<T> ) : Void{
 
-			if( l.count != -1 )
+			if( l.count != -1 ){
 				l.count--;
+			}
 
 			if( l.count == 0 )
 				disconnect( l.listener );

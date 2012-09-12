@@ -74,12 +74,12 @@ class Injector{
 		* @public
 		* @return	void
 		*/
-		public function inject_dependencies_on<T>( instance : T , ?typ : Class<T> ) : Void {
+		public function inject_dependencies_on( instance : Dynamic , ?typ : Class<Dynamic> ) : Void {
 			
 			//Retrieve the class type
 				if( typ == null )
 					typ = Type.getClass( instance );
-					
+			
 			//
 				var meta : Dynamic;
 				var metas = Meta.getFields( typ );
@@ -107,7 +107,7 @@ class Injector{
 						throw new nme.errors.Error( Std.format( 'The dependency of type : $sType with optional_name : $optional_name is not registered'));
 						continue;
 					}	
-
+					
 					var val = dep.value;
 					if( val == null ){
 						val = dep.getValue( );
@@ -116,8 +116,13 @@ class Injector{
 
 					Reflect.setField( instance , v , val );
 				}
-						
-			
+
+			//
+				var c = Type.getSuperClass( typ );
+				
+				if( c != null )
+					inject_dependencies_on( instance , c );
+					
 		}
 
 		/**
