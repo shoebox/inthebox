@@ -135,6 +135,7 @@ package org.shoebox.patterns.mvc.abstracts;
 				}
 				
 				for( d in _vDisplayObjects ){
+					
 						if( d == null )
 							continue;
 						
@@ -158,8 +159,8 @@ package org.shoebox.patterns.mvc.abstracts;
 							( cast( d, MovieClip) ).stop( );
 						}
 					try{
-
-						if( d.parent != null )
+						
+						if( d != null && d.parent != null )
 							d.parent.removeChild( d );
 							
 						BoxObject.purge( d );
