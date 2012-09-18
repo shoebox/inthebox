@@ -69,7 +69,7 @@ class ASignal<T>{
 			if( _exist( f , prio ) )
 				return;
 
-			var s = { listener : f , count : count  };
+			var s = { listener : f , count : count , prio : prio };
 			_oQueue.add( s , prio );
 
 		}
@@ -159,7 +159,7 @@ class ASignal<T>{
 			}
 
 			if( l.count == 0 )
-				disconnect( l.listener );
+				disconnect( l.listener , l.prio );
 			
 		}	
 
@@ -179,6 +179,7 @@ class ASignal<T>{
 }
 
 typedef SignalListener<T> = {
-	public var listener : T;
-	public var count    : Int;
+	public var listener	: T;
+	public var count	: Int;
+	public var prio		: Int;
 }

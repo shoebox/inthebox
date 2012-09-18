@@ -144,12 +144,14 @@ package org.shoebox.patterns.mvc.abstracts;
 						}
 
 						if( Std.is( d, Bitmap) ){
+
 							if( ( cast( d, Bitmap) ).bitmapData != null ){
 								( cast( d, Bitmap) ).bitmapData.dispose( );
 								( cast( d, Bitmap) ).bitmapData = null;
 							}
 							
 						}else if( Std.is( d, Loader) ){
+							
 							#if (flash || mobile )
 							( cast( d, Loader) ).unload( );
 							#end
