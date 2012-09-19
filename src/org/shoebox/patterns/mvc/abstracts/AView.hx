@@ -136,30 +136,31 @@ package org.shoebox.patterns.mvc.abstracts;
 				
 				for( d in _vDisplayObjects ){
 					
-						if( d == null )
-							continue;
-						
-						if( Std.is( d , IDispose ) ){
-							cast( d , IDispose ).dispose( );
-						}
+					if( d == null )
+						continue;
+					
+					if( Std.is( d , IDispose ) ){
+						cast( d , IDispose ).dispose( );
+					}
 
-						if( Std.is( d, Bitmap) ){
+					if( Std.is( d, Bitmap) ){
 
-							if( ( cast( d, Bitmap) ).bitmapData != null ){
-								( cast( d, Bitmap) ).bitmapData.dispose( );
-								( cast( d, Bitmap) ).bitmapData = null;
-							}
-							
-						}else if( Std.is( d, Loader) ){
-							
-							#if (flash || mobile )
-							( cast( d, Loader) ).unload( );
-							#end
+						if( ( cast( d, Bitmap) ).bitmapData != null ){
+							( cast( d, Bitmap) ).bitmapData.dispose( );
+							( cast( d, Bitmap) ).bitmapData = null;
 						}
 						
-						if( Std.is( d, MovieClip) ){
-							( cast( d, MovieClip) ).stop( );
-						}
+					}else if( Std.is( d, Loader) ){
+						
+						#if (flash || mobile )
+						( cast( d, Loader) ).unload( );
+						#end
+					}
+					
+					if( Std.is( d, MovieClip) ){
+						( cast( d, MovieClip) ).stop( );
+					}
+					
 					try{
 						
 						if( d != null && d.parent != null )
