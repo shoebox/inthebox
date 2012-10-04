@@ -60,7 +60,11 @@ class HTTPService extends URLLoader , implements IDispose{
 			addEventListener( IOErrorEvent.VERIFY_ERROR 	, _onIoError	, false );
 			#end
 			addEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );
-			super.load( req );
+			try{
+				super.load( req );
+			}catch( e : nme.errors.Error ){
+				trace('e ::: '+e);
+			}
 		}
 
 		/**
