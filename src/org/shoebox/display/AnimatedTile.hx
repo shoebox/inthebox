@@ -222,6 +222,7 @@ class AnimatedTile extends TileDesc{
 					if( _iLoops == 0 && _bMaxLoopCount ){
 						stop( );
 						_iFrame = len;
+						bComplete = true;
 					}
 				}
 
@@ -236,6 +237,7 @@ class AnimatedTile extends TileDesc{
 						if( _iLoops == 0 ){
 							stop( );
 							_iFrame = len;
+							bComplete = true;
 						}else
 							_iFrame = _iFrame - _iCycleLen;
 						

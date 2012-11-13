@@ -49,6 +49,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			_hIds           = new Hash<Int>();
 			_hFramesCenters = new Hash<Point>();
 			#end
+
 		}
 	
 	// -------o public
