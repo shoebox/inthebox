@@ -124,7 +124,11 @@ class ObjectPool<T>{
 		* @return	new instance of T ( T )
 		*/
 		private function _create( ) : T{
-			return Type.createInstance( _cClass , [ ] );
+			var instance = Type.createInstance( _cClass , [ ] );
+			#if cpp
+			cpp.vm.Gc.doNotKill( instance );
+			#end
+			return instance;
 		}
 
 	// -------o misc

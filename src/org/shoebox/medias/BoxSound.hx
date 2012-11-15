@@ -42,9 +42,9 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		public function new( m : Sound ) {
-			media       = m;
-			_fVol       = 1;
-			_fPan       = 0;
+			media	= m;
+			_fVol	= 1;
+			_fPan	= 0;
 			_oTransform = new SoundTransform( );
 			onSoundComplete = new Signal( );
 		}
@@ -89,6 +89,7 @@ class BoxSound implements IDispose{
 			
 			_oChannel.removeEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 			_oChannel.stop( );
+			isPlaying = false;
 
 			return true;
 
@@ -122,9 +123,11 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			
+			trace('dispose');
 			if( isPlaying )
 				stop( );
+
+			track.update.disconnect( _on_track_update );
 
 			if( _oChannel != null )
 				_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
@@ -174,8 +177,12 @@ class BoxSound implements IDispose{
 		*/
 		private function _set_track( t : SoundTrack ) : SoundTrack{
 
+			if( track != null )
+				track.update.disconnect( _on_track_update );
+
 			if( t != null )
 				_oTransform.volume = t.volume;
+				t.update.connect( _on_track_update );
 			
 			return track = t;
 		}
@@ -186,9 +193,18 @@ class BoxSound implements IDispose{
 		* @private
 		* @return	void
 		*/
+		private function _on_track_update( ) : Void{
+			volume = track.volume;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _set_volume( f : Float ) : Float{
 			if( _fVol != f ){
-
 				_fVol = f;
 				_invalidate( );
 			}
@@ -250,7 +266,6 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		private function _invalidate( ) : Void{
-
 			#if !flash
 			_oTransform = _oTransform.clone( );
 			#end
@@ -269,6 +284,7 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		private function _onSound_Complete( _ ) : Void{
+			trace('_onSound_Complete');
 			onSoundComplete.emit( );
 		}
 
