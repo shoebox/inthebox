@@ -31,6 +31,7 @@ package org.shoebox.patterns.mvc.abstracts;
 
 	import nme.errors.Error;
 	import org.shoebox.core.BoxObject;
+	import org.shoebox.core.interfaces.IDispose;
 	import org.shoebox.utils.system.Signal;
 	import org.shoebox.patterns.commands.AbstractCommand;
 	import org.shoebox.patterns.frontcontroller.FrontController;
@@ -53,10 +54,8 @@ package org.shoebox.patterns.mvc.abstracts;
 	*/
 	class AController implements IController {
 		
-		//public var model( _getModel , null ) : AModel;
-		//public var view( _getView , null ) : AView;
-		//public var controller( _getController , null ) : AController;
-		
+		private var _a_listeners : Array<Listener>;
+
 		// -------o constructor
 			
 			/**
@@ -65,7 +64,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function new(){
-				
+				_a_listeners = [ ];				
 			}
 			
 		// -------o public
@@ -76,7 +75,6 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function initialize():Void{
-			
 			}
 			
 			/**
@@ -85,7 +83,11 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function cancel( ):Void{
-				
+				for( l in _a_listeners )
+					l.dispose( );
+
+				_a_listeners = null;
+				org.shoebox.core.BoxObject.purge( this );
 			}
 						
 			/**
@@ -97,11 +99,187 @@ package org.shoebox.patterns.mvc.abstracts;
 			public function startUp() : Void {
 			
 			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function add_listener( 
+											target				: EventDispatcher,
+											type				: String, 
+											listener			: Dynamic -> Void , 
+											b_use_capture		: Bool = false, 
+											iPrio				: Int = 0, 
+											useWeakReference	: Bool = false 
+										) : Void {
+				
+				#if debug
+					trace('add_listener ::: '+target+' - '+type);
+					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) != null )
+						throw new nme.errors.Error('Listener already exist');
+				#end
+
+				var l = new Listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
+				_a_listeners.push( l );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
+			public function remove_listener( 
+											target				: EventDispatcher,
+											type				: String, 
+											listener			: Dynamic -> Void , 
+											b_use_capture		: Bool = false, 
+											iPrio				: Int = 0, 
+											useWeakReference	: Bool = false 
+										) : Void {
+				
+				#if debug
+					trace('remove_listener ::: '+target+' - '+type);
+					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) != null )
+						throw new nme.errors.Error('Listener already exist');
+				#end
+
+				/*var l = new Listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
+				_a_listeners.push( l );
+				*/
+
+				var l = _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
+				trace('l ::: '+l);
+				l.dispose( );
+				_a_listeners.remove( l );			
+			}
 			
 		// -------o private
 			
+			/**
+			* 
+			* 
+			* @private
+			* @return	void
+			*/
+			private function _has_listener( 
+												target				: EventDispatcher,
+												type				: String, 
+												listener			: Dynamic -> Void , 
+												b_use_capture		: Bool = false, 
+												iPrio				: Int = 0, 
+												useWeakReference	: Bool = false 
+											) : Listener {
+
+				var res : Listener = null;
+				for( l in _a_listeners ){
+					if( 
+						l.target			== target &&
+						l.type				== type &&
+						l.listener			== listener &&
+						l.b_use_capture		== b_use_capture &&
+						l.iPrio				== iPrio && 
+						l.useWeakReference	== useWeakReference 
+						){
+						res = l;
+						break;
+					}
+				}
+
+				return res;
+			}
+
 		// -------o misc
 			public static function trc(arguments:Dynamic) : Void {
 				//Logger.log(AController,arguments);
 			}
 	}
+
+
+/*
+* ...
+* @author shoe[box]
+*/
+
+class Listener implements IDispose{
+
+	public var b_use_capture	: Bool;
+	public var iPrio			: Int;
+	public var listener			: Dynamic -> Void ;
+	public var target			: EventDispatcher;
+	public var type				: String;
+	public var useWeakReference	: Bool;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new(
+								target				: EventDispatcher,
+								type				: String, 
+								listener			: Dynamic -> Void , 
+								b_use_capture		: Bool = false, 
+								iPrio				: Int = 0, 
+								useWeakReference	: Bool = false 
+								) {
+			
+			this.target				= target;
+			this.type				= type;
+			this.listener			= listener;
+			this.b_use_capture		= b_use_capture;
+			this.iPrio				= iPrio;
+			this.useWeakReference	= useWeakReference;
+			init( );
+		}
+	
+	// -------o public
+		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function init( ) : Void {
+			target.addEventListener( type , listener , b_use_capture , iPrio , useWeakReference );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function dispose( ) : Void {
+			#if debug
+			trace('dispose :: '+this);
+			#end
+			target.removeEventListener( type , listener , b_use_capture );	
+			this.target				= null;
+			this.type				= null;
+			this.listener			= null;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function toString( ) : String {
+			return Std.format( 'Listener ::: target : $target | type : $type | listener : $listener' );		
+		}
+
+	// -------o protected
+	
+		
+
+	// -------o misc
+	
+}

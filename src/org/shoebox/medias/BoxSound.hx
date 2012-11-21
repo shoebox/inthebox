@@ -19,16 +19,14 @@ class BoxSound implements IDispose{
 
 	public var onSoundComplete : Signal;
 
-	public var isPaused( _get_is_paused , null )   			: Bool;
-	public var isPlaying( default 		, _set_isPlaying ) 	: Bool;
-	public var volume( _get_volume 		, _set_volume )    	: Float;
-	public var pan( _get_pan 			, _set_pan )      	: Float;
-	public var media( default 			, _set_media )    	: Sound;	
-	public var track( default 			, _set_track )    	: SoundTrack;
+	public var isPaused		( _get_is_paused 	, null )   			: Bool;
+	public var isPlaying	( default 			, _set_isPlaying ) 	: Bool;
+	public var volume		( default 			, _set_volume )    	: Float;
+	public var pan			( default 			, _set_pan )      	: Float;
+	public var media		( default 			, _set_media )    	: Sound;	
+	public var track		( default 			, _set_track )    	: SoundTrack;
 
 	private var _bPaused    : Bool;
-	private var _fVol       : Float;
-	private var _fPan       : Float;
 	private var _fPos       : Float;
 	private var _oChannel   : SoundChannel;
 	private var _oTransform : SoundTransform;
@@ -42,11 +40,10 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		public function new( m : Sound ) {
-			media	= m;
-			_fVol	= 1;
-			_fPan	= 0;
-			_oTransform = new SoundTransform( );
-			onSoundComplete = new Signal( );
+			media			= m;
+			_oTransform		= new SoundTransform( );
+			onSoundComplete	= new Signal( );
+			volume = 1.0;
 		}
 	
 	// -------o public
@@ -194,7 +191,10 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		private function _on_track_update( ) : Void{
-			volume = track.volume;
+			//_set_volume( volume );
+			//trace('_on_track_update ::: track.volume'+track.volume+' - volume : '+volume);
+			//volume = track.volume * volume;
+			_invalidate( );
 		}
 
 		/**
@@ -204,21 +204,12 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		private function _set_volume( f : Float ) : Float{
-			if( _fVol != f ){
-				_fVol = f;
+			if( this.volume != f ){				
+				this.volume = f;
+				_on_track_update( );
 				_invalidate( );
 			}
-			return _fVol = f;
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _get_volume( ) : Float{
-			return _fVol;
+			return f;
 		}
 
 		/**
@@ -229,24 +220,13 @@ class BoxSound implements IDispose{
 		*/
 		private function _set_pan( f : Float ) : Float{
 
-			if( _fPan != f ){
-				_fPan = f;
+			if( this.pan != f ){
+				this.pan = f;
 				_invalidate( );
-				return f;
 			}
 			
 			return f;
 
-		}
-
-		/**
-		* 
-		* 
-		* @private
-		* @return	void
-		*/
-		private function _get_pan( ) : Float{
-			return _fPan;
 		}
 
 		/**
@@ -266,11 +246,15 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		private function _invalidate( ) : Void{
+
 			#if !flash
 			_oTransform = _oTransform.clone( );
 			#end
-			_oTransform.volume = _fVol;
-			//_oTransform.pan    = _fPan;
+			if( track == null )
+				_oTransform.volume = volume;
+			else
+				_oTransform.volume = volume * track.volume;
+				_oTransform.pan    = pan;
 			
 			if( _oChannel != null )
 				_oChannel.soundTransform = _oTransform;
@@ -284,7 +268,6 @@ class BoxSound implements IDispose{
 		* @return	void
 		*/
 		private function _onSound_Complete( _ ) : Void{
-			trace('_onSound_Complete');
 			onSoundComplete.emit( );
 		}
 

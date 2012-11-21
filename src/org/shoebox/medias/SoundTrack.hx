@@ -16,12 +16,12 @@ import org.shoebox.utils.system.Signal;
 
 class SoundTrack{
 
-	public var transform( default , default ) : SoundTransform;
-	public var volume( default , _set_volume )     : Float;
-	public var update : Signal;
-
+	public var transform	( _get_transform , _set_transform ) : SoundTransform;
+	public var volume		( _get_volume , _set_volume )     : Float;
+	public var mute			( default , _set_mute ) : Bool;
 	
-	public var sName : String;
+	public var sName	: String;
+	public var update	: Signal;
 
 	// -------o constructor
 		
@@ -32,9 +32,10 @@ class SoundTrack{
 		* @return	void
 		*/
 		public function new( sName : String ) {
-			this.sName = sName;
-			transform = new SoundTransform( );
-			update = new Signal( );
+			transform	= new SoundTransform( );
+			update		= new Signal( );
+			this.mute	= false;
+			this.sName	= sName;
 		}
 	
 	// -------o public
@@ -70,10 +71,60 @@ class SoundTrack{
 		* @private
 		* @return	void
 		*/
+		private function _get_transform( ) : SoundTransform{
+			if( mute )
+				this.transform.volume = 0.0;
+
+			return this.transform;
+
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _set_transform( t : SoundTransform ) : SoundTransform{
+			return this.transform = t;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _set_mute( b : Bool ) : Bool{
+			this.mute = b;
+			update.emit( );
+			return b;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		private function _set_volume( v : Float ) : Float{
-			transform.volume = volume = v;
+			trace('_set_volume ::: '+v);
+			transform.volume = this.volume = v;
 			update.emit( );
 			return v;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _get_volume( ) : Float{
+			if( mute )
+				return 0.0;
+
+			return this.volume;
 		}
 
 	// -------o misc

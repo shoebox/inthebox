@@ -453,7 +453,7 @@ class MVCTriadInstance implements IDispose{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-
+			trace('view ::: '+model+' - '+view+' - '+controller);
 			if( model != null )
 				model.cancel( );
 
@@ -463,7 +463,7 @@ class MVCTriadInstance implements IDispose{
 				
 
 			if( view != null ){
-				view.cancel( );
+
 				var v = cast( view , AView );
 					v.onCancel( );
 
@@ -471,9 +471,13 @@ class MVCTriadInstance implements IDispose{
 					v.parent.removeChild( v );
 
 				//
-					while( v.numChildren > 0 ){
-						v.removeChildAt( 0 );
+					if( v != null ){
+						while( v != null && v.numChildren > 0 ){
+							if( v != null )
+								v.removeChildAt( 0 );
+						}
 					}
+				view.cancel( );
 			}
 
 			haxe.Timer.delay( function( ){

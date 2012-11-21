@@ -128,7 +128,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function onCancel( ?e : Event = null ) : Void {
-				
+
 				if( _vDisplayObjects == null ){
 					cancel( );
 					return;
@@ -175,7 +175,7 @@ package org.shoebox.patterns.mvc.abstracts;
 				}
 				
 				_vDisplayObjects = null;
-				cancel( );
+				cancel( );			
 			
 			}
 			
