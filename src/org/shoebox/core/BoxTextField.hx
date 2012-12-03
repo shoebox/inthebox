@@ -69,13 +69,13 @@ class BoxTextField{
 		* @return	void
 		*/
 		static public function setFormat( 
-											tf          : TextField , 
-											bEmbedFonts : Bool = true , 
-											sFontName   : String = null, 
-											iFontSize   : Int = 12 , 
-											iCol        : Int , 
-											sAlign     = null,
-											?bBold      : Bool = false
+											tf			: TextField , 
+											bEmbedFonts	: Bool = true , 
+											sFontName	: String = null, 
+											iFontSize	: Int = 12 , 
+											iCol		: Int , 
+											sAlign		= null,
+											?bBold		: Bool = false
 											) : Void {
 			
 			tf.embedFonts = bEmbedFonts;

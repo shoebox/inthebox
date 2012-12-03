@@ -30,11 +30,14 @@
 package org.shoebox.patterns.frontcontroller;
 
 import haxe.rtti.Meta;
+
 import nme.display.DisplayObjectContainer;
+
 import org.shoebox.core.BoxArray;
 import org.shoebox.core.BoxObject;
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.patterns.frontcontroller.Injector;
+import org.shoebox.patterns.frontcontroller.plugins.AFCPlugin;
 import org.shoebox.patterns.mvc.abstracts.AController;
 import org.shoebox.patterns.mvc.abstracts.AModel;
 import org.shoebox.patterns.mvc.abstracts.AView;
@@ -42,6 +45,7 @@ import org.shoebox.patterns.mvc.interfaces.IController;
 import org.shoebox.patterns.mvc.interfaces.IInit;
 import org.shoebox.patterns.mvc.interfaces.IModel;
 import org.shoebox.patterns.mvc.interfaces.IView;
+import org.shoebox.utils.system.Signal2;
 
 /**
  * ...
@@ -52,11 +56,12 @@ class FrontController{
 
 	public var owner ( default , default ) : DisplayObjectContainer;
 	public var state ( default , _setState) : String;
+	public var onStateChange : Signal2<String,String>;
 
-	private var _aCurrent: Array<String>;
-	private var _hStates : Hash<Array<String>>;
-	private var _hTriads : Hash<MVCTriad>;
-	private var _injector: Injector;
+	private var _aCurrent	: Array<String>;
+	private var _hStates	: Hash<Array<String>>;
+	private var _hTriads	: Hash<MVCTriad>;
+	private var _injector	: Injector;
 
 	// -------o constructor
 		
@@ -67,16 +72,27 @@ class FrontController{
 		* @return	void
 		*/
 		public function new() {
-			_aCurrent      = [ ];
-			_injector = new Injector( );
-			_hStates       = new Hash<Array<String>>( );
-			_hTriads       = new Hash<MVCTriad>( );
+			_aCurrent	= [ ];
+			_injector		= new Injector( );
+			_hStates		= new Hash<Array<String>>( );
+			_hTriads		= new Hash<MVCTriad>( );
+			onStateChange	= new Signal2<String,String>( );
 		}
 	
 	// -------o public
-				
+		
 		/**
 		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function add_plugin( plugin_instance : AFCPlugin ) : Void {
+			plugin_instance.fc_instance = this;
+		}
+
+		/**
+		* Add a triad to the frontcontroller
 		* 
 		* @public
 		* @return	void
@@ -90,23 +106,30 @@ class FrontController{
 			if( owner == null )
 				throw new nme.errors.Error('DisplayObjectContainer is not defined');
 
-			var s = cMod + '|' + cView + ' - '+cController;
+			var s = cMod + '|' + cView + ' | '+cController;
 
-			var t = new MVCTriad( );
-				t.classModel      = cMod;
-				t.classView       = cView;
-				t.classController = cController;
-				t.container = owner;
-			_hTriads.set( s , t );
+			//
+				#if debug
+					if( _hTriads.exists( s ) )
+						throw new nme.errors.Error( Std.format('Error : The Triad mod : $cMod | view : $cView | controller : $cController' ));
+				#end
+
+			//
+				var t = new MVCTriad( );
+					t.classModel      = cMod;
+					t.classView       = cView;
+					t.classController = cController;
+					t.container = owner;
+				_hTriads.set( s , t );
 
 			return s;
 		}
 
 		/**
-		* 
+		* Return the app instance by codename
 		* 
 		* @public
-		* @return	void
+		* @return 	triad instance
 		*/
 		public function getApp( sAppCode : String ) {
 			return _hTriads.get( sAppCode );				
@@ -180,7 +203,9 @@ class FrontController{
 				return s;
 
 			_drawState( _hStates.get( s ) );
-			return this.state = s;
+			onStateChange.emit( state , s );
+			this.state = s;
+			return s;
 		}
 
 		/**
@@ -453,7 +478,7 @@ class MVCTriadInstance implements IDispose{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			trace('view ::: '+model+' - '+view+' - '+controller);
+			
 			if( model != null )
 				model.cancel( );
 

@@ -29,6 +29,7 @@
 */
 package org.shoebox.patterns.mvc.abstracts; 
 
+	import haxe.Timer;
 	import nme.errors.Error;
 	import org.shoebox.core.BoxObject;
 	import org.shoebox.core.interfaces.IDispose;
@@ -54,7 +55,8 @@ package org.shoebox.patterns.mvc.abstracts;
 	*/
 	class AController implements IController {
 		
-		private var _a_listeners : Array<Listener>;
+		private var _a_listeners	: Array<Listener>;
+		private var _a_timers		: Array<Timer>;
 
 		// -------o constructor
 			
@@ -83,10 +85,17 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @return
 			*/
 			public function cancel( ):Void{
-				for( l in _a_listeners )
-					l.dispose( );
+				if( _a_listeners != null )
+					for( l in _a_listeners )	
+						l.dispose( );
+
+				if( _a_timers != null )
+					for( t in _a_timers )
+						if( t != null )
+							t.stop( );
 
 				_a_listeners = null;
+				_a_timers = null;
 				org.shoebox.core.BoxObject.purge( this );
 			}
 						
@@ -106,6 +115,18 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @public
 			* @return	void
 			*/
+			public function delay( func : Void->Void , delay : Int ) : Void {
+				if( _a_timers == null )
+					_a_timers = [ ];
+					_a_timers.push( haxe.Timer.delay( func , delay ) );
+			}
+
+			/**
+			* 
+			* 
+			* @public
+			* @return	void
+			*/
 			public function add_listener( 
 											target				: EventDispatcher,
 											type				: String, 
@@ -116,7 +137,10 @@ package org.shoebox.patterns.mvc.abstracts;
 										) : Void {
 				
 				#if debug
-					trace('add_listener ::: '+target+' - '+type);
+
+					if( target == null )
+						throw new nme.errors.Error('error : target is null');
+
 					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) != null )
 						throw new nme.errors.Error('Listener already exist');
 				#end
@@ -141,18 +165,12 @@ package org.shoebox.patterns.mvc.abstracts;
 										) : Void {
 				
 				#if debug
-					trace('remove_listener ::: '+target+' - '+type);
-					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) != null )
-						throw new nme.errors.Error('Listener already exist');
+					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) == null )
+						throw new nme.errors.Error('Listener does not exist');
 				#end
-
-				/*var l = new Listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
-				_a_listeners.push( l );
-				*/
-
+				
 				var l = _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
-				trace('l ::: '+l);
-				l.dispose( );
+					l.dispose( );
 				_a_listeners.remove( l );			
 			}
 			
@@ -257,9 +275,6 @@ class Listener implements IDispose{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			#if debug
-			trace('dispose :: '+this);
-			#end
 			target.removeEventListener( type , listener , b_use_capture );	
 			this.target				= null;
 			this.type				= null;
