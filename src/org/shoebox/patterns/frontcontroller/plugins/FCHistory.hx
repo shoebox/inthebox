@@ -1,5 +1,6 @@
 package org.shoebox.patterns.frontcontroller.plugins;
 
+import nme.events.KeyboardEvent;
 import org.shoebox.patterns.frontcontroller.FrontController;
 import org.shoebox.patterns.frontcontroller.plugins.AFCPlugin;
 
@@ -23,8 +24,10 @@ class FCHistory extends AFCPlugin{
 		* @param	
 		* @return	void
 		*/
-		public function new() {
+		public function new( bAuto : Bool = false ) {
 			super( );
+			if( bAuto )
+				_init( );
 		}
 	
 	// -------o public
@@ -67,15 +70,16 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		public function go_back( ) : Bool {
+			
+			if( !can_go_back( ) )
+				return false;
 
 			if( _a_history == null || _a_history.length == 0 )
 				return false;
 
 			//
-				trace('go_back');
 				var s = _a_history.pop( );
-				trace('s ::: '+s);
-
+			
 			//
 				fc_instance.onStateChange.disconnect( _on_state_change );
 				fc_instance.state = s;
@@ -84,8 +88,48 @@ class FCHistory extends AFCPlugin{
 			return true;
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function can_go_back( ) : Bool {
+			return true;
+		}
+
 	// -------o protected
 		
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _init( ) : Void{
+			nme.Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP , _onKey_up , false );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onKey_up( e : KeyboardEvent ) : Void{
+			
+			if( e.keyCode == 8 || e.keyCode == 27 ){
+				e.stopImmediatePropagation();
+				e.stopPropagation();
+				#if flash
+				e.preventDefault( );
+				#end
+				go_back( );
+			}
+			
+
+		}
+
 		/**
 		* 
 		* 
@@ -125,10 +169,16 @@ class FCHistory extends AFCPlugin{
 		inline private function _is_ignored( sToTest : String ) : Bool{
 
 			var bRes = false;
-			for( s in _a_ignore ){
-				if( sToTest == s ){
-					bRes = true;
-					break;
+			if( _a_ignore == null ){
+				bRes = false;
+			}else{
+
+				var bRes = false;
+				for( s in _a_ignore ){
+					if( sToTest == s ){
+						bRes = true;
+						break;
+					}
 				}
 			}
 

@@ -105,5 +105,5 @@ package org.shoebox.patterns.mvc.abstracts;
 				//Logger.log(AModel,arguments);
 			}
 			
-			
 	}
+	

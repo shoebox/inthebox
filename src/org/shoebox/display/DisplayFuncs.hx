@@ -29,6 +29,7 @@
 */
 package org.shoebox.display;
 
+import nme.display.DisplayObjectContainer;
 import nme.Lib;
 import nme.display.DisplayObject;
 import nme.display.StageAlign;
@@ -46,6 +47,42 @@ class DisplayFuncs{
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		inline static public function align_in_container( target : DisplayObject , container : DisplayObject ) : Void {
+			var bnds_container	= container.getRect( container );
+			var bnds_target		= target.getRect( container );
+			target.x = Math.round(( bnds_container.width - bnds_target.width ) / 2);
+			target.y = Math.round(( bnds_container.height - bnds_target.height ) / 2);
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function distribute_childs( target : DisplayObjectContainer , iMargin : Int = 0 , bHor : Bool = false ) : Void {
+			
+			var l = target.numChildren;
+			var inc = 0;
+			for( i in 0...l ){
+				var child = target.getChildAt( i );
+				if( bHor ){
+					child.x = inc;
+					inc += Math.round( child.width + iMargin );
+				}else{
+					child.y = inc;
+					inc += Math.round( child.height + iMargin );
+				}
+			}
+
+		}
+
 		/**
 		* 
 		*

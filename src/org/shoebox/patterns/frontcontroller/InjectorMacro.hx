@@ -74,8 +74,7 @@ class InjectorMacro{
 				}
 			);
 
-			var ret = EConst(CType("Void")); 
-			return {expr: ret, pos:haxe.macro.Context.currentPos()}; 
+			return macro Void;
 		}			
 
 	// -------o protected

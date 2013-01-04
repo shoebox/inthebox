@@ -99,7 +99,7 @@ class Perf extends Sprite{
 		
 			//
 				_tfFps.autoSize          = nme.text.TextFieldAutoSize.LEFT;
-				#if mobile
+				#if( android || ios )
 				_tfFps.defaultTextFormat = new TextFormat(null,12,0xFFFFFF);
 				#else
 				_tfFps.defaultTextFormat = new TextFormat('Consolas',12,0xFFFFFF);

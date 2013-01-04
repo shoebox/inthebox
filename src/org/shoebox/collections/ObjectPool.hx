@@ -37,7 +37,7 @@ import nme.errors.Error;
  */
 
 class ObjectPool<T>{
-
+	
 	private var _aContent  : Array<T>;
 	private var _cClass    : Class<T>;
 	private var _iAllocate : Int;

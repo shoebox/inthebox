@@ -3,6 +3,7 @@ package org.shoebox.net;
 #if flash
 import nme.events.IOErrorEvent;
 #end
+
 import nme.events.Event;
 import nme.events.HTTPStatusEvent;
 import nme.net.URLLoader;
@@ -49,17 +50,28 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @return	void
 		*/
 		override public function load( req : URLRequest ) : Void {
+
+			try{
+				close( );
+			}catch( e : nme.errors.Error ){
+
+			}
+
 			if( _oVariables != null )
 				req.data   = _oVariables;
 				req.method = method == GET ? URLRequestMethod.GET : URLRequestMethod.POST;
-			addEventListener( Event.COMPLETE 				, _onDatas 		, false );
+
+			if( !hasEventListener( Event.COMPLETE ) )
+				addEventListener( Event.COMPLETE 				, _onDatas 		, false );
 			#if flash
 			addEventListener( IOErrorEvent.IO_ERROR 		, _onIoError	, false );
 			addEventListener( IOErrorEvent.DISK_ERROR 		, _onIoError	, false );
 			addEventListener( IOErrorEvent.NETWORK_ERROR 	, _onIoError	, false );
 			addEventListener( IOErrorEvent.VERIFY_ERROR 	, _onIoError	, false );
 			#end
-			addEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );
+			if( !hasEventListener( HTTPStatusEvent.HTTP_STATUS ) )
+				addEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );
+
 			try{
 				super.load( req );
 			}catch( e : nme.errors.Error ){
@@ -74,6 +86,13 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @return	void
 		*/
 		public function dispose( ) : Void {
+			
+			try{
+				close( );
+			}catch( e : nme.errors.Error ){
+
+			}
+			
 			removeEventListener( Event.COMPLETE 				, _onDatas 		, false );
 			#if flash
 			removeEventListener( IOErrorEvent.IO_ERROR 			, _onIoError	, false );
@@ -157,7 +176,7 @@ class HTTPService extends URLLoader , implements IDispose{
 		}
 
 	// -------o misc
-	
+
 }
 
 enum Method{

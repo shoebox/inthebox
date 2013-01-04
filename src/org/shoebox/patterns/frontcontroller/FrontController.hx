@@ -131,7 +131,7 @@ class FrontController{
 		* @public
 		* @return 	triad instance
 		*/
-		public function getApp( sAppCode : String ) {
+		public function getApp( sAppCode : String ) : MVCTriad {
 			return _hTriads.get( sAppCode );				
 		}
 
