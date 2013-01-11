@@ -51,7 +51,7 @@ class BoxTextField{
 		* @public
 		* @return	void
 		*/
-		static public function format( tf : TextField , sAutoSize : TextFieldAutoSize , bSelectable : Bool = false , bWordWrap : Bool = true , bMultiLine : Bool = false ) : Void {
+		static public function format( tf : TextField , sAutoSize : Dynamic , bSelectable : Bool = false , bWordWrap : Bool = true , bMultiLine : Bool = false ) : Void {
 			
 			if ( sAutoSize == null )
 				sAutoSize = TextFieldAutoSize.LEFT;

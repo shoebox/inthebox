@@ -79,7 +79,7 @@ class Injector{
 			//Retrieve the class type
 				if( typ == null )
 					typ = Type.getClass( instance );
-			
+
 			//
 				var meta : Dynamic;
 				var metas = Meta.getFields( typ );
@@ -102,7 +102,12 @@ class Injector{
 						optional_name = meta.inject[ 0 ];
 					
 					sType = Reflect.field( meta , "variableType" )[0];
+					if( sType == 'StdTypes' ){
+						trace( sType );
+					}
+					
 					dep = get_dependency( Type.resolveClass( sType ) , optional_name );
+
 					if( dep == null ){
 						throw new nme.errors.Error( Std.format( 'The dependency of type : $sType with optional_name : $optional_name is not registered'));
 						continue;

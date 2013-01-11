@@ -59,7 +59,19 @@ class InjectorMacro{
 									switch( field.type ){
 
 										case TInst( t , params ):
-												field.meta.add("variableType", [Context.parse('"' + t.get( ).module + '"', ref.pos)], ref.pos);
+
+											var s : String;
+											switch( t.get( ).name ){
+
+												case "Int":
+													s = 'Int';
+
+												default:
+													s = t.get( ).module;
+
+											}
+
+											field.meta.add("variableType", [Context.parse('"' +s+ '"', ref.pos)], ref.pos);
 
 										default:
 

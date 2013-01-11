@@ -117,7 +117,7 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		private function _onKey_up( e : KeyboardEvent ) : Void{
-			
+			trace('_onKey_up ::: '+e.keyCode);
 			if( e.keyCode == 8 || e.keyCode == 27 ){
 				e.stopImmediatePropagation();
 				e.stopPropagation();

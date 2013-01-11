@@ -63,12 +63,14 @@ class HTTPService extends URLLoader , implements IDispose{
 
 			if( !hasEventListener( Event.COMPLETE ) )
 				addEventListener( Event.COMPLETE 				, _onDatas 		, false );
+
 			#if flash
 			addEventListener( IOErrorEvent.IO_ERROR 		, _onIoError	, false );
 			addEventListener( IOErrorEvent.DISK_ERROR 		, _onIoError	, false );
 			addEventListener( IOErrorEvent.NETWORK_ERROR 	, _onIoError	, false );
 			addEventListener( IOErrorEvent.VERIFY_ERROR 	, _onIoError	, false );
 			#end
+			
 			if( !hasEventListener( HTTPStatusEvent.HTTP_STATUS ) )
 				addEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );
 

@@ -34,7 +34,7 @@ class NativeMirror{
 		* @return	void
 		*/
 		static public function build( ) : Array<Field> {
-			trace('build');		
+			//trace('build');		
 
 			//
 				var aPackage   = haxe.macro.Context.getLocalClass( ).get( ).pack;
@@ -148,7 +148,7 @@ class NativeMirror{
 														bStatic          : Bool 
 													) : Expr{
 			
-			trace('_build_func ::: '+field_name+' - '+bCPP);
+			//trace('_build_func ::: '+field_name+' - '+bCPP);
 			var b = false;
 			var field = rv( field_name );
 			var sMethod_name : String = Std.string( sMethodName );
@@ -205,20 +205,25 @@ class NativeMirror{
 						}
 						
 				}
-				
 				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
-				trace( 'JNI Method ------------------------------------------');
-				trace( '\tON CLASS\t: '+sFull_class_name);
-				trace( '\tMethod\t: '+sMethodName);
-				trace( '\tSignature\t: '+ sJNI_signature );
+
+				if( bJNI ){
+					/*
+					trace( 'JNI Method ------------------------------------------');
+					trace( '\tON CLASS \t: '+sFull_class_name);
+					trace( '\tMethod \t: '+sMethodName);
+					trace( '\tSignature \t: '+ sJNI_signature );
+					*/
+					#if android
+					trace(Std.format( '[JNI] Lib : $sFull_class_name \t Method : $sMethodName \t sign : $sJNI_signature' ) );
+					#end
+					//trace('sJNI_class_name ::: '+sJNI_class_name);
+				}
 				sJNI_class_name = sFull_class_name.split('.').join('/');						
-				//trace('sJNI_class_name ::: '+sJNI_class_name);
 
 			//CPP
 				if( bCPP ){
-					trace( 'CPP Method ------------------------------------------');
-					trace( '\tON LIB\t: '+sFull_class_name);
-					trace( '\tMethod\t: '+sMethod_name);
+					//trace(Std.format( '[CPP] Lib : $sFull_class_name \t Method : $sMethodName' ) );
 				}
 				
 			//Return Expr
@@ -303,42 +308,51 @@ class NativeMirror{
 					//Method call result
 						var res : Dynamic = null;
 
-					//For CPP						
+					//For CPP		
+						//#if cpp				
 						if( $(bCPP) ){
-							trace('[CPP] ------------------------------------------------');
-							trace('\tLIBRARY 		: '+$(sFull_class_name));
-							trace('\tMETHOD 		: '+$(sMethod_name));
+							 trace('[CPP] ------------------------------------------------');
+							 trace('\tLIBRARY 		: '+$(sFull_class_name));
+							 trace('\tMETHOD 		: '+$(sMethod_name));
 							if( $field == null ){
-								trace('CPP Method not yet created, lets create it...');
+								 trace('CPP Method not yet created, lets create it...');
 								$field = cpp.Lib.load( $(sFull_class_name) , $(sMethod_name) , $(count) );
-							}else
+							}else{
 								trace('>> CPP Method already created');
+							}
+
+							if( $field == null )
+									throw new nme.errors.Error("Method creation failed");
 
 							//res = Reflect.callMethod( null , $field , aArgs );							
 						}
+						//#end
 
 					//For JNI 
 						#if android
 						if( $(bJNI) ){
 
-							trace('[JNI] ------------------------------------------------');
-							trace('\tON CLASS 		: '+$(sJNI_class_name));
-							trace('\tMETHOD   		: '+$(sMethodName));
-							trace('\tSIGNATURE  	: '+$(sJNI_signature));
+							// trace('[JNI] ------------------------------------------------');
+							// trace('\tON CLASS 		: '+$(sJNI_class_name));
+							// trace('\tMETHOD   		: '+$(sMethodName));
+							// trace('\tSIGNATURE  	: '+$(sJNI_signature));
 							
 							if( $field == null ){
-								trace('JNI Method not yet created, lets create it...');
+								// trace('JNI Method not yet created, lets create it...');
 								if( $(bStatic) ){
-									trace('>> Create Static method');
+									// trace('>> Create Static method');
 									$field = nme.JNI.createStaticMethod( $(sJNI_class_name) , $(sMethodName) , $(sJNI_signature) );
 								}else{
-									trace('>> Create Member method');
+									// trace('>> Create Member method');
 									$field = nme.JNI.createMemberMethod( $(sJNI_class_name) , $(sMethodName) , $(sJNI_signature) );
-								}		
+								}	
 
-							}else
-								trace('>> JNI Method already created');
+								if( $field == null )
+									throw new nme.errors.Error("Error creation failed");
 
+							}else{
+								// trace('>> JNI Method already created');
+							}
 							//res = Reflect.callMethod( null , $field , aArgs );
 						}
 						#end

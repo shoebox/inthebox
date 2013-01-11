@@ -33,6 +33,7 @@ import nme.display.InteractiveObject;
 import nme.events.Event;
 import nme.events.MouseEvent;
 import nme.events.TouchEvent;
+import nme.events.KeyboardEvent;
 import org.shoebox.utils.system.SignalEvent;
 import org.shoebox.utils.system.flashevents.EvChannels;
 import org.shoebox.utils.system.flashevents.InteractiveObjectEv;
@@ -64,8 +65,38 @@ class InteractiveObjectEv{
 		* @public
 		* @return	void
 		*/
+		static public function onKeyDown( d : InteractiveObject ) : SignalEvent<KeyboardEvent> {
+			return _keyboardCreate( d , KeyboardEvent.KEY_DOWN );			
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function onKeyUp( d : InteractiveObject ) : SignalEvent<KeyboardEvent> {
+			return _keyboardCreate( d , KeyboardEvent.KEY_UP );			
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		static public function onStaged( d : InteractiveObject ) : SignalEvent<Event> {
 			return _create( d , Event.ADDED_TO_STAGE );			
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function onResize( d : InteractiveObject ) : SignalEvent<Event> {
+			return _create( d , Event.RESIZE );					
 		}
 
 		/**
@@ -228,6 +259,16 @@ class InteractiveObjectEv{
 		* @return	void
 		*/
 		static private function _mouseEvCreate( d : InteractiveObject , s : String , b : Bool = false ) : Dynamic{
+			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , b );
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		static private function _keyboardCreate( d : InteractiveObject , s : String , b : Bool = false ) : Dynamic{
 			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , b );
 		}
 

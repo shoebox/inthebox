@@ -3,6 +3,8 @@ package org.shoebox.display;
 import nme.display.Stage;
 import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
+import nme.display.StageAlign;
+import nme.geom.Rectangle;
 
 /**
  * ...
@@ -50,6 +52,16 @@ class BoxDisplay{
 			}
 
 			return a;
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function align( d : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign ) : Void {
+			org.shoebox.display.DisplayFuncs.align( d , null , where , dx , dy );		
 		}
 
 	// -------o protected
