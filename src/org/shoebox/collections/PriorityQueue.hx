@@ -69,8 +69,10 @@ class PriorityQueue<T>{
 		*/
 		public function add( value : T , ?prio : Int = 0 ) : Void {
 			
-			var desc = { content : value , prio : prio };
-
+			var desc = new PrioDesc<T>( );
+				desc.content = value;
+				desc.prio = prio;
+			
 			_add( desc , prio );
 			_bInvalidate = true;
 		}
@@ -142,7 +144,13 @@ class PriorityQueue<T>{
 				return _oIterator;
 			}
 
-			_oIterator = new PrioQueueIterator<T>( _aContent );
+			if( _oIterator == null ){
+				_oIterator = new PrioQueueIterator<T>( _aContent );
+			}else{
+				_oIterator.reset( );
+				_oIterator.setContent( _aContent );
+			}
+
 			_bInvalidate = false;
 			return _oIterator;
 		}
@@ -242,12 +250,39 @@ class PriorityQueue<T>{
 	
 }
 
-typedef PrioDesc<T>={
-	var prio    : Int;
-	var content : T;
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class PrioDesc<T>{
+
+	public var prio    : Int;
+	public var content : T;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new() {
+			
+		}
+	
+	// -------o public
+				
+				
+
+	// -------o protected
+	
+		
+
+	// -------o misc
+	
 }
-
-
 
 /**
  * ...
@@ -269,11 +304,21 @@ class PrioQueueIterator<T>{
 		* @return	void
 		*/
 		public function new( content : Array<PrioDesc<T>> ) {
-			_aContent = content.copy( );
+			setContent( content );
 		}
 	
 	// -------o public
 		
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		public function setContent( content : Array<PrioDesc<T>> ) : Void {
+			_aContent = content.copy( );
+		}
+
 		/**
 		* 
 		* 
@@ -300,7 +345,7 @@ class PrioQueueIterator<T>{
 		* @public
 		* @return	void
 		*/
-		public function next( ) : T {
+		inline public function next( ) : T {
 			return _aContent[ inc++ ].content;
 		}
 

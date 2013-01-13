@@ -29,7 +29,6 @@
 */
 package org.shoebox.utils.system;
 
-import nme.events.EventDispatcher;
 import org.shoebox.collections.PriorityQueue;
 
 /**
@@ -64,13 +63,12 @@ class ASignal<T>{
 		* @public
 		* @return	void
 		*/
-		public function connect( f : T , prio : Int = 0 , count : Int = -1 ) : Void {
+		public function connect( f : T , iPrio : Int = 0 , iCount : Int = -1 ) : Void {
 			
-			if( _exist( f , prio ) )
+			if( _exist( f , iPrio ) )
 				return;
 
-			var s = { listener : f , count : count , prio : prio };
-			_oQueue.add( s , prio );
+			_oQueue.add( new SignalListener( f , iCount , iPrio ) , iPrio );
 
 		}
 
@@ -85,7 +83,7 @@ class ASignal<T>{
 			var content = _oQueue.getContent( );
 			for( o in content ){
 
-				if( o.content.listener == f && o.prio == prio ){
+				if( o.content.fListener == f && o.prio == prio ){
 					content.remove( o );
 					_oQueue.remove( o.content );
 					break;
@@ -137,7 +135,7 @@ class ASignal<T>{
 			var b : Bool = false;
 			var content = _oQueue.getContent( );
 			for( o in content ){
-				if( o.content.listener == f && o.prio == prio ){
+				if( o.content.fListener == f && o.prio == prio ){
 					b = true;
 					break;
 				}
@@ -154,12 +152,12 @@ class ASignal<T>{
 		*/
 		private function _check( l : SignalListener<T> ) : Void{
 
-			if( l.count != -1 ){
-				l.count--;
+			if( l.iCount != -1 ){
+				l.iCount--;
 			}
 
-			if( l.count == 0 )
-				disconnect( l.listener , l.prio );
+			if( l.iCount == 0 )
+				disconnect( l.fListener , l.iPrio );
 			
 		}	
 
@@ -178,8 +176,40 @@ class ASignal<T>{
 	
 }
 
-typedef SignalListener<T> = {
-	public var listener	: T;
-	public var count	: Int;
-	public var prio		: Int;
+
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class SignalListener<T>{
+
+	public var fListener : T;
+	public var iCount    : Int;
+	public var iPrio     : Int;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new( f : T , iCount : Int , iPrio : Int ) {
+			this.fListener = f;
+			this.iCount    = iCount;
+			this.iPrio     = iPrio;
+		}
+	
+	// -------o public
+				
+				
+
+	// -------o protected
+	
+		
+
+	// -------o misc
+	
 }

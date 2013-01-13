@@ -57,11 +57,12 @@ class Signal1<T> extends ASignal<T->Void>{
 		* @return	void
 		*/
 		public function emit( arg : T ) : Void {
-			
 			for( l in _oQueue ){
-				l.listener( arg );
+				l.fListener( arg );
 				_check( l );
 			}
+
+			//_emit( [ arg ] );
 		}
 
 	// -------o protected
