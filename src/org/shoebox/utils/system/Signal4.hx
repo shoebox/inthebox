@@ -58,9 +58,7 @@ class Signal4<A1,A2,A3,A4> extends ASignal<A1->A2->A3->A4->Void>{
 		*/
 		public function emit( a1 : A1 , a2 : A2 , a3 : A3 , a4 : A4 , b : Bool = false ) : Void {
 			for( l in _oQueue ){
-				if( b )
-					trace( l.listener );
-				l.listener( a1 , a2 , a3 , a4 );
+				l.fListener( a1 , a2 , a3 , a4 );
 				_check( l );
 			}
 		}
