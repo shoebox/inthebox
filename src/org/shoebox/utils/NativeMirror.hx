@@ -34,8 +34,7 @@ class NativeMirror{
 		* @return	void
 		*/
 		static public function build( ) : Array<Field> {
-			//trace('build');		
-
+			
 			//
 				var aPackage   = haxe.macro.Context.getLocalClass( ).get( ).pack;
 				var fields     = haxe.macro.Context.getBuildFields( );
@@ -148,7 +147,7 @@ class NativeMirror{
 														bStatic          : Bool 
 													) : Expr{
 			
-			//trace('_build_func ::: '+field_name+' - '+bCPP);
+			// trace('_build_func ::: '+field_name+' - '+bCPP);
 			var b = false;
 			var field = rv( field_name );
 			var sMethod_name : String = Std.string( sMethodName );
@@ -223,7 +222,7 @@ class NativeMirror{
 
 			//CPP
 				if( bCPP ){
-					//trace(Std.format( '[CPP] Lib : $sFull_class_name \t Method : $sMethodName' ) );
+					trace(Std.format( '[CPP] Lib : $sFull_class_name \t Method : $sMethodName' ) );
 				}
 				
 			//Return Expr
@@ -309,7 +308,6 @@ class NativeMirror{
 						var res : Dynamic = null;
 
 					//For CPP		
-						//#if cpp				
 						if( $(bCPP) ){
 							 trace('[CPP] ------------------------------------------------');
 							 trace('\tLIBRARY 		: '+$(sFull_class_name));
@@ -326,8 +324,7 @@ class NativeMirror{
 
 							//res = Reflect.callMethod( null , $field , aArgs );							
 						}
-						//#end
-
+					
 					//For JNI 
 						#if android
 						if( $(bJNI) ){

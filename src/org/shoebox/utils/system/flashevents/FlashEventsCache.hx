@@ -93,7 +93,7 @@ class FlashEventsCache{
 			//
 				if( !b ){
 					res = new SignalEvent<Event>( target , sType , bBub );
-					aSubs.push( { target : target , bBub : bBub , signal : res } );
+					aSubs.push( new CacheDesc( target , bBub , res ) );
 				}
 
 			return res;
@@ -120,8 +120,35 @@ class FlashEventsCache{
 
 }
 
-typedef CacheDesc = {
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class CacheDesc{
+
 	public var target : EventDispatcher;
 	public var bBub   : Bool;
-	public var signal : SignalEvent<nme.events.Event>;
+	public var signal : SignalEvent<Event>;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new( target : EventDispatcher , b : Bool , signal : SignalEvent<Event> ) : Void {
+			this.target	= target;
+			this.bBub	= b;
+			this.signal	= signal;
+		}
+	
+	// -------o public
+	
+	// -------o protected
+	
+	// -------o misc
+	
 }

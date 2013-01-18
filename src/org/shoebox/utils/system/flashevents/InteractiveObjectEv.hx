@@ -96,7 +96,7 @@ class InteractiveObjectEv{
 		* @return	void
 		*/
 		static public function onResize( d : InteractiveObject ) : SignalEvent<Event> {
-			return _create( d , Event.RESIZE );					
+			return _create( nme.Lib.current.stage , Event.RESIZE );					
 		}
 
 		/**

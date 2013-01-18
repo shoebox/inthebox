@@ -7,9 +7,11 @@ import nme.events.IOErrorEvent;
 import nme.events.Event;
 import nme.events.HTTPStatusEvent;
 import nme.net.URLLoader;
+import nme.net.URLLoaderDataFormat;
 import nme.net.URLRequest;
 import nme.net.URLRequestMethod;
 import nme.net.URLVariables;
+import nme.utils.ByteArray;
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.utils.system.Signal1;
 
@@ -22,10 +24,11 @@ class HTTPService extends URLLoader , implements IDispose{
 
 	public var method( default , default ) : Method;
 
-	public var onDatas : Signal1<String>;
+	public var onDatas			: Signal1<String>;
+	public var onBinaryDatas	: Signal1<ByteArray>;
 
-	private var _oVariables : URLVariables;
-	private var _method : URLRequestMethod;
+	private var _oVariables	: URLVariables;
+	private var _method		: URLRequestMethod;
 
 	// -------o constructor
 		
@@ -35,10 +38,18 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @param	
 		* @return	void
 		*/
-		public function new( ?method : Method ) {
+		public function new( ?method : Method , ?format : URLLoaderDataFormat ) {
 			super( );
-			this.method = method == null ? GET : method;
-			onDatas = new Signal1<String>( );
+			
+			//
+				this.method		= method == null ? GET : method;
+				this.dataFormat	= format == null ? TEXT : format;
+				
+			//
+				if( dataFormat == TEXT )
+					onDatas = new Signal1<String>( );
+				else if( format == BINARY )
+					onBinaryDatas = new Signal1<ByteArray>( );
 		}
 	
 	// -------o public
@@ -140,7 +151,12 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @return	void
 		*/
 		private function _onDatas( e : Event ) : Void{
-			onDatas.emit( data );
+			
+			if( dataFormat == BINARY )
+				onBinaryDatas.emit( data );
+			else
+				onDatas.emit( data );
+
 		}
 
 		#if flash

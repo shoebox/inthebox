@@ -70,8 +70,10 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		public function go_back( ) : Bool {
-			
-			if( !can_go_back( ) )
+
+			var b = can_go_back( );
+			trace("go_back ::: "+b);
+			if( !b )
 				return false;
 
 			if( _a_history == null || _a_history.length == 0 )
@@ -79,7 +81,8 @@ class FCHistory extends AFCPlugin{
 
 			//
 				var s = _a_history.pop( );
-			
+				trace("s ::: "+s);
+				
 			//
 				fc_instance.onStateChange.disconnect( _on_state_change );
 				fc_instance.state = s;
@@ -117,7 +120,7 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		private function _onKey_up( e : KeyboardEvent ) : Void{
-			trace('_onKey_up ::: '+e.keyCode);
+			
 			if( e.keyCode == 8 || e.keyCode == 27 ){
 				e.stopImmediatePropagation();
 				e.stopPropagation();
@@ -137,10 +140,7 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		override private function _set_fc_instance( fc : FrontController ) : FrontController{
-
-			//
-				fc.onStateChange.connect( _on_state_change );
-
+			fc.onStateChange.connect( _on_state_change );
 			return super._set_fc_instance( fc );
 		}	
 
@@ -151,12 +151,10 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		private function _on_state_change( sPrev : String , sNew : String ) : Void{
-			
 			if( sPrev != null && !_is_ignored( sPrev ) ){
-
 				if( _a_history == null )
 					_a_history = [ ];
-					_a_history.push( sPrev );
+					_a_history.push( sPrev );					
 			}
 		}
 
@@ -169,19 +167,9 @@ class FCHistory extends AFCPlugin{
 		inline private function _is_ignored( sToTest : String ) : Bool{
 
 			var bRes = false;
-			if( _a_ignore == null ){
-				bRes = false;
-			}else{
-
-				var bRes = false;
-				for( s in _a_ignore ){
-					if( sToTest == s ){
-						bRes = true;
-						break;
-					}
-				}
-			}
-
+			if( _a_ignore != null )
+				bRes = Lambda.has( _a_ignore , sToTest );
+			
 			return bRes;
 		}	
 

@@ -6,6 +6,8 @@ import nme.display.DisplayObjectContainer;
 import nme.display.StageAlign;
 import nme.geom.Rectangle;
 
+import org.shoebox.geom.AABB;
+
 /**
  * ...
  * @author shoe[box]
@@ -60,8 +62,18 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
-		static public function align( d : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign ) : Void {
-			org.shoebox.display.DisplayFuncs.align( d , null , where , dx , dy );		
+		static public function distribute( d : DisplayObjectContainer , iMargin : Int , ?bHor : Bool ) : Void {
+			DisplayFuncs.distribute_childs( d , iMargin , bHor );						
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function align( d : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign , ?bounds : AABB ) : Void {
+			org.shoebox.display.DisplayFuncs.align( d , bounds , where , dx , dy );		
 		}
 
 	// -------o protected
