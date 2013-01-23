@@ -166,6 +166,7 @@ class FrontController{
 		* @return	void
 		*/
 		public function inject_dependencies_on<T>( instance : T , ?typ : Class<T> ) : Void {
+			trace("inject_dependencies_on ::: "+instance);
 			_injector.inject_dependencies_on( instance , typ );
 		}
 
@@ -334,19 +335,19 @@ class MVCTriad{
 			//
 				if( classModel != null ){
 					instance.model = Type.createInstance( classModel , variables == null ? [ ] : variables );
-					fc.inject_dependencies_on( instance.model , classModel );
+					// fc.inject_dependencies_on( instance.model , classModel );
 				}
 
 				if ( classView != null ){
 					instance.view = Type.createInstance( classView , [ ] );
-					fc.inject_dependencies_on( instance.view , classView );
+					// fc.inject_dependencies_on( instance.view , classView );
 				}
 				
 				if ( classController != null ){
 					instance.controller = Type.createInstance( classController , [ ] );
-					fc.inject_dependencies_on( instance.controller , classController );
+					// fc.inject_dependencies_on( instance.controller , classController );
 				}
-
+				
 				variables = null;
 
 			//

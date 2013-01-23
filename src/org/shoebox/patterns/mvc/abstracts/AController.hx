@@ -115,10 +115,13 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @public
 			* @return	void
 			*/
-			public function delay( func : Void->Void , delay : Int ) : Void {
+			public function delay( func : Void->Void , delay : Int ) : Timer {
 				if( _a_timers == null )
 					_a_timers = [ ];
-					_a_timers.push( haxe.Timer.delay( func , delay ) );
+
+				var t = Timer.delay( func , delay );
+					_a_timers.push( t );
+				return t;
 			}
 
 			/**
@@ -127,7 +130,7 @@ package org.shoebox.patterns.mvc.abstracts;
 			* @public
 			* @return	void
 			*/
-			public function add_listener( 
+			public function addListener( 
 											target				: EventDispatcher,
 											type				: String, 
 											listener			: Dynamic -> Void , 

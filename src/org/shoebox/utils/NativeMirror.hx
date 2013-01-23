@@ -148,6 +148,7 @@ class NativeMirror{
 													) : Expr{
 			
 			// trace('_build_func ::: '+field_name+' - '+bCPP);
+			trace("");
 			var b = false;
 			var field = rv( field_name );
 			var sMethod_name : String = Std.string( sMethodName );

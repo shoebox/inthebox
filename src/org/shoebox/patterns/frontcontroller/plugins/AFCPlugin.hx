@@ -34,6 +34,7 @@ class AFCPlugin{
 		* @return	void
 		*/
 		private function _set_fc_instance( fc : FrontController ) : FrontController{
+			trace("_set_fc_instance ::: "+fc);
 			return this.fc_instance = fc;
 		}	
 

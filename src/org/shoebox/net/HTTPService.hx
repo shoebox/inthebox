@@ -13,7 +13,6 @@ import nme.net.URLRequestMethod;
 import nme.net.URLVariables;
 import nme.utils.ByteArray;
 import org.shoebox.core.interfaces.IDispose;
-import org.shoebox.utils.system.Signal1;
 
 /**
  * ...
@@ -24,12 +23,15 @@ class HTTPService extends URLLoader , implements IDispose{
 
 	public var method( default , default ) : Method;
 
-	public var onDatas			: Signal1<String>;
-	public var onBinaryDatas	: Signal1<ByteArray>;
+	public var onDatas : String->Void;
+	public var onBinaryDatas : ByteArray->Void;
+
+	//public var onDatas			: Signal1<String>;
+	//public var onBinaryDatas	: Signal1<ByteArray>;
 
 	private var _oVariables	: URLVariables;
 	private var _method		: URLRequestMethod;
-
+	
 	// -------o constructor
 		
 		/**
@@ -40,16 +42,8 @@ class HTTPService extends URLLoader , implements IDispose{
 		*/
 		public function new( ?method : Method , ?format : URLLoaderDataFormat ) {
 			super( );
-			
-			//
-				this.method		= method == null ? GET : method;
-				this.dataFormat	= format == null ? TEXT : format;
-				
-			//
-				if( dataFormat == TEXT )
-					onDatas = new Signal1<String>( );
-				else if( format == BINARY )
-					onBinaryDatas = new Signal1<ByteArray>( );
+			this.method		= method == null ? GET : method;
+			this.dataFormat	= format == null ? TEXT : format;			
 		}
 	
 	// -------o public
@@ -61,7 +55,7 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @return	void
 		*/
 		override public function load( req : URLRequest ) : Void {
-
+			
 			try{
 				close( );
 			}catch( e : nme.errors.Error ){
@@ -72,8 +66,7 @@ class HTTPService extends URLLoader , implements IDispose{
 				req.data   = _oVariables;
 				req.method = method == GET ? URLRequestMethod.GET : URLRequestMethod.POST;
 
-			if( !hasEventListener( Event.COMPLETE ) )
-				addEventListener( Event.COMPLETE 				, _onDatas 		, false );
+			addEventListener( Event.COMPLETE , _onDatas	, false );
 
 			#if flash
 			addEventListener( IOErrorEvent.IO_ERROR 		, _onIoError	, false );
@@ -100,6 +93,9 @@ class HTTPService extends URLLoader , implements IDispose{
 		*/
 		public function dispose( ) : Void {
 			
+			onDatas = null;
+			onBinaryDatas = null;
+
 			try{
 				close( );
 			}catch( e : nme.errors.Error ){
@@ -153,10 +149,20 @@ class HTTPService extends URLLoader , implements IDispose{
 		private function _onDatas( e : Event ) : Void{
 			
 			if( dataFormat == BINARY )
-				onBinaryDatas.emit( data );
+				_onBinaryDatas( data );
 			else
-				onDatas.emit( data );
+				onDatas( data );
 
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _onBinaryDatas( datas : ByteArray ) : Void{
+			onBinaryDatas( datas );
 		}
 
 		#if flash
