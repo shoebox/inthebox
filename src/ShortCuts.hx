@@ -1,6 +1,7 @@
 package ;
 
 import org.shoebox.patterns.injector.InjectMacro;
+import org.shoebox.utils.NativeMirror;
 
 #if macro
 import haxe.macro.Context;
@@ -38,6 +39,16 @@ class ShortCuts{
 		*/
 		static public function inject( ) : Array<Field> {
 			return InjectMacro.build( );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function mirrors( ) : Array<Field> {
+			return NativeMirror.build( );	
 		}
 
 		#end

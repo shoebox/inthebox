@@ -65,6 +65,7 @@ class AnimatedTile extends TileDesc{
 			#if flash
 
 				_bmp = new Bitmap( );
+				_bmp.smoothing = true;
 				addChild( _bmp );
 
 				#if debug

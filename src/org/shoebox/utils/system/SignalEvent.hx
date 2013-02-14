@@ -41,8 +41,8 @@ import org.shoebox.utils.system.Signal1;
 
 class SignalEvent<T:Event> extends Signal1<T>{
 
-	public var target( default , _setTarget ) : EventDispatcher;
-	public var eventType( default , _setEvent ) : String;
+	public var eventType	( default , _setEvent ) 	: String;
+	public var target		( default , _setTarget ) 	: EventDispatcher;
 
 	private var _bBubbling: Bool;
 	
@@ -192,7 +192,8 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		* @return	void
 		*/
 		private function _onEvent( e : T ) : Void{
-			emit( e );
+			if( enabled )
+				emit( e );
 		}
 
 	// -------o misc

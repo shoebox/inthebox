@@ -58,12 +58,9 @@ class AABB{
 		* @return	void
 		*/
 		public function new( l : Float = 0.0 , t : Float = 0.0 , r : Float = 0.0 , b : Float = 0.0 ) {
-			min    = { x : l , y : t };
-			max    = { x : r , y : b };
-			center = { 
-						x : min.x + ( max.x - min.x ) / 2 ,
-						y : min.y + ( max.y - min.y ) / 2
-					};
+			min    = new FPoint( l , t );
+			max    = new FPoint( r , b );
+			center = new FPoint( min.x + ( max.x - min.x ) / 2 , min.y + ( max.y - min.y ) / 2 );
 		}
 	
 	// -------o public

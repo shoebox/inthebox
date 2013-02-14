@@ -26,6 +26,7 @@ class FCHistory extends AFCPlugin{
 		*/
 		public function new( bAuto : Bool = false ) {
 			super( );
+			trace("constructor");
 			if( bAuto )
 				_init( );
 		}
@@ -120,7 +121,7 @@ class FCHistory extends AFCPlugin{
 		* @return	void
 		*/
 		private function _onKey_up( e : KeyboardEvent ) : Void{
-			
+			trace("onKeyUp ::: "+e.keyCode);
 			if( e.keyCode == 8 || e.keyCode == 27 ){
 				e.stopImmediatePropagation();
 				e.stopPropagation();

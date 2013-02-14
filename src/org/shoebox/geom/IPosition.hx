@@ -29,7 +29,37 @@
 */
 package org.shoebox.geom;
 
-typedef IPosition={
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class IPosition{
+
 	public var x : Int;
 	public var y : Int;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new( x : Int = 0 , y : Int = 0 ) {
+			this.x = x;
+			this.y = y;
+		}
+	
+	// -------o public
+				
+				
+
+	// -------o protected
+	
+		
+
+	// -------o misc
+	
 }

@@ -39,6 +39,7 @@ import org.shoebox.core.BoxArray;
 
 class AStar{
 
+	public var isClosed : Int->Int->Bool;
 	
 	private var _aContent   : Array2D<AStarNode>;
 	private var _bAllowDiag : Bool;
@@ -69,9 +70,11 @@ class AStar{
 		* @return	void
 		*/
 		public function solve( dx1 : Int , dy1 : Int , dx2 : Int , dy2 : Int ) : Array<Int> {
-			
+			//trace("solve ::: "+dx1+" || "+dy1+" || "+dx2+" || "+dy2);
 			if( !_aContent.validate( dx1 , dy1 ) || !_aContent.validate( dx2 , dy2 ) )
 				return null;
+
+			//trace("solve");
 
 			var aClosed  : Array<AStarNode> = new Array<AStarNode>( );
 			var aNear    : Array<AStarNode>;
@@ -83,14 +86,13 @@ class AStar{
 			var g        : Float;
 			
 			var iLen : Int = aOpened.length;
-
 			while( iLen > 0 ){
 
 				best = null;
 
 				aOpened.sort( _sort );
 				oCurrent = aOpened[ 0 ];
-				
+				//trace( oCurrent.dx+" | "+oCurrent.dy);
 				if( oCurrent == oEnd ){
 					var res : Array<Int> = new Array<Int>( );
 					var node = oEnd;
@@ -198,30 +200,24 @@ class AStar{
 			var posY : Int;
 			var node : AStarNode;
 
-			if( _bAllowDiag ){
-			
-				for( dy in -1...2 ){
-					for( dx in -1...2 ){
+			for( dy in -1...2 ){
+				for( dx in -1...2 ){
 
-						if( dx == 0 && dy == 0 )
-							continue;
+					if( ( dx == 0 && dy == 0 ) || ( !_bAllowDiag && dx != 0 && dy != 0 ) )
+						continue;
 
-						posX = dx + oNode.dx;
-						posY = dy + oNode.dy;
-						if( !_aContent.validate( posX , posY ) )
-							continue;
+					posX = dx + oNode.dx;
+					posY = dy + oNode.dy;
+					if( !_aContent.validate( posX , posY ) )
+						continue;
 
-						node = _aContent.get( posX , posY );
-						if( !node.value )
-							continue;
-
-						node.travelCost = 10;
-						res.push( node );
-					}
+					node = _aContent.get( posX , posY );
+					if( isClosed( posX , posY ) )
+						continue;
+					
+					node.travelCost = 10;
+					res.push( node );
 				}
-
-			}else{
-				//TODO : No diag
 			}
 
 			return res;

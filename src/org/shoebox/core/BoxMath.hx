@@ -208,9 +208,13 @@ class BoxMath
 											AX : Float , AY : Float , 
 											BX : Float , BY : Float , 
 											CX : Float , CY : Float , 
-											DX : Float , DY : Float 
+											DX : Float , DY : Float ,
+											?res : FPoint
 										) : FPoint {
 		
+		if( res == null )
+			res = new FPoint( );
+
 		var ADx = ( DX - CX );
    		var ACx = ( AX - CX );
    		var ACy = ( AY - CY );
@@ -234,8 +238,9 @@ class BoxMath
 		
 		if ( ( r > 0 ) && ( r < 1 ) && ( s > 0 ) && ( s < 1 ) ) {
 			//point = A.add( B.sub( A ).scaleB.y( r ) );
-			return { x : ( BX - AX ) * r  , y : ( BY - AY ) * r };
-
+			res.x = ( BX - AX ) * r;
+			res.y = ( BY - AY ) * r;
+			return res;
 		}else {
 			return null;
 		}

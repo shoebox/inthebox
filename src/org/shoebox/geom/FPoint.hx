@@ -29,7 +29,37 @@
 */
 package org.shoebox.geom;
 
-typedef FPoint={
+/**
+ * ...
+ * @author shoe[box]
+ */
+
+class FPoint{
+
 	public var x : Float;
 	public var y : Float;
+
+	// -------o constructor
+		
+		/**
+		* constructor
+		*
+		* @param	
+		* @return	void
+		*/
+		public function new( fx : Float = 0.0 , fy : Float = 0.0 ) {
+			this.x = fx;
+			this.y = fy;
+		}
+	
+	// -------o public
+				
+				
+
+	// -------o protected
+	
+		
+
+	// -------o misc
+	
 }
