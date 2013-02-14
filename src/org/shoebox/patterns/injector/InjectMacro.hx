@@ -2,6 +2,7 @@ package org.shoebox.patterns.injector;
 
 import haxe.macro.Context;
 import haxe.macro.Expr;
+import haxe.macro.Type;
 
 /**
  * ...
@@ -31,8 +32,7 @@ class InjectMacro{
 		* @return	void
 		*/
 		static public function build( ) : Array<Field> {
-			//trace("build ::: "+haxe.macro.Context.getLocalType( ) );		
-
+			
 			var a = haxe.macro.Context.getBuildFields( );
 			var b = false;
 			var meta;
@@ -56,7 +56,8 @@ class InjectMacro{
 					if( !b )
 						continue;
 					
-				
+					Sys.println("[Inject] Variable : "+_getFull_class_name( haxe.macro.Context.getLocalClass( ).get( ) )+"\t\t"+f.name);
+
 				//MetaDatas Expr
 					var bRW : Bool = false;
 					var sOptionalName : String = null;
@@ -260,8 +261,24 @@ class InjectMacro{
 			return newField;
 		}
 
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
 		static function rv(variable_name:String) : Expr{
 			 return { expr: EConst(CIdent(variable_name)), pos: Context.currentPos() };
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		static private function _getFull_class_name( ofClass : ClassType ) : String{
+			return ofClass.pack.join(".")+((ofClass.pack.length == 0) ? "" : ".")+ofClass.module;
 		}
 
 	// -------o misc
