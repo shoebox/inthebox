@@ -43,6 +43,8 @@ class AStar{
 	
 	private var _aContent   : Array2D<AStarNode>;
 	private var _bAllowDiag : Bool;
+	private var _iWidth : Int;
+	private var _iHeight : Int;
 
 	// -------o constructor
 		
@@ -53,11 +55,11 @@ class AStar{
 		* @return	void
 		*/
 		public function new( w : Int , h : Int , b : Bool = true ) {
-			_aContent   = new Array2D<AStarNode>( w , h );
-			_bAllowDiag = b;
-			for( dy in 0...h )
-				for( dx in 0...w )
-					_aContent.set( dx , dy , new AStarNode( dx , dy ) );
+			_aContent	= new Array2D<AStarNode>( w , h );
+			_bAllowDiag	= b;
+			_iWidth		= w;
+			_iHeight	= h;
+			
 			//{ dx : dx , dy : dy , f : 0.0 , g : 0.0 , h : 0.0 , value : true , parent : null , travelCost: 0.0} );
 		}
 	
@@ -70,10 +72,11 @@ class AStar{
 		* @return	void
 		*/
 		public function solve( dx1 : Int , dy1 : Int , dx2 : Int , dy2 : Int ) : Array<Int> {
-			//trace("solve ::: "+dx1+" || "+dy1+" || "+dx2+" || "+dy2);
+			trace("solve ::: "+dx1+" || "+dy1+" || "+dx2+" || "+dy2);
 			if( !_aContent.validate( dx1 , dy1 ) || !_aContent.validate( dx2 , dy2 ) )
 				return null;
 
+			_reset( );
 			//trace("solve");
 
 			var aClosed  : Array<AStarNode> = new Array<AStarNode>( );
@@ -221,6 +224,18 @@ class AStar{
 			}
 
 			return res;
+		}
+
+		/**
+		* 
+		* 
+		* @private
+		* @return	void
+		*/
+		private function _reset( ) : Void{
+			for( dy in 0..._iHeight )
+				for( dx in 0..._iWidth )
+					_aContent.set( dx , dy , new AStarNode( dx , dy ) );
 		}
 
 	// -------o misc

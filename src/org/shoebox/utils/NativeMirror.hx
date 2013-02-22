@@ -207,7 +207,7 @@ class NativeMirror{
 
 				if( bJNI )
 					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+"\t\tMethod : "+sMethodName+"\t\tSignature : "+sJNI_signature);
-					
+
 				sJNI_class_name = sFull_class_name.split('.').join('/');						
 
 			//CPP
@@ -316,24 +316,15 @@ class NativeMirror{
 						}
 					
 					//For JNI 
-						#if android
+						
 						if( $(bJNI) ){
 
-							// Sys.println('[JNI] ------------------------------------------------');
-							// Sys.println('\tON CLASS 		: '+$(sJNI_class_name));
-							// Sys.println('\tMETHOD   		: '+$(sMethodName));
-							// Sys.println('\tSIGNATURE  	: '+$(sJNI_signature));
-							
 							if( $field == null ){
-								// Sys.println('JNI Method not yet created, lets create it...');
-								if( $(bStatic) ){
-									// Sys.println('>> Create Static method');
+								if( $(bStatic) )
 									$field = nme.JNI.createStaticMethod( $(sJNI_class_name) , $(sMethodName) , $(sJNI_signature) );
-								}else{
-									// Sys.println('>> Create Member method');
+								else
 									$field = nme.JNI.createMemberMethod( $(sJNI_class_name) , $(sMethodName) , $(sJNI_signature) );
-								}	
-
+							
 								if( $field == null )
 									throw new nme.errors.Error("Error creation failed");
 
@@ -342,7 +333,7 @@ class NativeMirror{
 							}
 							//res = Reflect.callMethod( null , $field , aArgs );
 						}
-						#end
+						
 
 					//
 						if( $field != null ){
