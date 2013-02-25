@@ -56,7 +56,9 @@ class InjectMacro{
 					if( !b )
 						continue;
 					
-					// Sys.println("[Inject] Variable : "+_getFull_class_name( haxe.macro.Context.getLocalClass( ).get( ) )+"\t\t"+f.name);
+					#if verbose
+					Sys.println("[Inject] Variable : "+_getFull_class_name( haxe.macro.Context.getLocalClass( ).get( ) )+"\t\t"+f.name);
+					#end
 
 				//MetaDatas Expr
 					var bRW : Bool = false;

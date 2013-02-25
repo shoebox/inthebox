@@ -3,3 +3,6 @@
 [Tt]ests/
 [Bb]uild.nmml
 [Bb]uild.hxml
+[Ss]rc_test/
+*.sublime-project
+*.sublime-workspace
