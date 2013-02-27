@@ -1,5 +1,7 @@
 package org.shoebox.display;
 
+import nme.display.Bitmap;
+import nme.display.BitmapData;
 import nme.display.Stage;
 import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
@@ -104,6 +106,35 @@ class BoxDisplay{
 		*/
 		inline static public function alignIn( target : DisplayObject , container : DisplayObject ) : Void {
 			DisplayFuncs.align_in_container( target ,container );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function rasterize( target : DisplayObject , ?bAuto_swap : Bool = true ) : Bitmap {
+			
+			var bmd = new BitmapData( Std.int( target.width ) , Std.int( target.height ) , true , 0 );
+				bmd.unlock( );
+				bmd.draw( target );
+				bmd.lock( );
+
+
+			var bmp = new Bitmap( bmd );
+			var parent : DisplayObjectContainer = target.parent;
+
+			if( bAuto_swap && parent != null ){
+				var index = parent.getChildIndex( target );
+				trace("index ::: "+index);
+
+				parent.removeChild( target );
+				parent.addChildAt( bmp , index );
+			}
+
+			return bmp;
+
 		}
 
 

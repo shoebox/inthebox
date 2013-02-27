@@ -33,6 +33,7 @@ import nme.display.InteractiveObject;
 import nme.events.Event;
 import nme.events.MouseEvent;
 import nme.events.TouchEvent;
+import nme.events.FocusEvent;
 import nme.events.KeyboardEvent;
 import org.shoebox.utils.system.SignalEvent;
 import org.shoebox.utils.system.flashevents.EvChannels;
@@ -240,6 +241,26 @@ class InteractiveObjectEv{
 			FlashEventsCache.getInstance( ).purgeTarget( EvChannels.InteractiveObject , d );			
 		}
 
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function focusIn( d : InteractiveObject , ?b :  Bool ) : SignalEvent<Dynamic> {
+			return FlashEventsCache.getInstance( ).get( FocusEvent , EvChannels.InteractiveObject , d , FocusEvent.FOCUS_IN , b );
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function focusOut( d : InteractiveObject , ?b :  Bool ) : SignalEvent<Dynamic> {
+			return FlashEventsCache.getInstance( ).get( FocusEvent , EvChannels.InteractiveObject , d , FocusEvent.FOCUS_OUT , b );
+		}
+
 	// -------o protected
 		
 		/**
@@ -249,7 +270,7 @@ class InteractiveObjectEv{
 		* @return	void
 		*/
 		static private function _create( d : InteractiveObject , s : String ) : SignalEvent<Event>{
-			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , false );
+			return FlashEventsCache.getInstance( ).get( Event , EvChannels.InteractiveObject , d , s , false );
 		}
 
 		/**
@@ -259,7 +280,7 @@ class InteractiveObjectEv{
 		* @return	void
 		*/
 		static private function _mouseEvCreate( d : InteractiveObject , s : String , b : Bool = false ) : Dynamic{
-			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , b );
+			return FlashEventsCache.getInstance( ).get( MouseEvent , EvChannels.InteractiveObject , d , s , b );
 		}
 
 		/**
@@ -269,7 +290,7 @@ class InteractiveObjectEv{
 		* @return	void
 		*/
 		static private function _keyboardCreate( d : InteractiveObject , s : String , b : Bool = false ) : Dynamic{
-			return FlashEventsCache.getInstance( ).get( EvChannels.InteractiveObject , d , s , b );
+			return FlashEventsCache.getInstance( ).get( KeyboardEvent , EvChannels.InteractiveObject , d , s , b );
 		}
 
 	// -------o misc

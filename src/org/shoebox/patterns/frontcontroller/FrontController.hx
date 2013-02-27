@@ -98,20 +98,22 @@ class FrontController{
 		* @return	void
 		*/
 		public function add( 
-								cMod        : Class<IModel>,
-								cView       : Class<IView>,
-								cController : Class<IController>
+								cMod		: Class<IModel>,
+								cView		: Class<IView>,
+								cController	: Class<IController>,
+								?s			: String
 							) : String {
 			
 			if( owner == null )
-				throw new nme.errors.Error('DisplayObjectContainer is not defined');
+				throw new nme.errors.Error('Owner is not defined');
 
-			var s = cMod + '|' + cView + ' | '+cController;
+			if( s == null )
+				s = cMod + '|' + cView + ' | '+cController;
 
 			//
 				#if debug
 					if( _hTriads.exists( s ) )
-						throw new nme.errors.Error( Std.format('Error : The Triad mod : $cMod | view : $cView | controller : $cController' ));
+						throw new nme.errors.Error( Std.format('Error : The Triad mod : $cMod | view : $cView | controller : $cController already exists' ));
 				#end
 
 			//
@@ -155,6 +157,16 @@ class FrontController{
 		* @public
 		* @return	void
 		*/
+		public function unRegisterState( s : String ) : Void {
+			_hStates.remove( s );						
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		public function register_dependency<T>( for_type : Class<T> , ?value : T , ?optional_name : String ) : Void {
 			_injector.register_dependency( for_type , value , optional_name );
 		}
@@ -190,6 +202,29 @@ class FrontController{
 			getApp( target_app_name ).variables = variables;
 		}
 
+		/**
+		* Force push triad in current state
+		* 
+		* @public
+		* @return	void
+		*/
+		public function push( sAppCode : String , ?under : String ) : Void {
+			
+			var a = _hStates.get( state ).copy( );
+			if( under != null && Lambda.has( a , under ) )
+				a.insert( Lambda.indexOf( a , under ) , sAppCode );
+			else
+				a.push( sAppCode );
+
+			var sTmp = registerState( a );
+			
+			_hStates.set( sTmp , a );
+			
+			this.state = sTmp;
+			//unRegisterState( sTmp );
+
+		}
+
 	// -------o protected
 	
 		/**
@@ -199,7 +234,7 @@ class FrontController{
 		* @return	void
 		*/
 		private function _setState( s : String ) : String{
-
+		
 			if( this.state == s || !_hStates.exists( s ) )
 				return s;
 
@@ -241,7 +276,7 @@ class FrontController{
 			
 			var tri : MVCTriad;
 			for( s in _aCurrent ){
-
+			
 				if( Lambda.has( a , s ) )
 					continue;
 

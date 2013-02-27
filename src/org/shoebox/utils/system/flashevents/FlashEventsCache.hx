@@ -64,7 +64,7 @@ class FlashEventsCache{
 		* @public
 		* @return	void
 		*/
-		public function get( chan : Int , target : EventDispatcher , sType : String , bBub : Bool = false ) : SignalEvent<Event>{
+		public function get<T:Event>( c : Class<T> , chan : Int , target : EventDispatcher , sType : String , bBub : Bool = false ) : SignalEvent<Event>{
 			
 			// Type
 				var hTypes : Hash<Array<CacheDesc>>;
