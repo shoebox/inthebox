@@ -104,6 +104,16 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
+		static public function centerX( d : DisplayObject ) : Void {
+			align( d , 0 , 0 , StageAlign.TOP );						
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
 		inline static public function alignIn( target : DisplayObject , container : DisplayObject ) : Void {
 			DisplayFuncs.align_in_container( target ,container );
 		}
@@ -114,24 +124,20 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
-		static public function rasterize( target : DisplayObject , ?bAuto_swap : Bool = true ) : Bitmap {
+		static public function rasterize( target : DisplayObject , ?bmp : BitmapData , ?iMarginX : Int , ?iMarginY : Int ) : BitmapData {
 			
-			var bmd = new BitmapData( Std.int( target.width ) , Std.int( target.height ) , true , 0 );
-				bmd.unlock( );
-				bmd.draw( target );
-				bmd.lock( );
+			var w = Std.int( target.width + iMarginX * 2 );
+			var h = Std.int( target.height + iMarginY * 2 );
 
+			var mat = new nme.geom.Matrix( );
+				mat.tx = iMarginX;
+				mat.ty = iMarginY;
 
-			var bmp = new Bitmap( bmd );
-			var parent : DisplayObjectContainer = target.parent;
-
-			if( bAuto_swap && parent != null ){
-				var index = parent.getChildIndex( target );
-				trace("index ::: "+index);
-
-				parent.removeChild( target );
-				parent.addChildAt( bmp , index );
-			}
+			if( bmp == null || bmp.width != ( target.width + iMarginX * 2 ) || bmp.height != ( target.height + iMarginY * 2 ) )
+				bmp = new BitmapData( w , h , true , 0 );
+				bmp.unlock( );				
+				bmp.draw( target , mat );
+				bmp.lock( );
 
 			return bmp;
 

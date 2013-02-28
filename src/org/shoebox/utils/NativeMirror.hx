@@ -210,13 +210,13 @@ class NativeMirror{
 				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
 
 				if( bJNI )
-					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+"\t\tMethod : "+sMethodName+"\t\tSignature : "+sJNI_signature);
+					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+" | Method : "+sMethodName+" | Signature : "+sJNI_signature);
 
 				sJNI_class_name = sFull_class_name.split('.').join('/');						
 
 			//CPP
 				if( bCPP )
-					Sys.println("[NativeMirror] CPP Class : "+sFull_class_name+"\t\tMethod : "+sMethodName);
+					Sys.println("[NativeMirror] CPP Class : "+sFull_class_name+" | Method : "+sMethodName);
 				
 				
 			//Return Expr

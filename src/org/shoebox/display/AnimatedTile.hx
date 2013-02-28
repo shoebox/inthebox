@@ -83,8 +83,8 @@ class AnimatedTile extends TileDesc{
 			onComplete = new Signal( );
 			_bInnvalidate = true;
 			_bPlaying     = true;
-			_fCenter      = { x : 0.0 , y : 0.0 };
-			_fPosition    = { x : 0.0 , y : 0.0 };
+			_fCenter      = new FPoint( );//{ x : 0.0 , y : 0.0 };
+			_fPosition    = new FPoint( );{ x : 0.0 , y : 0.0 };
 			_iCycleLen    = 0;
 			_iFrame       = 1;
 			_iTimeElapsed = 0;

@@ -313,7 +313,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 
 				//
 					if( !_hFrameSize.exists( sCat ) ){
-						_hFrameSize.set( sCat , { x : entry.sourceSize.w , y : entry.sourceSize.h } );
+						_hFrameSize.set( sCat , new IPosition( entry.sourceSize.w , entry.sourceSize.h ) );//{ x : entry.sourceSize.w , y : entry.sourceSize.h } );
 					}
 			}
 			
