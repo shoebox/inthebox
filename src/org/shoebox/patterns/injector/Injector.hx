@@ -36,9 +36,12 @@ class Injector{
 			if( inj == null )
 				inj = _add( type , sName );
 
-			if( inj.value == null )
-				inj.value = Type.createInstance( type , [ ] );
+			try{
+				if( inj.value == null )
+					inj.value = Type.createInstance( type , [ ] );
+			}catch( e : nme.errors.Error ){
 
+			}
 			return inj.value;
 		}	
 
