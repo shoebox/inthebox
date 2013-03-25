@@ -34,6 +34,7 @@ import nme.Lib;
 import nme.display.DisplayObject;
 import nme.display.StageAlign;
 import nme.geom.Rectangle;
+import nme.text.TextField;
 import org.shoebox.geom.AABB;
 
 /**
@@ -56,6 +57,12 @@ class DisplayFuncs{
 		inline static public function align_in_container( target : DisplayObject , container : DisplayObject ) : Void {
 			var bnds_container	= container.getRect( container );
 			var bnds_target		= target.getRect( container );
+
+			if( Std.is( target , TextField ) ){
+				bnds_target.width	= cast( target , TextField ).textWidth;
+				bnds_target.height	= cast( target , TextField ).textHeight;
+			}
+
 			target.x = Math.round(( bnds_container.width - bnds_target.width ) / 2);
 			target.y = Math.round(( bnds_container.height - bnds_target.height ) / 2);
 		}

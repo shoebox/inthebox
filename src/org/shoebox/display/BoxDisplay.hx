@@ -7,6 +7,7 @@ import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
 import nme.display.StageAlign;
 import nme.geom.Rectangle;
+import nme.text.TextField;
 
 import org.shoebox.geom.AABB;
 
@@ -153,6 +154,26 @@ class BoxDisplay{
 
 			return bmp;
 
+		}
+
+		/**
+		* 
+		* 
+		* @public
+		* @return	void
+		*/
+		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float ) : Void {
+
+			
+			var i = 0;
+			var f;
+			while( tf.textWidth > w || tf.textHeight > h ){
+				
+				f = tf.defaultTextFormat;
+				f.size --;				
+				tf.setTextFormat( tf.defaultTextFormat = f );
+				
+			}
 		}
 
 
