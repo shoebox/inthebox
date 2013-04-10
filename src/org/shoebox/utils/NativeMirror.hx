@@ -14,31 +14,31 @@ class NativeMirror{
 	private static inline var CPP_META : String = 'CPP';
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
+
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function build( ) : Array<Field> {
-			
+
 			//
 				var aPackage   = haxe.macro.Context.getLocalClass( ).get( ).pack;
 				var fields     = haxe.macro.Context.getBuildFields( );
-			
+
 			//
 				var bCPP           : Bool;
 				var bJNI           : Bool;
@@ -85,7 +85,7 @@ class NativeMirror{
 
 							sLibName = _get_string( meta.params[ 0 ] );
 						}
-					
+
 					//Method name
 						if( meta.params[ 1 ] == null )
 							sMethodName = field.name;
@@ -94,13 +94,13 @@ class NativeMirror{
 
 					//New class variable ( used for JNI / CPP  method instance )
 						var sNewVar_name : String = '_native_'+field.name;
-						var newField : Field = { 
-													name : sNewVar_name ,  
-													doc : null, 
-													meta : [], 
-													access : [APublic,AStatic], 
-													kind : FVar(TPath({ pack : [], name : "Dynamic", params : [], sub : null }),null), 
-													pos : haxe.macro.Context.currentPos() 
+						var newField : Field = {
+													name : sNewVar_name ,
+													doc : null,
+													meta : [],
+													access : [APublic,AStatic],
+													kind : FVar(TPath({ pack : [], name : "Dynamic", params : [], sub : null }),null),
+													pos : haxe.macro.Context.currentPos()
 												};
 						fields.push( newField );
 
@@ -109,16 +109,16 @@ class NativeMirror{
 						switch( field.kind ){
 
 							case FFun( f ):
-								f.expr = _build_func( 
-														sNewVar_name , 
-														bJNI ? true : false , 
-														bCPP ? true : false , 
-														f , 
-														bCPP ? sLibName : sFullClassName , 
-														sMethodName, 
+								f.expr = _build_func(
+														sNewVar_name ,
+														bJNI ? true : false ,
+														bCPP ? true : false ,
+														f ,
+														bCPP ? sLibName : sFullClassName ,
+														sMethodName,
 														b ? true : false
 													);
-								
+
 							default:
 
 						}
@@ -128,25 +128,25 @@ class NativeMirror{
 			return fields;
 		}
 
-		
+
 	// -------o protected
-	
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		static inline private function _build_func( 
-														field_name       : String , 
-														bJNI             : Bool , 
-														bCPP             : Bool , 
-														f                : Function , 
-														sFull_class_name : String , 
-														sMethodName      : String , 
-														bStatic          : Bool 
+		static inline private function _build_func(
+														field_name       : String ,
+														bJNI             : Bool ,
+														bCPP             : Bool ,
+														f                : Function ,
+														sFull_class_name : String ,
+														sMethodName      : String ,
+														bStatic          : Bool
 													) : Expr{
-			
+
 			#if verbose
 			Sys.println("[NativeMirror] on "+sFull_class_name+" - Method : "+field_name);
 			#end
@@ -159,7 +159,7 @@ class NativeMirror{
 				//Static
 				var sJNI_signature  : String = "";
 				var sJNI_class_name : String = "";
-				
+
 				//Arguments signature
 
 				sJNI_signature = '(';
@@ -178,7 +178,7 @@ class NativeMirror{
 							case TPath( t ):
 								oType = t;
 								sTmp  = t.name;
-							
+
 							default:
 						}
 						sJNI_signature += switch( sTmp ){
@@ -195,36 +195,39 @@ class NativeMirror{
 							case 'Void':
 								'V';
 
+							case 'HaxeObject':
+								"Lorg/haxe/nme/HaxeObject;";
+
 							default:
 								switch( Context.getType( oType.name ) ){
 
-									case TInst( t , p ) : 
+									case TInst( t , p ) :
 										'L'+t.toString( ).split('.').join('/')+';';
 
-									default : null;					
+									default : null;
 								}
 
 						}
-						
-				}
-				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
 
+				}
+
+				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
 				if( bJNI )
 					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+" | Method : "+sMethodName+" | Signature : "+sJNI_signature);
 
-				sJNI_class_name = sFull_class_name.split('.').join('/');						
+				sJNI_class_name = sFull_class_name.split('.').join('/');
 
 			//CPP
 				if( bCPP )
 					Sys.println("[NativeMirror] CPP Class : "+sFull_class_name+" | Method : "+sMethodName);
-				
-				
+
+
 			//Return Expr
-				
+
 				var eRet = macro "";
 				var sRet = "";
 				var sType_name : String = switch( f.ret ){
-				
+
 									case TPath( t ):
 										sRet = t.name;
 
@@ -235,15 +238,15 @@ class NativeMirror{
 
 					case "null":
 					case "Void":
-						
+
 					default:
 						//TODO : Temporary should change the return type only for non basic return types
-						f.ret = TPath({ name : "Dynamic" , pack : [], params : [], sub : null }); //Switching the return type to Dynamic 
+						f.ret = TPath({ name : "Dynamic" , pack : [], params : [], sub : null }); //Switching the return type to Dynamic
 
 						//Final return Expr
-						eRet = macro return res;					
+						eRet = macro return res;
 				}
-			
+
 			//Call Expr
 				var eCall : Expr = macro "";
 				var count = f.args.length;
@@ -301,7 +304,7 @@ class NativeMirror{
 					//Method call result
 						var res : Dynamic = null;
 
-					//For CPP		
+					//For CPP
 						if( $(bCPP) ){
 							 Sys.println('[CPP] ------------------------------------------------');
 							 Sys.println('\tLIBRARY 		: '+$(sFull_class_name));
@@ -320,11 +323,11 @@ class NativeMirror{
 							if( $field == null )
 								throw new nme.errors.Error("Method creation failed");
 
-							//res = Reflect.callMethod( null , $field , aArgs );							
+							//res = Reflect.callMethod( null , $field , aArgs );
 						}
-					
-					//For JNI 
-						
+
+					//For JNI
+
 						if( $(bJNI) ){
 							#if android
 							if( $field == null ){
@@ -332,7 +335,7 @@ class NativeMirror{
 									$field = nme.JNI.createStaticMethod( $(sJNI_class_name) , $(sMethodName) , $(sJNI_signature) );
 								else
 									$field = nme.JNI.createMemberMethod( $(sJNI_class_name) , $(sMethodName) , $(sJNI_signature) );
-							
+
 								if( $field == null )
 									throw new nme.errors.Error("Error creation failed");
 
@@ -348,7 +351,7 @@ class NativeMirror{
 							#end
 							//res = Reflect.callMethod( null , $field , aArgs );
 						}
-						
+
 
 					//
 						if( $field != null ){
@@ -357,15 +360,15 @@ class NativeMirror{
 
 
 					//Return Expr
-						$eRet;					
+						$eRet;
 				};
-			
-	    	
-		}	
+
+
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -383,8 +386,8 @@ class NativeMirror{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -411,21 +414,21 @@ class NativeMirror{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		static private function _get_package_return_type( t : ComplexType ) : String{
-			
+			//trace("_get_package_return_type ::: "+t);
 			var sType_name : String = switch( t ){
-				
+
 									case TPath( t ):
 										t.name;
 
 									default:
 								}
-			
+
 			return switch( sType_name ){
 
 				case 'Void':
@@ -451,19 +454,22 @@ class NativeMirror{
 
 					}
 			}
-			
+
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		inline static private function _jni_translate_type( s : String ) : String{
-			
+
 			var sRes = '';
 			switch( s ){
+
+				case 'HaxeObject':
+					sRes = "Lorg/haxe/nme/HaxeObject;";
 
 				case 'Int':
 					sRes = 'I';
@@ -485,7 +491,7 @@ class NativeMirror{
 		}
 
 	// -------o misc
-		
+
 		static function rv(variable_name:String) : Expr{
 			 return { expr: EConst(CIdent(variable_name)), pos: Context.currentPos() };
 		}
