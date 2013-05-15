@@ -34,10 +34,13 @@ class NativeMirror{
 		* @return	void
 		*/
 		static public function build( ) : Array<Field> {
-
 			//
 				var aPackage   = haxe.macro.Context.getLocalClass( ).get( ).pack;
 				var fields     = haxe.macro.Context.getBuildFields( );
+
+			#if flash
+			return fields;
+			#end
 
 			//
 				var bCPP           : Bool;
@@ -70,7 +73,7 @@ class NativeMirror{
 
 					//No meta
 						if( !bJNI && !bCPP )
-							continue;
+							continue	;
 
 					//Class Name
 						if( bJNI ){
@@ -306,9 +309,11 @@ class NativeMirror{
 
 					//For CPP
 						if( $(bCPP) ){
-							 Sys.println('[CPP] ------------------------------------------------');
-							 Sys.println('\tLIBRARY 		: '+$(sFull_class_name));
-							 Sys.println('\tMETHOD 		: '+$(sMethod_name));
+							#if verbose
+							//Sys.println('[CPP] ------------------------------------------------');
+							//Sys.println('\tLIBRARY 		: '+$(sFull_class_name));
+							//Sys.println('\tMETHOD 		: '+$(sMethod_name));
+							#end
 							if( $field == null ){
 								#if verbose
 								Sys.println('CPP Method not yet created, lets create it...');

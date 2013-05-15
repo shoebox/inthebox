@@ -24,16 +24,16 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 	private var _bmpRef : BitmapData;
 	private var _hCache         : Hash<BitmapData>;
 	private var _hIds           : Hash<Int>;
-	private var _hFramesCenters : Hash<Point>;	
+	private var _hFramesCenters : Hash<Point>;
 	private static inline var POINT : Point = new Point( );
 	#end
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( bmp : BitmapData ) {
@@ -51,25 +51,25 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			#end
 
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function dispose( ) : Void {
 			super.dispose( );
-			
+
 			_hCustomCenter = null;
 			_hCyclesFrames = null;
 			_hCyclesLen    = null;
 			_hFrameSize    = null;
 
 			#if flash
-			
+
 				if( _hCache != null ){
 					for( bmp in _hCache ){
 						if( bmp != null )
@@ -87,8 +87,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		#if flash
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -105,19 +105,19 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 				var frameId = _hIds.get( s );
 				var rec = getRectById( frameId );
 				var center = getCenter( frameId );
-			
+
 			//
 				bmp = new BitmapData( Std.int( rec.width ) , Std.int( rec.height ) , true );
 				bmp.copyPixels( _bmpRef , rec , POINT );
 				_hCache.set( s , bmp );
-			
+
 			return bmp;
 		}
 
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -128,8 +128,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		#end
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -138,8 +138,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -148,8 +148,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -158,28 +158,28 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function getCycleLen( sCycle : String ) : Int {
-			return _hCyclesLen.get( sCycle );						
+			return _hCyclesLen.get( sCycle );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function getSubCycleLen( sCat : String , sCycle : String ) : Int {
-			return _hCyclesLen.get( sCat+'|'+sCycle );					
+			return _hCyclesLen.get( sCat+'|'+sCycle );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -188,8 +188,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -206,7 +206,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			var rec    : Rectangle = new Rectangle( );
 			var pt     : Point = new Point( fCenterX , fCenterY );
 			for( s in f.nodes.SubTexture ){
-				
+
 				//
 					a      = s.att.name.split('/');
 					iFrame = Std.parseInt( a[ 1 ] );
@@ -215,7 +215,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 				//
 					if( _hCyclesLen.exists( sCycle ) )
 						iLen = _hCyclesLen.get( sCycle );
-					else 
+					else
 						iLen = 0;
 						iLen++;
 
@@ -226,7 +226,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 					rec.y      = Std.parseFloat( s.att.y ) + fDecalY;
 					rec.width  = Std.parseFloat( s.att.width );
 					rec.height = Std.parseFloat( s.att.height );
-					
+
 				//
 					if( _hCyclesFrames.exists( sCycle ) )
 						aIds = _hCyclesFrames.get( sCycle );
@@ -237,27 +237,27 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 						aIds[ iFrame ] = addByName( s.att.name , rec.clone( ) , _hCustomCenter.get( sCycle ) );
 					else
 						aIds[ iFrame ] = addByName( s.att.name , rec.clone( ) , pt );
-					
+
 					_hCyclesFrames.set( sCycle , aIds );
 			}
 
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function parseJson( s : String , fDecalX : Float = 0.0 , fDecalY : Float = 0.0 ) : Void {
-			
+
 			var desc = haxe.Json.parse( s );
 			var fields = Reflect.fields ( desc.frames );
 			var entry : JSONEntry;
 
-			
+
 			var r1 = ~/([^\/]+)\/([^\/]+)\/([^.]+).([^\/]+)/;
-			
+
 			var aIds   : Array<Int>;
 			var iFrame : Int = 0;
 			var iLen    : Int;
@@ -270,8 +270,8 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 			for( s in fields ){
 				entry = Reflect.field ( desc.frames , s );
 
-				// Parsing file name & directory to cat / subcat 
-					
+				// Parsing file name & directory to cat / subcat
+
 					if( r1.match( s ) ){
 						sCat = r1.matched( 1 );
 						sSub = r1.matched( 2 );
@@ -282,7 +282,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 				// Cycle len inc
 					if( _hCyclesLen.exists( sCycle ) )
 						iLen = _hCyclesLen.get( sCycle );
-					else 
+					else
 						iLen = 0;
 						iLen++;
 					_hCyclesLen.set( sCycle , iLen );
@@ -300,7 +300,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 						aIds = new Array<Int>( );
 
 				//
-					var ptCenter : Point = new Point( 
+					var ptCenter : Point = new Point(
 															entry.sourceSize.w / 2 - entry.spriteSourceSize.x,
 															entry.sourceSize.h / 2 - entry.spriteSourceSize.y
 															) ;
@@ -316,13 +316,13 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 						_hFrameSize.set( sCat , new IPosition( entry.sourceSize.w , entry.sourceSize.h ) );//{ x : entry.sourceSize.w , y : entry.sourceSize.h } );
 					}
 			}
-			
-			
+
+
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -331,19 +331,19 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _getCode( sCat : String , sSubCat : String , frameId : Int ) : String{
 			return sCat+'|'+sSubCat+'|'+frameId;
 		}
-		
+
 	// -------o protected
-	
+
 	// -------o misc
-	
+
 }
 typedef JSONEntry={
 	public var frame : JSONRec;

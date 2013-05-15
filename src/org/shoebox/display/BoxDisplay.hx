@@ -7,6 +7,7 @@ import nme.display.DisplayObject;
 import nme.display.DisplayObjectContainer;
 import nme.display.StageAlign;
 import nme.geom.Rectangle;
+import nme.Lib;
 import nme.text.TextField;
 
 import org.shoebox.geom.AABB;
@@ -19,32 +20,32 @@ import org.shoebox.geom.AABB;
 class BoxDisplay{
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
+
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function haxeStage( d : DisplayObject ) : nme.display.Stage {
-			return nme.Lib.current.stage;		
+			return nme.Lib.current.stage;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -53,18 +54,18 @@ class BoxDisplay{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function getStageH( d : DisplayObject ) : Int {
-			return nme.Lib.current.stage.stageHeight;						
+			return nme.Lib.current.stage.stageHeight;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -80,38 +81,88 @@ class BoxDisplay{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function distribute( d : DisplayObjectContainer , iMargin : Int , ?bHor : Bool ) : Void {
-			DisplayFuncs.distribute_childs( d , iMargin , bHor );						
+			DisplayFuncs.distribute_childs( d , iMargin , bHor );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
-		static public function align( d : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign , ?bounds : AABB ) : Void {
-			org.shoebox.display.DisplayFuncs.align( d , bounds , where , dx , dy );		
+		static public function align( o : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign , ?bounds : AABB ) : Void {
+			var aabb = new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
+
+			var centerX : Float = aabb.min.x + ( aabb.max.x - aabb.min.x - o.getRect( Lib.current.stage ).width ) / 2;
+			var centerY : Float = aabb.min.y + ( aabb.max.y - aabb.min.y - o.getRect( Lib.current.stage ).height ) / 2;
+
+			if( where == null ){
+				o.x = centerX + dx;
+				o.y = centerY + dy;
+				return;
+			}
+
+			switch( where ){
+
+				case StageAlign.TOP:
+					o.x = centerX;
+					o.y = aabb.min.y;
+
+				case StageAlign.LEFT:
+					o.x = aabb.min.x;
+					o.y = centerY;
+
+				case StageAlign.RIGHT:
+					o.x = aabb.max.x - o.width;
+					o.y = centerY;
+
+				case StageAlign.BOTTOM:
+					o.x = centerX;
+					o.y = aabb.max.y - o.height;
+
+				case StageAlign.TOP_LEFT:
+					o.x = aabb.min.x;
+					o.y = aabb.min.y;
+
+				case StageAlign.BOTTOM_LEFT:
+					o.x = aabb.min.x;
+					o.y = aabb.max.y - o.height;
+
+				case StageAlign.TOP_RIGHT:
+					o.x = aabb.max.x - o.width;
+					o.y = aabb.min.y;
+
+				case StageAlign.BOTTOM_RIGHT:
+					o.x = aabb.max.x - o.width;
+					o.y = aabb.max.y - o.height;
+			}
+
+			o.x = Math.round( o.x );
+			o.y = Math.round( o.y );
+
+			o.x += dx;
+			o.y += dy;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function centerX( d : DisplayObject ) : Void {
-			align( d , 0 , 0 , StageAlign.TOP );						
+			align( d , 0 , 0 , StageAlign.TOP );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -120,8 +171,8 @@ class BoxDisplay{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -132,13 +183,13 @@ class BoxDisplay{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function rasterize( target : DisplayObject , ?bmp : BitmapData , ?iMarginX : Int , ?iMarginY : Int ) : BitmapData {
-			
+
 			var w = Std.int( target.width + iMarginX * 2 );
 			var h = Std.int( target.height + iMarginY * 2 );
 
@@ -148,7 +199,7 @@ class BoxDisplay{
 
 			if( bmp == null || bmp.width != ( target.width + iMarginX * 2 ) || bmp.height != ( target.height + iMarginY * 2 ) )
 				bmp = new BitmapData( w , h , true , 0 );
-				bmp.unlock( );				
+				bmp.unlock( );
 				bmp.draw( target , mat );
 				bmp.lock( );
 
@@ -157,30 +208,30 @@ class BoxDisplay{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float ) : Void {
 
-			
+
 			var i = 0;
 			var f;
 			while( tf.textWidth > w || tf.textHeight > h ){
-				
+
 				f = tf.defaultTextFormat;
-				f.size --;				
+				f.size --;
 				tf.setTextFormat( tf.defaultTextFormat = f );
-				
+
 			}
 		}
 
 
 	// -------o protected
-	
-		
+
+
 
 	// -------o misc
-	
+
 }

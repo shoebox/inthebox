@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -45,12 +45,12 @@ import org.shoebox.geom.AABB;
 class DisplayFuncs{
 
 	// -------o constructor
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -68,36 +68,47 @@ class DisplayFuncs{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function distribute_childs( target : DisplayObjectContainer , iMargin : Int = 0 , bHor : Bool = false ) : Void {
-			
+
 			var l = target.numChildren;
 			var inc = 0;
+			var w : Float;
+			var h : Float;
 			for( i in 0...l ){
 				var child = target.getChildAt( i );
+
+				if( Std.is( child , TextField ) ){
+					w = cast( child , TextField ).textWidth;
+					h = cast( child , TextField ).textHeight;
+				}else{
+					w = child.width;
+					h = child.height;
+				}
+
 				if( bHor ){
 					child.x = inc;
-					inc += Math.round( child.width + iMargin );
+					inc += Math.round( w + iMargin );
 				}else{
 					child.y = inc;
-					inc += Math.round( child.height + iMargin );
+					inc += Math.round( h + iMargin );
 				}
 			}
 
 		}
 
 		/**
-		* 
 		*
-		* @param 
+		*
+		* @param
 		* @return
 		*/
 		static public function align( o : DisplayObject , aabb : AABB = null , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
-			
+
 			if( aabb == null )
 				aabb = new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
 
@@ -144,18 +155,18 @@ class DisplayFuncs{
 					o.x = aabb.max.x - o.width;
 					o.y = aabb.max.y - o.height;
 			}
-			
+
 			o.x = Math.round( o.x );
 			o.y = Math.round( o.y );
 
 			o.x += dx;
 			o.y += dy;
-			
+
 		}
-	
+
 	// -------o protected
 
 	// -------o misc
-	
-	
+
+
 }

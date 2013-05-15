@@ -31,31 +31,31 @@ class HTTPService extends URLLoader , implements IDispose{
 
 	private var _oVariables	: URLVariables;
 	private var _method		: URLRequestMethod;
-	
+
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( ?method : Method , ?format : URLLoaderDataFormat ) {
 			super( );
 			this.method		= method == null ? GET : method;
-			this.dataFormat	= format == null ? TEXT : format;			
+			this.dataFormat	= format == null ? TEXT : format;
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function load( req : URLRequest ) : Void {
-			
+
 			try{
 				close( );
 			}catch( e : nme.errors.Error ){
@@ -74,7 +74,7 @@ class HTTPService extends URLLoader , implements IDispose{
 			addEventListener( IOErrorEvent.NETWORK_ERROR 	, _onIoError	, false );
 			addEventListener( IOErrorEvent.VERIFY_ERROR 	, _onIoError	, false );
 			#end
-			
+
 			if( !hasEventListener( HTTPStatusEvent.HTTP_STATUS ) )
 				addEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );
 
@@ -86,13 +86,13 @@ class HTTPService extends URLLoader , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			
+
 			onDatas = null;
 			onBinaryDatas = null;
 
@@ -101,7 +101,7 @@ class HTTPService extends URLLoader , implements IDispose{
 			}catch( e : nme.errors.Error ){
 
 			}
-			
+
 			removeEventListener( Event.COMPLETE 				, _onDatas 		, false );
 			#if flash
 			removeEventListener( IOErrorEvent.IO_ERROR 			, _onIoError	, false );
@@ -109,19 +109,19 @@ class HTTPService extends URLLoader , implements IDispose{
 			removeEventListener( IOErrorEvent.NETWORK_ERROR 	, _onIoError	, false );
 			removeEventListener( IOErrorEvent.VERIFY_ERROR 		, _onIoError	, false );
 			#end
-			removeEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );		
+			removeEventListener( HTTPStatusEvent.HTTP_STATUS 	, _onStatus  	, false );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @param name : Variable name ( String )
 		* @param value : Variable value ( Dynamic )
 		* @return	void
 		*/
 		public function addVariable( name : String , value : Dynamic ) : Void {
-			
+
 			if( _oVariables == null )
 				_oVariables = new URLVariables( );
 
@@ -129,8 +129,8 @@ class HTTPService extends URLLoader , implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -139,25 +139,25 @@ class HTTPService extends URLLoader , implements IDispose{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _onDatas( e : Event ) : Void{
-			
+
 			if( dataFormat == BINARY )
 				_onBinaryDatas( data );
-			else
+			else if( onDatas != null )
 				onDatas( data );
 
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -168,8 +168,8 @@ class HTTPService extends URLLoader , implements IDispose{
 		#if flash
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -183,8 +183,8 @@ class HTTPService extends URLLoader , implements IDispose{
 		#end
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
