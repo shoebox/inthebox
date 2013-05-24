@@ -6,3 +6,6 @@
 [Ss]rc_test/
 *.sublime-project
 *.sublime-workspace
+build.nmml
+*.gitignore
+*.nmml
