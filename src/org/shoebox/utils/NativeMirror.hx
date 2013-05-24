@@ -109,6 +109,7 @@ class NativeMirror{
 
 					//Creating the function expr
 						var b : Bool = _is_static_method( field.access ) ;
+
 						switch( field.kind ){
 
 							case FFun( f ):
@@ -201,6 +202,27 @@ class NativeMirror{
 							case 'HaxeObject':
 								"Lorg/haxe/nme/HaxeObject;";
 
+							case 'Array':
+								//trace( oType );
+
+								"["+switch( oType.params[0] ){
+
+									case TPExpr( e ):
+										"";
+
+									case TPType( t ):
+										//trace("TPType ::: "+t);
+
+										switch( t ){
+
+											case TPath( p ):
+												_jni_translate_type( p.name );
+
+											default:
+										}
+								}
+
+
 							default:
 								switch( Context.getType( oType.name ) ){
 
@@ -213,7 +235,7 @@ class NativeMirror{
 						}
 
 				}
-
+				//trace( sJNI_signature );
 				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
 				if( bJNI )
 					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+" | Method : "+sMethodName+" | Signature : "+sJNI_signature);
@@ -319,6 +341,7 @@ class NativeMirror{
 								Sys.println('CPP Method not yet created, lets create it...');
 								#end
 								$field = cpp.Lib.load( $(sFull_class_name) , $(sMethod_name) , $(count) );
+
 							}else{
 								#if verbose
 								Sys.println('>> CPP Method already created');
