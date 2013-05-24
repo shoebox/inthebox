@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -57,11 +57,11 @@ class GestureBase extends AbstractCommand , implements ICommand{
 	private var _hPoints  : IntHash<TouchPoint2>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
@@ -69,56 +69,56 @@ class GestureBase extends AbstractCommand , implements ICommand{
 			_hPoints = new IntHash<TouchPoint2>( );
 			MIN_MOVE = 50 / 254 * Capabilities.screenDPI;
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function onExecute( ) : Void {
-			
+
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function onCancel( ) : Void {
-			
-		}		
+
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function addTouchPoint( id : Int , fx : Float , fy : Float , time : Int ) : Void {
 			_hPoints.set( id , { id : id , x : fx , y : fy , time : time } );
 			_iCount++;
-		}	
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function updateTouchPoint( id : Int , fx : Float , fy : Float , time : Int ) : Void {
 			var pt = _hPoints.get( id );
 				pt.x = fx;
-				pt.y = fy;			
+				pt.y = fy;
 				pt.time = time;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -128,13 +128,13 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function updateCenter( ) : FPoint {
-			
+
 			_fCentral = { x : 0.0 , y : 0.0 };
 
 			var i : Int = 0;
@@ -151,8 +151,8 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		#if debug
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -168,8 +168,8 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -181,8 +181,8 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -198,15 +198,20 @@ class GestureBase extends AbstractCommand , implements ICommand{
 			gDebug.lineTo( _fCentral.x + 10 , _fCentral.y );
 			gDebug.moveTo( _fCentral.x , _fCentral.y - 10 );
 			gDebug.lineTo( _fCentral.x , _fCentral.y + 10 );
-		}		
+		}
 
 		#end
 
 
 	// -------o protected
-	
+
 	// -------o misc
-	
+
+}
+
+typedef FPoint={
+	public var x : Float;
+	public var y : Float;
 }
 
 typedef TouchPoint2={
@@ -214,5 +219,4 @@ typedef TouchPoint2={
 	public var id   : Int;
 	public var time : Int;
 }
-
 

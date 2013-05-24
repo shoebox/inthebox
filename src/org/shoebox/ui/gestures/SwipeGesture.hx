@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -66,11 +66,11 @@ class SwipeGesture extends GestureBase , implements ICommand{
 	private var _fPrevCenter : FPoint;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( target : InteractiveObject ) {
@@ -79,18 +79,18 @@ class SwipeGesture extends GestureBase , implements ICommand{
 
 			mode     = BOTH;
 			onSwipe  = new Signal2<Float,Float>( );
-			
+
 			_oTarget     = target;
-			_fPrevCenter = { x : 0.0 , y : 0.0 };
-			_fDiff       = { x : 0.0 , y : 0.0 };
-			_fVel        = { x : 0.0 , y : 0.0 };
+			_fPrevCenter = new FPoint( );//{ x : 0.0 , y : 0.0 };
+			_fDiff       = new FPoint( );//{ x : 0.0 , y : 0.0 };
+			_fVel        = new FPoint( );//{ x : 0.0 , y : 0.0 };
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -110,8 +110,8 @@ class SwipeGesture extends GestureBase , implements ICommand{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -119,17 +119,17 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			#if mobile
 				_oTarget.removeEventListener( TouchEvent.TOUCH_BEGIN , _onTouchBegin , false );
 				_oTarget.removeEventListener( TouchEvent.TOUCH_MOVE , _onTouchMove , false );
-				_oTarget.removeEventListener( TouchEvent.TOUCH_END , _onTouchEnd , false );		
+				_oTarget.removeEventListener( TouchEvent.TOUCH_END , _onTouchEnd , false );
 			#end
-		}	
+		}
 
 	// -------o protected
-		
+
 		#if mobile
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -140,17 +140,17 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			_bNeedChange = false;
 			trace('_onTouchBegin ::: '+e.touchPointID );
 			addTouchPoint( e.touchPointID , e.stageX , e.stageY , Lib.getTimer( ) );
-			_testActive( );			
+			_testActive( );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _onTouchMove( e : TouchEvent ) : Void{
-			
+
 			if( _bNeedChange )
 				return;
 			var prev = _hPoints.get( e.touchPointID );
@@ -163,7 +163,7 @@ class SwipeGesture extends GestureBase , implements ICommand{
 
 				//Update coordinate of the touchPointId
 					updateTouchPoint( e.touchPointID , e.stageX , e.stageY , time );
-				
+
 				// Update Central Point
 					var bOn : Bool = _fCentral != null;
 					if( bOn ){
@@ -185,10 +185,10 @@ class SwipeGesture extends GestureBase , implements ICommand{
 
 							case BOTH:
 								b = BoxMath.length( _fVel.x , _fVel.y ) >= minVelocity;
-							
+
 							case X:
 								b = ( _fVel.x * _fVel.x ) >= minVelocity;
-							
+
 							case Y:
 								b = ( _fVel.y * _fVel.y ) >= minVelocity;
 						}
@@ -207,12 +207,12 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			_debug( );
 			_debug_drawCenter( );
 			#end
-			
+
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -220,15 +220,15 @@ class SwipeGesture extends GestureBase , implements ICommand{
 			#if debug
 			_clearDebug( );
 			#end
-			
+
 			_bNeedChange = false;
 			removeTouchPoint( e.touchPointID );
 			_testActive( );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -240,9 +240,9 @@ class SwipeGesture extends GestureBase , implements ICommand{
 		}
 
 		#end
-		
+
 	// -------o misc
-	
+
 }
 enum Mode{
 	BOTH;
