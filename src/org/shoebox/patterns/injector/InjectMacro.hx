@@ -12,36 +12,36 @@ import haxe.macro.Type;
 class InjectMacro{
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
+
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function build( ) : Array<Field> {
-			
+
 			var a = haxe.macro.Context.getBuildFields( );
 			var b = false;
 			var meta;
 
 			var aNew : Array<Field> = [ ];
 			var aRem : Array<Field> = [ ];
-
+			var bStatic : Bool;
 			for( f in a ){
-				
+
 				//Meta ?
 					b = false;
 					for( m in f.meta ){
@@ -52,10 +52,13 @@ class InjectMacro{
 						}
 					}
 
+					//trace( f );
+					bStatic = Lambda.has( f.access , AStatic );
+
 				//Pas de meta
 					if( !b )
 						continue;
-					
+
 					#if verbose
 					Sys.println("[Inject] Variable : "+_getFull_class_name( haxe.macro.Context.getLocalClass( ).get( ) )+"\t\t"+f.name);
 					#end
@@ -63,9 +66,9 @@ class InjectMacro{
 				//MetaDatas Expr
 					var bRW : Bool = false;
 					var sOptionalName : String = null;
-					
+
 					for( p in meta.params ){
-						
+
 						switch( p.expr ){
 
 							case EConst( const ):
@@ -86,7 +89,7 @@ class InjectMacro{
 						}
 
 					}
-	
+
 				//New Methods names
 					var sGet : String = "_injector_get_"+f.name;
 					var sSet : String = "_injector_set_"+f.name;
@@ -109,75 +112,83 @@ class InjectMacro{
 												default:
 													switch( Context.getType( sKind ) ){
 
-													case TInst( t , p ) : 
+													case TInst( t , p ) :
 															switch( t ){
 
 																default:
 																	t.get( ).module;
 															}
-															
-														default : 
+
+														default :
 															null;
 													}
 										}
 
 					//var test : Expr = { expr:EConst(CIdent(sKind)), pos:Context.currentPos( ) };
-				
+
 				//The new Getter func
 					var funcGet : Function = { args : [] , expr : null , params : [] , ret : oType };
-						funcGet.expr = macro { 
-												return org.shoebox.patterns.injector.Injector.getInstance( ).get( 
+						funcGet.expr = macro {
+												return org.shoebox.patterns.injector.Injector.getInstance( ).get(
 																															Type.resolveClass( $(sModule) ),
-																															$(sOptionalName) 
-																														); 
+																															$(sOptionalName)
+																														);
 											};
 
-					var fGet : Field = { 
-											name : sGet ,  
-											doc : null, 
-											meta : [], 
-											access : [APublic], 
+					var fGet : Field = {
+											name : sGet ,
+											doc : null,
+											meta : [],
+											access : [APublic],
 											kind : FFun( funcGet ),
-											pos : haxe.macro.Context.currentPos() 
+											pos : haxe.macro.Context.currentPos()
 										};
+					if( bStatic )
+						fGet.access.push( AStatic );
 					aNew.push( fGet );
-					
+
 				//The new Setter func
 					if( bRW ){
-						
+
 						var arg : FunctionArg = { name : "arg", type : oType , opt : false, value : null };
 						var rArg = rv("arg");
-						
+
 						var funcSet : Function = { args : [ arg ] , expr : null , params : [] , ret : oType };
-							funcSet.expr = macro { 
-													return org.shoebox.patterns.injector.Injector.getInstance( ).set( 
+							funcSet.expr = macro {
+													return org.shoebox.patterns.injector.Injector.getInstance( ).set(
 																																$rArg ,
 																																Type.resolveClass( $(sModule) ),
-																																$(sOptionalName) 
-																															); 	
+																																$(sOptionalName)
+																															);
 												};
 
-						var fSets : Field = { 
-												name : sSet ,  
-												doc : null, 
-												meta : [], 
-												access : [APublic], 
+						var fSets : Field = {
+												name : sSet ,
+												doc : null,
+												meta : [],
+												access : [APublic],
 												kind : FFun( funcSet ),
-												pos : haxe.macro.Context.currentPos() 
+												pos : haxe.macro.Context.currentPos()
 											};
+
+						if( bStatic )
+							fSets.access.push( AStatic );
 						aNew.push( fSets );
-						
-						
+
+
 					}else
 						sSet = "never";
 
 
-				//		
+				//
 					if( sKind == null )
 						continue;
 					aRem.push( f );
-					aNew.push( _inject_field( f , sKind+"" , sGet+"" , sSet+"" ));
-				
+					var f = _inject_field( f , sKind+"" , sGet+"" , sSet+"" );
+					if( bStatic )
+						f.access.push( AStatic );
+					aNew.push( f );
+
 			}
 			for( f in aNew )
 				a.push( f );
@@ -190,10 +201,10 @@ class InjectMacro{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -212,13 +223,13 @@ class InjectMacro{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		static private function _getType( t : FieldType ) : String{
-			
+
 			var s = switch( t ){
 
 				case FFun( f ):
@@ -236,12 +247,12 @@ class InjectMacro{
 					}
 
 			}
-			return s;			
+			return s;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -251,21 +262,21 @@ class InjectMacro{
 
 			var type : FieldType = FProp( sFieldGet , sFieldSet , TPath({ name : sKind, pack : [], params : [], sub : null }) );
 
-			var newField : Field = { 	name : f.name ,  
-										doc : null, 
-										meta : [], 
-										access : [APublic], 
-										kind : type, 
-										pos : haxe.macro.Context.currentPos() 
+			var newField : Field = { 	name : f.name ,
+										doc : null,
+										meta : [],
+										access : [APublic],
+										kind : type,
+										pos : haxe.macro.Context.currentPos()
 									};
-									
+
 
 			return newField;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -274,8 +285,8 @@ class InjectMacro{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -284,5 +295,5 @@ class InjectMacro{
 		}
 
 	// -------o misc
-	
+
 }
