@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -43,28 +43,28 @@ class ASignal<T>{
 	private var _oQueue : PriorityQueue<SignalListener<T>>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( ) {
 			_oQueue = new PriorityQueue<SignalListener<T>>( );
 			enabled = true;
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function connect( f : T , iPrio : Int = 0 , iCount : Int = -1 ) : Void {
-			
+
 			if( _exist( f , iPrio ) )
 				return;
 
@@ -73,13 +73,13 @@ class ASignal<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function disconnect( f : T , prio : Int = 0 ) : Void {
-		
+
 			var content = _oQueue.getContent( );
 			for( o in content ){
 
@@ -93,8 +93,8 @@ class ASignal<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -103,8 +103,8 @@ class ASignal<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -113,20 +113,20 @@ class ASignal<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function exists( f : T , prio : Int = 0 ) : Bool {
-			return _exist( f , prio );		
+			return _exist( f , prio );
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -145,8 +145,8 @@ class ASignal<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -158,12 +158,12 @@ class ASignal<T>{
 
 			if( l.iCount == 0 )
 				disconnect( l.fListener , l.iPrio );
-			
-		}	
+
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -173,7 +173,7 @@ class ASignal<T>{
 		}
 
 	// -------o misc
-	
+
 }
 
 
@@ -189,11 +189,11 @@ class SignalListener<T>{
 	public var iPrio     : Int;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( f : T , iCount : Int , iPrio : Int ) {
@@ -201,15 +201,15 @@ class SignalListener<T>{
 			this.iCount    = iCount;
 			this.iPrio     = iPrio;
 		}
-	
+
 	// -------o public
-				
-				
+
+
 
 	// -------o protected
-	
-		
+
+
 
 	// -------o misc
-	
+
 }

@@ -56,10 +56,10 @@ class BoxTextField{
 			if ( sAutoSize == null )
 				sAutoSize = TextFieldAutoSize.LEFT;
 
-			tf.selectable 	= bSelectable;
-			tf.multiline 	= bMultiLine;
-			tf.wordWrap 	= bWordWrap;
-			tf.autoSize		= sAutoSize;
+			tf.selectable	= bSelectable;
+			tf.multiline	= bMultiLine;
+			tf.wordWrap	= bWordWrap;
+			tf.autoSize	= sAutoSize;
 		}
 
 		/**

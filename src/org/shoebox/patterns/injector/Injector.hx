@@ -10,44 +10,53 @@ class Injector{
 	private var _aInjections : Array<Injection<Dynamic>>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		private function new() {
 			trace("constructor");
 			_aInjections = [ ];
+			#if cpp
+			cpp.vm.Gc.doNotKill( this );
+			cpp.vm.Gc.doNotKill( _aInjections );
+			#end
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function get<T>( type : Class<T> , ?sName : String ) : T {
 			//trace(Std.format("get ::: type : $type name : $sName"));
 			var inj = _has( type , sName );
+			//trace("inj :::: "+inj);
 			if( inj == null )
 				inj = _add( type , sName );
 
 			try{
-				if( inj.value == null )
+				if( inj.value == null ){
 					inj.value = Type.createInstance( type , [ ] );
+					#if cpp
+					cpp.vm.Gc.doNotKill( inj.value );
+					#end
+				}
 			}catch( e : nme.errors.Error ){
-
+				trace( e );
 			}
 			return inj.value;
-		}	
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -60,20 +69,24 @@ class Injector{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function add<T>( type : Class<T> , ?sName : String ) : Injection<T> {
-			return _add( type , sName );
+			var inj = _add( type , sName );
+			#if cpp
+			cpp.vm.Gc.doNotKill( inj );
+			#end
+			return inj;
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -84,8 +97,8 @@ class Injector{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -104,10 +117,10 @@ class Injector{
 		}
 
 	// -------o misc
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -133,11 +146,11 @@ class Injection<T>{
 	public var type : Class<T>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( t : Class<T> , ?value : T , ?sName : String ) {
@@ -145,15 +158,15 @@ class Injection<T>{
 			this.value = value;
 			this.sName = sName;
 		}
-	
+
 	// -------o public
-				
-				
+
+
 
 	// -------o protected
-	
-		
+
+
 
 	// -------o misc
-	
+
 }

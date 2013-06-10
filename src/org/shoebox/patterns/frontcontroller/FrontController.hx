@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -64,11 +64,11 @@ class FrontController{
 	private var _injector	: Injector;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
@@ -78,12 +78,12 @@ class FrontController{
 			_hTriads		= new Hash<MVCTriad>( );
 			onStateChange	= new Signal2<String,String>( );
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -93,17 +93,17 @@ class FrontController{
 
 		/**
 		* Add a triad to the frontcontroller
-		* 
+		*
 		* @public
 		* @return	void
 		*/
-		public function add( 
+		public function add(
 								cMod		: Class<IModel>,
 								cView		: Class<IView>,
 								cController	: Class<IController>,
 								?s			: String
 							) : String {
-			
+
 			if( owner == null )
 				throw new nme.errors.Error('Owner is not defined');
 
@@ -129,22 +129,22 @@ class FrontController{
 
 		/**
 		* Return the app instance by codename
-		* 
+		*
 		* @public
 		* @return 	triad instance
 		*/
 		public function getApp( sAppCode : String ) : MVCTriad {
-			return _hTriads.get( sAppCode );				
+			return _hTriads.get( sAppCode );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function registerState( aCodes : Array<String> ) : String {
-			
+
 			var sCode = aCodes.join('|');
 			_hStates.set( sCode , aCodes );
 			return sCode;
@@ -152,18 +152,18 @@ class FrontController{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function unRegisterState( s : String ) : Void {
-			_hStates.remove( s );						
+			_hStates.remove( s );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -172,44 +172,44 @@ class FrontController{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function inject_dependencies_on<T>( instance : T , ?typ : Class<T> ) : Void {
-			trace("inject_dependencies_on ::: "+instance);
+			//trace("inject_dependencies_on ::: "+instance);
 			_injector.inject_dependencies_on( instance , typ );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function set_dependency_value<T>( for_type : Class<T> , value : T , ?optional_name : String ) : Void {
-			_injector.set_dependency_value( for_type , value , optional_name );					
+			_injector.set_dependency_value( for_type , value , optional_name );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
-		public function setAppVariables( target_app_name : String , variables : Array<Dynamic> ) : Void {			
+		public function setAppVariables( target_app_name : String , variables : Array<Dynamic> ) : Void {
 			getApp( target_app_name ).variables = variables;
 		}
 
 		/**
 		* Force push triad in current state
-		* 
+		*
 		* @public
 		* @return	void
 		*/
 		public function push( sAppCode : String , ?under : String ) : Void {
-			
+
 			var a = _hStates.get( state ).copy( );
 			if( under != null && Lambda.has( a , under ) )
 				a.insert( Lambda.indexOf( a , under ) , sAppCode );
@@ -217,24 +217,24 @@ class FrontController{
 				a.push( sAppCode );
 
 			var sTmp = registerState( a );
-			
+
 			_hStates.set( sTmp , a );
-			
+
 			this.state = sTmp;
 			//unRegisterState( sTmp );
 
 		}
 
 	// -------o protected
-	
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _setState( s : String ) : String{
-		
+			//trace("_setState ::: "+s);
 			if( this.state == s || !_hStates.exists( s ) )
 				return s;
 
@@ -245,16 +245,16 @@ class FrontController{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _drawState( a : Array<String> ) : Void{
-			
+
 			if( _aCurrent != null )
 				_cancelPrevious( a );
-			
+
 			var tri : MVCTriad;
 			var d = 0;
 			for( s in a ){
@@ -267,22 +267,22 @@ class FrontController{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _cancelPrevious( a : Array<String> ) : Void{
-			
+
 			var tri : MVCTriad;
 			for( s in _aCurrent ){
-			
+
 				if( Lambda.has( a , s ) )
 					continue;
 
 				tri = _getTriad( s );
 				tri.cancel( );
-				
+
 			}
 
 			_aCurrent = a;
@@ -295,8 +295,8 @@ class FrontController{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -305,7 +305,7 @@ class FrontController{
 		}
 
 	// -------o misc
-	
+
 }
 
 import org.shoebox.patterns.commands.AbstractCommand;
@@ -327,22 +327,22 @@ class MVCTriad{
 	public var variables      : Array<Dynamic>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( ) {
-			
+
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -352,13 +352,13 @@ class MVCTriad{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function create( fc : FrontController ) : Void {
-		
+
 			//
 				if( instance != null )
 					return;
@@ -377,12 +377,12 @@ class MVCTriad{
 					instance.view = Type.createInstance( classView , [ ] );
 					// fc.inject_dependencies_on( instance.view , classView );
 				}
-				
+
 				if ( classController != null ){
 					instance.controller = Type.createInstance( classController , [ ] );
 					// fc.inject_dependencies_on( instance.controller , classController );
 				}
-				
+
 				variables = null;
 
 			//
@@ -390,6 +390,9 @@ class MVCTriad{
 				_inject_triad_class_metas_on( fc , classController , instance.controller );
 
 			//
+				//trace( instance.model );
+				//trace( instance.view );
+				//trace( instance.controller );
 				_initialize_instance( instance.model );
 				_initialize_instance( instance.view );
 				_initialize_instance( instance.controller );
@@ -403,15 +406,15 @@ class MVCTriad{
 
 				if( instance.controller != null )
 					cast( instance.controller , AController ).startUp( );
-			
+
 			//
 				if( instance.view != null )
 					container.addChild( cast( instance.view , AView ) );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -421,10 +424,10 @@ class MVCTriad{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -434,13 +437,13 @@ class MVCTriad{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _inject_triad_class_metas_on( fc : FrontController , c : Class<Dynamic> , onwhat : Dynamic ) : Void{
-			
+
 			if( c == null || onwhat == null )
 				return;
 
@@ -452,34 +455,34 @@ class MVCTriad{
 				m = Reflect.field( meta , v );
 				metaname = Reflect.fields( m )[ 0 ];
 				varname = Std.string( v );
-				
+
 				switch( metaname ){
 
 					case 'model':
 						Reflect.setField( onwhat , varname , instance.model );
-						
+
 					case 'view':
 						Reflect.setField( onwhat , varname , instance.view );
 
 					case 'controller':
 						Reflect.setField( onwhat , varname , instance.controller );
-						
+
 					case 'frontcontroller':
 						Reflect.setField( onwhat , varname , fc );
 				}
-				
+
 			}
 
 
 			//
-				var csuper = Type.getSuperClass( c );				
+				var csuper = Type.getSuperClass( c );
 				if( csuper != null )
 					_inject_triad_class_metas_on( fc , csuper , onwhat );
-			
+
 		}
 
 	// -------o misc
-	
+
 }
 
 /**
@@ -494,34 +497,34 @@ class MVCTriadInstance implements IDispose{
 	public var controller: IController;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
+
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function dispose( ) : Void {
-			
+
 			if( model != null )
 				model.cancel( );
 
 
 			if( controller != null )
 				controller.cancel( );
-				
+
 
 			if( view != null ){
 
@@ -553,10 +556,10 @@ class MVCTriadInstance implements IDispose{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -565,6 +568,6 @@ class MVCTriadInstance implements IDispose{
 		}
 
 	// -------o misc
-	
+
 }
 

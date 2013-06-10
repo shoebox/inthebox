@@ -97,7 +97,7 @@ class BoxDisplay{
 		* @return	void
 		*/
 		static public function align( o : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign , ?bounds : AABB ) : Void {
-			var aabb = new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
+			var aabb = bounds != null ? bounds : new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
 
 			var centerX : Float = aabb.min.x + ( aabb.max.x - aabb.min.x - o.getRect( Lib.current.stage ).width ) / 2;
 			var centerY : Float = aabb.min.y + ( aabb.max.y - aabb.min.y - o.getRect( Lib.current.stage ).height ) / 2;
@@ -225,6 +225,19 @@ class BoxDisplay{
 				tf.setTextFormat( tf.defaultTextFormat = f );
 
 			}
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
+		static public function addChilds( target : DisplayObjectContainer , a : Array<DisplayObject> ) : Void {
+
+			for( d in a )
+				target.addChild( d );
+
 		}
 
 

@@ -199,6 +199,9 @@ class NativeMirror{
 							case 'Void':
 								'V';
 
+							case "Dynamic":
+								"Lorg/haxe/nme/HaxeObject;";
+
 							case 'HaxeObject':
 								"Lorg/haxe/nme/HaxeObject;";
 
@@ -237,15 +240,17 @@ class NativeMirror{
 				}
 				//trace( sJNI_signature );
 				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
+				#if verbose
 				if( bJNI )
 					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+" | Method : "+sMethodName+" | Signature : "+sJNI_signature);
-
+				#end
 				sJNI_class_name = sFull_class_name.split('.').join('/');
 
 			//CPP
+				#if verbose
 				if( bCPP )
 					Sys.println("[NativeMirror] CPP Class : "+sFull_class_name+" | Method : "+sMethodName);
-
+				#end
 
 			//Return Expr
 
@@ -495,6 +500,9 @@ class NativeMirror{
 
 			var sRes = '';
 			switch( s ){
+
+				case "Dynamic":
+					sRes = "Lorg/haxe/nme/HaxeObject;";
 
 				case 'HaxeObject':
 					sRes = "Lorg/haxe/nme/HaxeObject;";
