@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -47,72 +47,72 @@ import org.shoebox.utils.system.flashevents.InteractiveObjectEv;
 class InteractiveObjectEv{
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
+
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function onKeyDown( d : InteractiveObject ) : SignalEvent<KeyboardEvent> {
-			return _keyboardCreate( d , KeyboardEvent.KEY_DOWN );			
+			return _keyboardCreate( d , KeyboardEvent.KEY_DOWN );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function onKeyUp( d : InteractiveObject ) : SignalEvent<KeyboardEvent> {
-			return _keyboardCreate( d , KeyboardEvent.KEY_UP );			
+			return _keyboardCreate( d , KeyboardEvent.KEY_UP );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function onStaged( d : InteractiveObject ) : SignalEvent<Event> {
-			return _create( d , Event.ADDED_TO_STAGE );			
+			return _create( d , Event.ADDED_TO_STAGE );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function onResize( d : InteractiveObject ) : SignalEvent<Event> {
-			return _create( nme.Lib.current.stage , Event.RESIZE );					
+			return _create( nme.Lib.current.stage , Event.RESIZE );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function onRemoved( d : InteractiveObject ) : SignalEvent<Event> {
-			return _create( d , Event.REMOVED_FROM_STAGE );					
+			return _create( d , Event.REMOVED_FROM_STAGE );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -121,8 +121,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -131,8 +131,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -141,8 +141,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -151,8 +151,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -161,28 +161,48 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
+		* @public
+		* @return	void
+		*/
+		static public function rollOut( d : InteractiveObject , ?b : Bool ) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.ROLL_OUT , b );
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
+		static public function rollOver( d : InteractiveObject , ?b : Bool ) : SignalEvent<MouseEvent> {
+			return _mouseEvCreate( d , MouseEvent.ROLL_OVER , b );
+		}
+
+		/**
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function mouseOver( d : InteractiveObject , b : Bool = false) : SignalEvent<MouseEvent> {
-			return _mouseEvCreate( d , MouseEvent.MOUSE_OVER , b );						
+			return _mouseEvCreate( d , MouseEvent.MOUSE_OVER , b );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function mouseOut( d : InteractiveObject , b : Bool = false) : SignalEvent<MouseEvent> {
-			return _mouseEvCreate( d , MouseEvent.MOUSE_OUT , b );						
+			return _mouseEvCreate( d , MouseEvent.MOUSE_OUT , b );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -191,8 +211,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -201,8 +221,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -211,8 +231,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -221,8 +241,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -232,18 +252,18 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function removeAll( d : InteractiveObject ) : Void {
-			FlashEventsCache.getInstance( ).purgeTarget( EvChannels.InteractiveObject , d );			
+			FlashEventsCache.getInstance( ).purgeTarget( EvChannels.InteractiveObject , d );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -252,8 +272,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -262,10 +282,10 @@ class InteractiveObjectEv{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -274,8 +294,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -284,8 +304,8 @@ class InteractiveObjectEv{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -294,5 +314,5 @@ class InteractiveObjectEv{
 		}
 
 	// -------o misc
-	
+
 }
