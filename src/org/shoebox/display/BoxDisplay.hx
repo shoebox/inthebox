@@ -188,6 +188,27 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
+		inline static public function xAlignChilds( target : DisplayObjectContainer ) : Void {
+
+			var l = target.numChildren;
+			var w = 0.0;
+			for( i in 0...l )
+				w = Math.max( target.getChildAt( i ).width , w );
+
+			var c;
+			for( i in 0...l ){
+				c = target.getChildAt( i );
+				c.x = Std.int( ( w - c.width ) / 2 );
+			}
+
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
 		static public function rasterize( target : DisplayObject , ?bmp : BitmapData , ?iMarginX : Int , ?iMarginY : Int ) : BitmapData {
 
 			var w = Std.int( target.width + iMarginX * 2 );
