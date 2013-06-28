@@ -18,7 +18,6 @@ class Injector{
 		* @return	void
 		*/
 		private function new() {
-			trace("constructor");
 			_aInjections = [ ];
 			#if cpp
 			cpp.vm.Gc.doNotKill( this );

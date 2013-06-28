@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<app title="shoebox" file="TestMacro" main="TestMacro" package="org.shoebox.intheboxtest" version="1.0.0" company="shoe[box]" debug="true" hardware="true"/>
+	<app title="shoebox" file="TestRegEx" main="TestRegEx" package="org.shoebox.intheboxtest" version="1.0.0" company="shoe[box]" debug="true" hardware="true"/>
 
 	<window width="800" height="600" fps="60" orientation="landscape" resizable="true" if="target_flash" background="0xFFFFFF" hardware="true"/>
 
