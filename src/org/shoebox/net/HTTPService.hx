@@ -104,7 +104,7 @@ class HTTPService extends URLLoader , implements IDispose{
 
 			removeEventListener( Event.COMPLETE 				, _onDatas 		, false );
 			#if flash
-			removeEventListener( IOErrorEvent.IO_ERROR 			, _onIoError	, false );
+				removeEventListener( IOErrorEvent.IO_ERROR 			, _onIoError	, false );
 			removeEventListener( IOErrorEvent.DISK_ERROR 		, _onIoError	, false );
 			removeEventListener( IOErrorEvent.NETWORK_ERROR 	, _onIoError	, false );
 			removeEventListener( IOErrorEvent.VERIFY_ERROR 		, _onIoError	, false );

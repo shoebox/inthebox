@@ -34,7 +34,7 @@ class Injector{
 		* @return	void
 		*/
 		public function get<T>( type : Class<T> , ?sName : String ) : T {
-			//trace(Std.format("get ::: type : $type name : $sName"));
+
 			var inj = _has( type , sName );
 			//trace("inj :::: "+inj);
 			if( inj == null )
@@ -44,7 +44,7 @@ class Injector{
 				if( inj.value == null ){
 					inj.value = Type.createInstance( type , [ ] );
 					#if cpp
-					cpp.vm.Gc.doNotKill( inj.value );
+					//cpp.vm.Gc.doNotKill( inj.value );
 					#end
 				}
 			}catch( e : nme.errors.Error ){

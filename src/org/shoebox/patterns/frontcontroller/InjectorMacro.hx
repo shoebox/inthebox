@@ -12,38 +12,38 @@ import haxe.macro.Expr;
 class InjectorMacro{
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		private function new() {
-			
+
 		}
-	
+
 	// -------o public
-				
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		@:macro static public function generate( ) {
 			haxe.macro.Context.onGenerate(
 				function(types){
-					
+
 					for( t in types ){
-						
+
 						switch( t ){
 
 							case TInst( c , _ ):
 								var ref = c.get( );
 								var fields = ref.fields.get( );
 								for( field in fields ){
-									
+
 									var metas = field.meta.get( );
 									var b = false;
 									for( m in metas ){
@@ -87,12 +87,12 @@ class InjectorMacro{
 			);
 
 			return macro Void;
-		}			
+		}
 
 	// -------o protected
-	
-		
+
+
 
 	// -------o misc
-	
+
 }

@@ -152,7 +152,7 @@ class NativeMirror{
 													) : Expr{
 
 			#if verbose
-			Sys.println("[NativeMirror] on "+sFull_class_name+" - Method : "+field_name);
+			//Sys.println("[NativeMirror] on "+sFull_class_name+" - Method : "+field_name);
 			#end
 
 			var b = false;
@@ -185,6 +185,7 @@ class NativeMirror{
 
 							default:
 						}
+
 						sJNI_signature += switch( sTmp ){
 
 							case 'Int':
@@ -206,7 +207,7 @@ class NativeMirror{
 								"Lorg/haxe/nme/HaxeObject;";
 
 							case 'Array':
-								//trace( oType );
+								trace( oType );
 
 								"["+switch( oType.params[0] ){
 
@@ -238,8 +239,8 @@ class NativeMirror{
 						}
 
 				}
-				//trace( sJNI_signature );
 				sJNI_signature += ')'+_jni_translate_type( _get_package_return_type( f.ret ) );
+
 				#if verbose
 				if( bJNI )
 					Sys.println("[NativeMirror] JNI Class : "+sFull_class_name+" | Method : "+sMethodName+" | Signature : "+sJNI_signature);
@@ -454,13 +455,18 @@ class NativeMirror{
 		*/
 		static private function _get_package_return_type( t : ComplexType ) : String{
 			//trace("_get_package_return_type ::: "+t);
-			var sType_name : String = switch( t ){
 
-									case TPath( t ):
-										t.name;
+			var sType_name : String;
+			var tp : TypePath;
+			switch( t ){
 
-									default:
-								}
+				case TPath( typep ):
+					tp = typep;
+					sType_name = typep.name;
+
+				default:
+			}
+
 
 			return switch( sType_name ){
 
@@ -475,6 +481,25 @@ class NativeMirror{
 
 				case 'String':
 					'String';
+
+				case "Array":
+					"["+switch( tp.params[0] ){
+
+									case TPExpr( e ):
+										"";
+
+									case TPType( t ):
+										//trace("TPType ::: "+t);
+
+										switch( t ){
+
+											case TPath( p ):
+												_jni_translate_type( p.name );
+
+											default:
+										}
+								}
+
 
 				default:
 					switch( Context.getType( sType_name ) ){
@@ -497,7 +522,7 @@ class NativeMirror{
 		* @return	void
 		*/
 		inline static private function _jni_translate_type( s : String ) : String{
-
+			//trace("_jni_translate_type ::: "+s);
 			var sRes = '';
 			switch( s ){
 
@@ -518,6 +543,9 @@ class NativeMirror{
 
 				case 'Void':
 					sRes = 'V';
+
+				case "[Ljava/lang/String;":
+					sRes = "[Ljava/lang/String;";
 
 				default:
 					sRes = 'L'+s.split('.').join('/')+';';

@@ -16,24 +16,23 @@ import haxe.macro.Expr;
 class ShortCuts{
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
-		}
-	
-	// -------o public
 
-		#if macro	
+		}
+
+	// -------o public
+		#if macro
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -42,21 +41,31 @@ class ShortCuts{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		static public function mirrors( ) : Array<Field> {
-			return NativeMirror.build( );	
+			return NativeMirror.build( );
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
+		static public function errorReport( ) : Array<Field> {
+			return MacroErrReport.build( );
 		}
 
 		#end
 
 	// -------o protected
-	
-		
+
+
 
 	// -------o misc
-	
+
 }

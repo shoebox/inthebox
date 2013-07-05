@@ -255,9 +255,9 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
-		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float ) : Void {
+		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float  ) : Void {
 
-
+			var start = tf.defaultTextFormat.size;
 			var i = 0;
 			var f;
 			while( tf.textWidth > w || tf.textHeight > h ){

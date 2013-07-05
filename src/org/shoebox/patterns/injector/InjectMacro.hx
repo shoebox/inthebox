@@ -25,6 +25,8 @@ class InjectMacro{
 
 	// -------o public
 
+		#if macro
+
 		/**
 		*
 		*
@@ -293,6 +295,8 @@ class InjectMacro{
 		static private function _getFull_class_name( ofClass : ClassType ) : String{
 			return ofClass.pack.join(".")+((ofClass.pack.length == 0) ? "" : ".")+ofClass.module;
 		}
+
+		#end
 
 	// -------o misc
 
