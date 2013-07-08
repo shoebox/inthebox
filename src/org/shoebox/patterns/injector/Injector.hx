@@ -48,7 +48,9 @@ class Injector{
 					#end
 				}
 			}catch( e : nme.errors.Error ){
-				trace( e );
+				//trace( sName );
+				//trace( type );
+				//trace( e );
 			}
 			return inj.value;
 		}

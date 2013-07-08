@@ -53,7 +53,9 @@ package org.shoebox.patterns.mvc.abstracts;
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
+	#if !debug
 	@:autoBuild( ShortCuts.errorReport( ) )
+	#end
 	class AController implements IController {
 
 		private var _a_listeners	: Array<Listener>;
