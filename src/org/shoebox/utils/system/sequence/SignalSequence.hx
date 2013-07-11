@@ -1,7 +1,7 @@
 package org.shoebox.utils.system.sequence;
 
 import haxe.Timer;
-import nme.events.Event;
+import flash.events.Event;
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
 import org.shoebox.utils.system.Signal1;
@@ -11,7 +11,7 @@ import org.shoebox.utils.system.Signal1;
  * @author shoe[box]
  */
 
-class SignalSequence extends AbstractCommand , implements ICommand{
+class SignalSequence extends AbstractCommand  implements ICommand{
 
 	public var onComplete : Signal1<Event>;
 	

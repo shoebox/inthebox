@@ -30,10 +30,10 @@
 */
 package org.shoebox.ui;
 
-import nme.errors.Error;
-import nme.events.Event;
-import nme.events.KeyboardEvent;
-import nme.Lib;
+import flash.errors.Error;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
+import flash.Lib;
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
 
@@ -42,9 +42,9 @@ import org.shoebox.patterns.commands.ICommand;
  * @author shoe[box]
  */
 
-class Keys extends AbstractCommand , implements ICommand{
+class Keys extends AbstractCommand  implements ICommand{
 
-	private var _hKeys : Hash<Bool>;
+	private var _hKeys : Map<String,Bool>;
 
 	private static var __instance : Keys = null;
 
@@ -61,7 +61,7 @@ class Keys extends AbstractCommand , implements ICommand{
 			if( e == null )
 				throw new Error('');
 				super( );
-				_hKeys = new Hash<Bool>( );
+				_hKeys = new Map<String,Bool>( );
 			
 		}
 	

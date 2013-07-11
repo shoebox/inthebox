@@ -29,14 +29,14 @@
 */
 package org.shoebox.ui;
 
-import nme.display.InteractiveObject;
-import nme.events.Event;
-import nme.events.MouseEvent;
-import nme.system.Capabilities;
+import flash.display.InteractiveObject;
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.system.Capabilities;
 #if mobile
-import nme.events.TouchEvent;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
+import flash.events.TouchEvent;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 #end
 import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
@@ -51,7 +51,7 @@ using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
  * @author shoe[box]
  */
 
-class MouseDrag extends AbstractCommand , implements ICommand{
+class MouseDrag extends AbstractCommand  implements ICommand{
 
 	public var startPosition( _getStart , never ) : FPoint;
 

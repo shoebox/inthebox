@@ -29,7 +29,7 @@
 */
 package org.shoebox.libs.nevermind.behaviors;
 
-	import nme.events.Event;
+	import flash.events.Event;
 	import org.shoebox.core.Vector2D;
 	import org.shoebox.libs.nevermind.entity.SteeringEntity;
 	

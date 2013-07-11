@@ -29,7 +29,7 @@
 */
 package org.shoebox.events.seq;
 
-import nme.events.IEventDispatcher;
+import flash.events.IEventDispatcher;
 
 interface ISeq implements IEventDispatcher{
 

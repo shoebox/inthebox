@@ -29,7 +29,7 @@
 */
 package org.shoebox.patterns.mvc.abstracts; 
 
-import nme.events.EventDispatcher;
+import flash.events.EventDispatcher;
 import org.shoebox.patterns.frontcontroller.FrontController;
 
 /**

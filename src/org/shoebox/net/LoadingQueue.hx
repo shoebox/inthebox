@@ -1,9 +1,9 @@
 package org.shoebox.net;
 
-import nme.display.DisplayObject;
-import nme.events.Event;
-import nme.display.Loader;
-import nme.net.URLRequest;
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.display.Loader;
+import flash.net.URLRequest;
 import org.shoebox.utils.system.Signal2;
 
 #if flash

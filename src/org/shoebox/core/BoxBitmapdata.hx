@@ -29,9 +29,9 @@
 */
 package org.shoebox.core;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.geom.Matrix;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.Matrix;
 
 class BoxBitmapdata {
 

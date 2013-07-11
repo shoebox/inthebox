@@ -1,11 +1,11 @@
 package org.shoebox.libs.nevermind.behaviors;
 
 
-import nme.display.Graphics;
-import nme.geom.Vector3D;
-import nme.Lib;
-import nme.display.Sprite;
-import nme.Vector;
+import flash.display.Graphics;
+import flash.geom.Vector3D;
+import flash.Lib;
+import flash.display.Sprite;
+import flash.Vector;
 import org.shoebox.core.Vector2D;
 import org.shoebox.libs.nevermind.behaviors.ABehavior;
 

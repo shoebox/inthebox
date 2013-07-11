@@ -1,11 +1,13 @@
-package org.shoebox.patterns.mvc.interfaces; 
-	
+package org.shoebox.patterns.mvc.interfaces;
+
+import org.shoebox.patterns.mvc.interfaces.IInit;
+
 	/**
 	 * @author shoe[box]
 	 */
-	interface IController implements IInit{
-		
+	interface IController extends IInit{
+
 		function initialize( ):Void;
 		function cancel( ):Void;
-		
+
 	}

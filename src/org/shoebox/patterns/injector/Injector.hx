@@ -34,6 +34,7 @@ class Injector{
 		* @return	void
 		*/
 		public function get<T>( type : Class<T> , ?sName : String ) : T {
+			//trace( "get ::: "+type+" - "+sName);
 
 			var inj = _has( type , sName );
 			//trace("inj :::: "+inj);
@@ -42,15 +43,21 @@ class Injector{
 
 			try{
 				if( inj.value == null ){
-					inj.value = Type.createInstance( type , [ ] );
+
+					var sName : String = Type.getClassName( type );
+					if( sName != "Bool" && sName != "Int" && sName != "Float" )
+						inj.value = Type.createInstance( type , [ ] );
+					else
+						inj.value = null;
+
 					#if cpp
 					//cpp.vm.Gc.doNotKill( inj.value );
 					#end
 				}
-			}catch( e : nme.errors.Error ){
-				//trace( sName );
-				//trace( type );
-				//trace( e );
+			}catch( e : flash.errors.Error ){
+				trace( sName );
+				trace( type );
+				trace( e );
 			}
 			return inj.value;
 		}

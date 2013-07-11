@@ -1,17 +1,17 @@
 package org.shoebox.net;
 
 #if flash
-import nme.events.IOErrorEvent;
+import flash.events.IOErrorEvent;
 #end
 
-import nme.events.Event;
-import nme.events.HTTPStatusEvent;
-import nme.net.URLLoader;
-import nme.net.URLLoaderDataFormat;
-import nme.net.URLRequest;
-import nme.net.URLRequestMethod;
-import nme.net.URLVariables;
-import nme.utils.ByteArray;
+import flash.events.Event;
+import flash.events.HTTPStatusEvent;
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
+import flash.net.URLRequestMethod;
+import flash.net.URLVariables;
+import flash.utils.ByteArray;
 import org.shoebox.core.interfaces.IDispose;
 
 /**
@@ -19,7 +19,7 @@ import org.shoebox.core.interfaces.IDispose;
  * @author shoe[box]
  */
 
-class HTTPService extends URLLoader , implements IDispose{
+class HTTPService extends URLLoader  implements IDispose{
 
 	public var method( default , default ) : Method;
 
@@ -58,7 +58,7 @@ class HTTPService extends URLLoader , implements IDispose{
 
 			try{
 				close( );
-			}catch( e : nme.errors.Error ){
+			}catch( e : flash.errors.Error ){
 
 			}
 
@@ -80,7 +80,7 @@ class HTTPService extends URLLoader , implements IDispose{
 
 			try{
 				super.load( req );
-			}catch( e : nme.errors.Error ){
+			}catch( e : flash.errors.Error ){
 				trace('e ::: '+e);
 			}
 		}
@@ -98,7 +98,7 @@ class HTTPService extends URLLoader , implements IDispose{
 
 			try{
 				close( );
-			}catch( e : nme.errors.Error ){
+			}catch( e : flash.errors.Error ){
 
 			}
 

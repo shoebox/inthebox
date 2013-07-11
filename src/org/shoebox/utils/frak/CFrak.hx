@@ -29,9 +29,9 @@
 */
 package org.shoebox.utils.frak;
 
-	import nme.events.KeyboardEvent;
-	import nme.Lib;
-	import nme.ui.Keyboard;
+	import flash.events.KeyboardEvent;
+	import flash.Lib;
+	import flash.ui.Keyboard;
 	import org.shoebox.patterns.mvc.abstracts.AController;
 	import org.shoebox.patterns.mvc.interfaces.IController;
 	import org.shoebox.utils.frak.MFrak;
@@ -41,7 +41,7 @@ package org.shoebox.utils.frak;
 	* 
 	* @author shoebox
 	*/
-	class CFrak extends AController , implements IController {
+	class CFrak extends AController  implements IController {
 		
 		@model
 		public var model : MFrak;

@@ -1,7 +1,7 @@
 package org.shoebox.utils.frak;
 
-import nme.display.Sprite;
-import nme.events.Event;
+import flash.display.Sprite;
+import flash.events.Event;
 import org.shoebox.patterns.frontcontroller.FrontController;
 
 /**
@@ -29,7 +29,7 @@ class Frak extends Sprite{
 			super( );
 			
 			if( e == null )
-				throw new nme.errors.Error( );
+				throw new flash.errors.Error( );
 			
 			fc = new FrontController( );
 			fc.owner = this;

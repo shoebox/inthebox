@@ -79,13 +79,13 @@ class MacroErrReport{
 									//trace("call ::: "+$sModule);
 									try{
 										$expr;
-									}catch( e : nme.errors.ArgumentError ){
+									}catch( e : flash.errors.ArgumentError ){
 										trace("ArgumentError");
 										fr.hyperfiction.HypSystem.reportError( $sModule , e.toString( ), haxe.Stack.toString( haxe.Stack.exceptionStack( ) )+"\n"+haxe.Stack.toString( haxe.Stack.callStack( ) ) );
-									}catch( e : nme.errors.TypeError ){
+									}catch( e : flash.errors.TypeError ){
 										trace("TypeError");
 										fr.hyperfiction.HypSystem.reportError( $sModule , e.toString( ), haxe.Stack.toString( haxe.Stack.exceptionStack( ) )+"\n"+haxe.Stack.toString( haxe.Stack.callStack( ) ) );
-									}catch( e : nme.errors.Error ){
+									}catch( e : flash.errors.Error ){
 										trace("Error");
 										fr.hyperfiction.HypSystem.reportError( $sModule , e.toString( ), haxe.Stack.toString( haxe.Stack.exceptionStack( ) )+"\n"+haxe.Stack.toString( haxe.Stack.callStack( ) ) );
 									}catch( unknown : Dynamic ) {
@@ -115,7 +115,7 @@ class MacroErrReport{
 							var e = macro {
 								try{
 									$(expr);
-								}catch( e : nme.errors.Error ){
+								}catch( e : flash.errors.Error ){
 									trace("errror ::: "+e);
 								}
 							};

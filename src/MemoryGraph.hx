@@ -1,8 +1,8 @@
 package ;
 
 import BytesMemory;
-import nme.Memory;
-import nme.utils.ByteArray;
+import flash.Memory;
+import flash.utils.ByteArray;
 
 /**
  * ...

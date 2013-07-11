@@ -30,16 +30,16 @@
 package org.shoebox.patterns.mvc.abstracts;
 
 	import haxe.Timer;
-	import nme.errors.Error;
+	import flash.errors.Error;
 	import org.shoebox.core.BoxObject;
 	import org.shoebox.core.interfaces.IDispose;
 	import org.shoebox.utils.system.Signal;
 	import org.shoebox.patterns.commands.AbstractCommand;
 	import org.shoebox.patterns.frontcontroller.FrontController;
 	import org.shoebox.patterns.mvc.interfaces.IController;
-	import nme.display.DisplayObject;
-	import nme.events.Event;
-	import nme.events.EventDispatcher;
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 
 	/**
 	* ABSTRACT CONTROLLER (MVC PACKAGE)
@@ -53,7 +53,7 @@ package org.shoebox.patterns.mvc.abstracts;
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
-	#if !debug
+	#if reporterror
 	@:autoBuild( ShortCuts.errorReport( ) )
 	#end
 	class AController implements IController {
@@ -145,10 +145,10 @@ package org.shoebox.patterns.mvc.abstracts;
 				#if debug
 
 					if( target == null )
-						throw new nme.errors.Error('error : target is null');
+						throw new flash.errors.Error('error : target is null');
 
 					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) != null )
-						throw new nme.errors.Error('Listener already exist');
+						throw new flash.errors.Error('Listener already exist');
 				#end
 
 				var l = new Listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
@@ -172,7 +172,7 @@ package org.shoebox.patterns.mvc.abstracts;
 
 				#if debug
 					if( _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference ) == null )
-						throw new nme.errors.Error('Listener does not exist');
+						throw new flash.errors.Error('Listener does not exist');
 				#end
 
 				var l = _has_listener( target , type , listener , b_use_capture , iPrio , useWeakReference );
@@ -294,7 +294,7 @@ class Listener implements IDispose{
 		* @return	void
 		*/
 		public function toString( ) : String {
-			return Std.format( 'Listener ::: target : $target | type : $type | listener : $listener' );
+			return 'Listener ::: target : $target | type : $type | listener : $listener' ;
 		}
 
 	// -------o protected

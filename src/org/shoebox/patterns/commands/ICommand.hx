@@ -1,15 +1,15 @@
-package org.shoebox.patterns.commands; 
+package org.shoebox.patterns.commands;
 
-	import nme.events.Event;
-	import nme.events.IEventDispatcher;
-	
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
+
 	/**
 	 * @author shoe[box]
 	 */
-	interface ICommand implements IEventDispatcher{
-		
+	interface ICommand extends IEventDispatcher{
+
 		function onExecute( ) : Void;
 
 		function onCancel( ) : Void;
-		
+
 	}

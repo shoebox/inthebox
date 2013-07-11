@@ -29,7 +29,7 @@
 */
 package org.shoebox.collections;
 
-import nme.errors.Error;
+import flash.errors.Error;
 
 /**
  * ...

@@ -1,9 +1,12 @@
 package org.shoebox.display;
 
+import flash.display.BitmapData;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
+import haxe.Json;
 import haxe.xml.Fast;
-import nme.display.BitmapData;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.geom.IPosition;
 
@@ -12,20 +15,22 @@ import org.shoebox.geom.IPosition;
  * @author shoe[box]
  */
 
-class AnimatedTilesMap extends TilesMap , implements IDispose{
+class AnimatedTilesMap extends TilesMap  implements IDispose{
 
 	public var name( default , default ) : String;
 
-	private var _hCustomCenter : Hash<Point>;
-	private var _hCyclesFrames : Hash<Array<Int>>;
-	private var _hCyclesLen    : Hash<Int>;
-	private var _hFrameSize    : Hash<IPosition>;
+	private var _hCustomCenter : Map<String,Point>;
+	private var _hCyclesFrames : Map<String,Array<Int>>;
+	private var _hCyclesLen    : Map<String,Int>;
+	private var _hFrameSize    : Map<String,IPosition>;
 	#if flash
 	private var _bmpRef : BitmapData;
-	private var _hCache         : Hash<BitmapData>;
-	private var _hIds           : Hash<Int>;
-	private var _hFramesCenters : Hash<Point>;
-	private static inline var POINT : Point = new Point( );
+	private var _hCache         : Map<String,BitmapData>;
+	private var _hIds           : Map<String,Int>;
+	private var _hFramesCenters : Map<String,Point>;
+	private static inline function POINT( ) : Point{
+		return new Point( );
+	}
 	#end
 
 	// -------o constructor
@@ -38,16 +43,17 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		*/
 		public function new( bmp : BitmapData ) {
 			super( bmp );
-			_hCustomCenter = new Hash<Point>( );
-			_hCyclesFrames = new Hash<Array<Int>>( );
-			_hCyclesLen    = new Hash<Int>( );
-			_hFrameSize    = new Hash<IPosition>( );
+
+			_hCustomCenter = new Map<String,Point>( );
+			_hCyclesFrames = new Map<String,Array<Int>>( );
+			_hCyclesLen    = new Map<String,Int>( );
+			_hFrameSize    = new Map<String,IPosition>( );
 
 			#if flash
 			_bmpRef = bmp;
-			_hCache         = new Hash<BitmapData>( );
-			_hIds           = new Hash<Int>();
-			_hFramesCenters = new Hash<Point>();
+			_hCache         = new Map<String,BitmapData>( );
+			_hIds           = new Map<String,Int>();
+			_hFramesCenters = new Map<String,Point>();
 			#end
 
 		}
@@ -108,7 +114,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 
 			//
 				bmp = new BitmapData( Std.int( rec.width ) , Std.int( rec.height ) , true );
-				bmp.copyPixels( _bmpRef , rec , POINT );
+				bmp.copyPixels( _bmpRef , rec , POINT( ) );
 				_hCache.set( s , bmp );
 
 			return bmp;
@@ -251,7 +257,7 @@ class AnimatedTilesMap extends TilesMap , implements IDispose{
 		*/
 		public function parseJson( s : String , fDecalX : Float = 0.0 , fDecalY : Float = 0.0 ) : Void {
 
-			var desc = haxe.Json.parse( s );
+			var desc = Json.parse( s );
 			var fields = Reflect.fields ( desc.frames );
 			var entry : JSONEntry;
 

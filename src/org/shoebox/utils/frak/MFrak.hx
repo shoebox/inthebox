@@ -31,7 +31,7 @@ package org.shoebox.utils.frak;
 
 	import haxe.Log;
 	import haxe.PosInfos;
-	import nme.Lib;
+	import flash.Lib;
 	import org.shoebox.patterns.commands.AbstractCommand;
 	import org.shoebox.patterns.mvc.abstracts.AModel;
 	import org.shoebox.patterns.mvc.interfaces.IModel;
@@ -43,14 +43,14 @@ package org.shoebox.utils.frak;
 	* 
 	* @author shoebox
 	*/
-	class MFrak extends AModel , implements IModel {
+	class MFrak extends AModel  implements IModel {
 		
 		@view
 		public var view : VFrak;
 
 		private var _aBuffer    : Array<String>;
-		private var _hAlias     : Hash<Alias>;
-		private var _hVariables : Hash<Variable>;		
+		private var _hAlias     : Map<String,Alias>;
+		private var _hVariables : Map<String,Variable>;		
 		
 		private static inline var BUFFER_LENGTH  : Int = 150;
 
@@ -76,8 +76,8 @@ package org.shoebox.utils.frak;
 			override public function initialize( ) : Void {
 
 				_aBuffer    = new Array<String>( );
-				_hAlias     = new Hash<Alias>( );
-				_hVariables = new Hash<Variable>( );
+				_hAlias     = new Map<String,Alias>( );
+				_hVariables = new Map<String,Variable>( );
 
 				registerAlias( 'setfps' , _setFps 		, 'Change the stage frameRate' , true );
 				registerAlias( 'perf' 	, _perf 		, 'Add / Remove the perf monitor' , true );

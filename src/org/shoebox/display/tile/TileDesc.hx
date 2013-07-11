@@ -1,7 +1,7 @@
 package org.shoebox.display.tile;
 
-import nme.display.Graphics;
-import nme.display.Tilesheet;
+import flash.display.Graphics;
+import openfl.display.Tilesheet;
 
 /**
  * ...
@@ -10,21 +10,21 @@ import nme.display.Tilesheet;
 
 class TileDesc{
 
-	public var r ( default , _setColR )				: Float;
-	public var g ( default , _setColG )				: Float;
-	public var b ( default , _setColB )				: Float;
-	public var x ( default , _setPosX )				: Float;
-	public var y ( default , _setPosY )				: Float;
-	public var matrixA ( default , _setMatrixA )	: Float;
-	public var matrixB ( default , _setMatrixB )	: Float;
-	public var matrixC ( default , _setMatrixC )	: Float;
-	public var matrixD ( default , _setMatrixD )	: Float;
-	public var alpha( default , _setAlpha )			: Float;
-	public var format( default, _setFormat )		: Int;
-	public var rotation( default , _setRotation )	: Float;
-	public var scale( default , _setScale )			: Float;
-	public var scaleX( default , _setScaleX )		: Float;
-	public var tileId ( default , _setTileId )		: Int;
+	public var r ( default , set_r )				: Float;
+	public var g ( default , set_g )				: Float;
+	public var b ( default , set_b )				: Float;
+	public var x ( default , set_x )				: Float;
+	public var y ( default , set_y )				: Float;
+	public var matrixA ( default , set_matrixA )	: Float;
+	public var matrixB ( default , set_matrixB )	: Float;
+	public var matrixC ( default , set_matrixC )	: Float;
+	public var matrixD ( default , set_matrixD )	: Float;
+	public var alpha( default , set_alpha )			: Float;
+	public var format( default, set_format )		: Int;
+	public var rotation( default , set_rotation )	: Float;
+	public var scale( default , set_scale )			: Float;
+	public var scaleX( default , set_scaleX )		: Float;
+	public var tileId ( default , set_tileId )		: Int;
 
 	private var _aDesc			: Array<Float>;
 	private var _bInvalidate	: Bool;
@@ -36,11 +36,11 @@ class TileDesc{
 
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( dx : Float = 0.0 , dy : Float = 0.0 , id : Int = 0 , iFlags : Int = 0 ) {
@@ -61,12 +61,12 @@ class TileDesc{
 			this.x			= dx;
 			this.y			= dy;
 		}
-	
+
 	// -------o public
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -93,13 +93,13 @@ class TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function getArray( ) : Array<Float> {
-			
+
 			if( _bInvalidate )
 				_invalidate( );
 
@@ -107,13 +107,13 @@ class TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function getArray2( a : Array<Float> = null ) : Array<Float> {
-			
+
 			if( a == null )
 				a = [ ];
 
@@ -121,8 +121,8 @@ class TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -138,69 +138,69 @@ class TileDesc{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setColR( f : Float ) : Float{
+		private function set_r( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.r = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setColG( f : Float ) : Float{
+		private function set_g( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.g = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setColB( f : Float ) : Float{
+		private function set_b( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.b = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setPosX( f : Float ) : Float{
+		private function set_x( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.x = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setPosY( f : Float ) : Float{
+		private function set_y( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.y = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setFormat( i : Int ) : Int{
+		private function set_format( i : Int ) : Int{
 
 			if( this.format == i )
 				return i;
@@ -224,109 +224,109 @@ class TileDesc{
 
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setScale( f : Float ) : Float{
+		private function set_scale( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.scale = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setScaleX( f : Float ) : Float{
+		private function set_scaleX( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.scaleX = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setMatrixB( f : Float ) : Float{
+		private function set_matrixB( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.matrixB = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setMatrixC( f : Float ) : Float{
+		private function set_matrixC( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.matrixC = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setMatrixD( f : Float ) : Float{
+		private function set_matrixD( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.matrixD = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setMatrixA( f : Float ) : Float{
+		private function set_matrixA( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.matrixA = f;
 		}
 
-		
+
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setRotation( f : Float = 0.0 ) : Float{
+		private function set_rotation( f : Float = 0.0 ) : Float{
 			_bInvalidate = true;
 			return this.rotation = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setAlpha( f : Float ) : Float{
+		private function set_alpha( f : Float ) : Float{
 			_bInvalidate = true;
 			return this.alpha = f;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setTileId( i : Int ) : Int{
+		private function set_tileId( i : Int ) : Int{
 			_bInvalidate = true;
 			return this.tileId = i;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -335,14 +335,14 @@ class TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _invalidateArray( a : Array<Float> = null ) : Array<Float>{
 
-			if( a == null ) 
+			if( a == null )
 				a = [ ];
 
 			var id = a.length;
@@ -360,7 +360,7 @@ class TileDesc{
 					a[ id++ ] = rotation;
 			}
 
-			if( _bUseMatrix ){				
+			if( _bUseMatrix ){
 				a[ id++ ] = matrixA * -scaleX * scale;
 				a[ id++ ] = matrixB * scale;
 				a[ id++ ] = matrixC * scale;
@@ -372,14 +372,14 @@ class TileDesc{
 				a[ id++ ] = g;
 				a[ id++ ] = b;
 			}
-			
+
 			if( _bUseAlpha )
 				a[ id++ ] = alpha;
-			
+
 			_bInvalidate = false;
 			return a;
 		}
-		
+
 	// -------o misc
-	
+
 }

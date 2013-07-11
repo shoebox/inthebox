@@ -29,12 +29,12 @@
 */
 package org.shoebox.utils.system.flashevents ;
 
-import nme.display.InteractiveObject;
-import nme.events.Event;
-import nme.events.MouseEvent;
-import nme.events.TouchEvent;
-import nme.events.FocusEvent;
-import nme.events.KeyboardEvent;
+import flash.display.InteractiveObject;
+import flash.events.Event;
+import flash.events.MouseEvent;
+import flash.events.TouchEvent;
+import flash.events.FocusEvent;
+import flash.events.KeyboardEvent;
 import org.shoebox.utils.system.SignalEvent;
 import org.shoebox.utils.system.flashevents.EvChannels;
 import org.shoebox.utils.system.flashevents.InteractiveObjectEv;
@@ -97,7 +97,7 @@ class InteractiveObjectEv{
 		* @return	void
 		*/
 		static public function onResize( d : InteractiveObject ) : SignalEvent<Event> {
-			return _create( nme.Lib.current.stage , Event.RESIZE );
+			return _create( flash.Lib.current.stage , Event.RESIZE );
 		}
 
 		/**

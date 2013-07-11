@@ -30,7 +30,7 @@ class BoxFunction{
 		*/		
 		public static function memoize(func:Dynamic , maxSize:Int = 100) : Dynamic {
 
-			var arg_hash = new Hash<Dynamic>();
+			var arg_hash = new Map<String,Dynamic>();
 			var f =  function(args:Array<Dynamic>){
 
 				var arg_string = args.join('|');

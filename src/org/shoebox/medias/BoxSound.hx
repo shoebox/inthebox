@@ -1,10 +1,10 @@
 package org.shoebox.medias;
 
-import nme.events.Event;
-import nme.errors.Error;
-import nme.media.Sound;
-import nme.media.SoundChannel;
-import nme.media.SoundTransform;
+import flash.events.Event;
+import flash.errors.Error;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.media.SoundTransform;
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.geom.FPoint;
 import org.shoebox.medias.SoundTrack;
@@ -19,24 +19,24 @@ class BoxSound implements IDispose{
 
 	public var onSoundComplete : Signal;
 
-	public var isPaused		( _get_is_paused 	, null )   			: Bool;
-	public var isPlaying	( default 			, _set_isPlaying ) 	: Bool;
-	public var volume		( default 			, _set_volume )    	: Float;
-	public var pan			( default 			, _set_pan )      	: Float;
-	public var media		( default 			, _set_media )    	: Sound;	
-	public var track		( default 			, _set_track )    	: SoundTrack;
+	public var isPaused		( get_isPaused 	, null )   			: Bool;
+	public var isPlaying	( default 		, set_isPlaying ) 	: Bool;
+	public var volume		( default 		, set_volume )    	: Float;
+	public var pan			( default 		, set_pan )      	: Float;
+	public var media		( default 		, set_media )    	: Sound;
+	public var track		( default 		, set_track )    	: SoundTrack;
 
 	private var _bPaused    : Bool;
 	private var _fPos       : Float;
 	private var _oChannel   : SoundChannel;
 	private var _oTransform : SoundTransform;
-	
+
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( m : Sound ) {
@@ -45,12 +45,12 @@ class BoxSound implements IDispose{
 			onSoundComplete	= new Signal( );
 			volume = 1.0;
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -58,7 +58,7 @@ class BoxSound implements IDispose{
 
 			if( media == null )
 				throw new Error( 'Media is not defined' );
-			
+
 			if( isPlaying && !_bPaused )
 				return false;
 
@@ -66,7 +66,7 @@ class BoxSound implements IDispose{
 				//startTime = _fPos;
 				_bPaused = false;
 			}
-			
+
 			_oChannel = media.play( startTime , iLoops , _oTransform );
 			if( _oChannel != null )
 				_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
@@ -74,31 +74,31 @@ class BoxSound implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function stop( ) : Bool {
-			
+
 			if( !isPlaying )
 				return false;
-			
+
 			_oChannel.removeEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 			_oChannel.stop( );
 			isPlaying = false;
 
 			return true;
 
-		}	
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
-		public function pause( ) : Bool {		
+		public function pause( ) : Bool {
 
 			if( _bPaused )
 				return false;
@@ -109,13 +109,13 @@ class BoxSound implements IDispose{
 				_oChannel.stop( );
 				return true;
 			}
-			
-			return false;		
+
+			return false;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -129,22 +129,22 @@ class BoxSound implements IDispose{
 			if( _oChannel != null )
 				_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
 
-			media       = null;			
+			media       = null;
 			_oChannel   = null;
 			_oTransform = null;
-			
+
 
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_isPlaying( b : Bool ) : Bool{
+		private function set_isPlaying( b : Bool ) : Bool{
 
 			if( isPlaying == b )
 				return isPlaying;
@@ -153,26 +153,26 @@ class BoxSound implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_media( m : Sound ) : Sound{
-			
-			if( isPlaying ) 
+		private function set_media( m : Sound ) : Sound{
+
+			if( isPlaying )
 				stop( );
 
 			return media = m;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_track( t : SoundTrack ) : SoundTrack{
+		private function set_track( t : SoundTrack ) : SoundTrack{
 
 			if( track != null )
 				track.update.disconnect( _on_track_update );
@@ -180,31 +180,31 @@ class BoxSound implements IDispose{
 			if( t != null )
 				_oTransform.volume = t.volume;
 				t.update.connect( _on_track_update );
-			
+
 			return track = t;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _on_track_update( ) : Void{
-			//_set_volume( volume );
+			//set_volume( volume );
 			//trace('_on_track_update ::: track.volume'+track.volume+' - volume : '+volume);
 			//volume = track.volume * volume;
 			_invalidate( );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_volume( f : Float ) : Float{
-			if( this.volume != f ){				
+		private function set_volume( f : Float ) : Float{
+			if( this.volume != f ){
 				this.volume = f;
 				_on_track_update( );
 				_invalidate( );
@@ -213,35 +213,35 @@ class BoxSound implements IDispose{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_pan( f : Float ) : Float{
+		private function set_pan( f : Float ) : Float{
 
 			if( this.pan != f ){
 				this.pan = f;
 				_invalidate( );
 			}
-			
+
 			return f;
 
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _get_is_paused( ) : Bool{
+		private function get_isPaused( ) : Bool{
 			return _bPaused;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -255,15 +255,15 @@ class BoxSound implements IDispose{
 			else
 				_oTransform.volume = volume * track.volume;
 				_oTransform.pan    = pan;
-			
+
 			if( _oChannel != null )
 				_oChannel.soundTransform = _oTransform;
 
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -272,5 +272,5 @@ class BoxSound implements IDispose{
 		}
 
 	// -------o misc
-	
+
 }

@@ -1,1 +1,1 @@
-package org.shoebox.patterns.mvc.interfaces; 	/**	 * @author shoe[box]	 */	interface IView implements IInit{				function cancel( ):Void;			}
+package org.shoebox.patterns.mvc.interfaces;	import org.shoebox.patterns.mvc.interfaces.IInit;	/**	 * @author shoe[box]	 */	interface IView extends IInit{		function cancel( ):Void;	}

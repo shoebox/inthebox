@@ -9,35 +9,35 @@ import org.shoebox.patterns.frontcontroller.FrontController;
 
 class AFCPlugin{
 
-	public var fc_instance ( default , _set_fc_instance ) : FrontController;
+	public var fc_instance ( default , set_fc_instance ) : FrontController;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new() {
-			
+
 		}
-	
+
 	// -------o public
-	
+
 	// -------o protected
-	
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_fc_instance( fc : FrontController ) : FrontController{
+		private function set_fc_instance( fc : FrontController ) : FrontController{
 			trace("_set_fc_instance ::: "+fc);
 			return this.fc_instance = fc;
-		}	
+		}
 
 	// -------o misc
-	
+
 }

@@ -1,8 +1,8 @@
 package org.shoebox.display;
 
-import nme.display.Bitmap;
-import nme.display.Sprite;
-import nme.display.Tilesheet;
+import flash.display.Bitmap;
+import flash.display.Sprite;
+import openfl.display.Tilesheet;
 import org.shoebox.display.AnimatedTilesMap;
 import org.shoebox.display.tile.TileDesc;
 import org.shoebox.geom.FPoint;
@@ -18,12 +18,12 @@ class AnimatedTile extends Sprite{
 #else
 class AnimatedTile extends TileDesc{
 #end
-	
+
 	#if !flash
 	public var name( default , default ) : String;
 	#end
 
-	public var cycle( default , _setCycle ) : String;
+	public var cycle( default , set_cycle ) : String;
 	public var onComplete : Signal;
 
 	private var _aFrame        : Array<Float>;
@@ -51,7 +51,7 @@ class AnimatedTile extends TileDesc{
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( refMap : AnimatedTilesMap , sCat : String , fps : Int = 30 ) {
@@ -99,20 +99,20 @@ class AnimatedTile extends TileDesc{
 	// -------o public
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function dispose( ) : Void {
 			#if flash
-			_tileDesc = null;	
+			_tileDesc = null;
 			#end
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -125,8 +125,8 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -137,8 +137,8 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -147,8 +147,8 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -158,8 +158,8 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -174,8 +174,8 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -185,13 +185,13 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function update( iDelay : Int ) : Void {
-			
+
 			if( !_bPlaying )
 				return;
 
@@ -202,7 +202,7 @@ class AnimatedTile extends TileDesc{
 			//End of the frame ?
 				var iFrames = 0;
 				if( _iTimeElapsed >= fps ){
-					
+
 					var diff = Std.int( _iTimeElapsed % fps );
 					iFrames = Std.int( ( _iTimeElapsed - diff ) / fps );
 					_iTimeElapsed = diff;
@@ -212,7 +212,7 @@ class AnimatedTile extends TileDesc{
 					return;
 
 
-			//				
+			//
 				if( iFrames > len ){
 					var diff = 0;
 					if( len != 0 )
@@ -231,7 +231,7 @@ class AnimatedTile extends TileDesc{
 
 
 				if( _iFrame > ( len ) ){
-					
+
 					if( _bMaxLoopCount ){
 						_iLoops--;
 						_iLoops = Std.int( Math.max( _iLoops , 0 ) );
@@ -241,14 +241,14 @@ class AnimatedTile extends TileDesc{
 							bComplete = true;
 						}else
 							_iFrame = _iFrame - _iCycleLen;
-						
+
 					}else
 						_iFrame = 0;
 				}
-			
+
 			//
 				if( bComplete ){
-					onComplete.emit( );				
+					onComplete.emit( );
 					bComplete = false;
 				}
 
@@ -258,20 +258,20 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function setCycle( s : String ) : Void {
-			_setCycle( s );
+			set_cycle( s );
 		}
 
 	// -------o protected
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -282,19 +282,19 @@ class AnimatedTile extends TileDesc{
 
 			_bPlaying     = bPlay;
 			_iFrame       = frameId;
-			_bInnvalidate = true;			
+			_bInnvalidate = true;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setCycle( s : String ) : String{
+		private function set_cycle( s : String ) : String{
 
 			if( s == null )
-				throw new nme.errors.Error( );
+				throw new flash.errors.Error( );
 
 			if( cycle == s )
 				return s;
@@ -308,13 +308,13 @@ class AnimatedTile extends TileDesc{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _redraw( ) : Void{
-			
+
 			//
 				#if flash
 					var pt  = _refMap.getFrameCenter( _sCat , cycle , _iFrame );
@@ -327,7 +327,7 @@ class AnimatedTile extends TileDesc{
 				#else
 					tileId = _refMap.getSubCycleId( _sCat , cycle , _iFrame );
 				#end
-				
+
 		}
 
 	// -------o misc

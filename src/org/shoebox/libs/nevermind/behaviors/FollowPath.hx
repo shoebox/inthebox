@@ -32,7 +32,7 @@
 package org.shoebox.libs.nevermind.behaviors;
 
 	import org.shoebox.core.Vector2D;
-	import nme.Vector;
+	import flash.Vector;
 
 	/**
 	 * org.shoebox.libs.nevermind.behaviors.FollowPath

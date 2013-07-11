@@ -29,7 +29,7 @@
 */
 package org.shoebox.geom;
 
-import nme.display.Graphics;
+import flash.display.Graphics;
 import org.shoebox.geom.AABB;
 
 /**

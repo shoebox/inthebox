@@ -29,12 +29,12 @@
 */
 package org.shoebox.utils.frak;
 
-	import nme.display.Sprite;
-	import nme.events.Event;
-	import nme.Lib;
-	import nme.text.TextField;
-	import nme.text.TextFieldAutoSize;
-	import nme.text.TextFieldType;
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.Lib;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFieldType;
 	import org.shoebox.core.BoxTextField;
 	import org.shoebox.patterns.mvc.abstracts.AView;
 	import org.shoebox.patterns.mvc.interfaces.IView;
@@ -43,7 +43,7 @@ package org.shoebox.utils.frak;
 	*
 	* @author shoebox
 	*/
-	class VFrak extends AView , implements IView {
+	class VFrak extends AView  implements IView {
 		
 		public var fHeight       : Float;
 		public var tfInput       : TextField;

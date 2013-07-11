@@ -28,7 +28,7 @@
 * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.shoebox.events;
-	import nme.events.Event;	
+	import flash.events.Event;	
 
 	/**
 	 * @author shoe[box]

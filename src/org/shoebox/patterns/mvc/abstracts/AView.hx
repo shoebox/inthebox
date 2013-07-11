@@ -29,12 +29,12 @@
 */
 package org.shoebox.patterns.mvc.abstracts;
 
-	import nme.display.Bitmap;
-	import nme.display.DisplayObject;
-	import nme.display.DisplayObjectContainer;
-	import nme.display.Loader;
-	import nme.display.MovieClip;
-	import nme.events.Event;
+	import flash.display.Bitmap;
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Loader;
+	import flash.display.MovieClip;
+	import flash.events.Event;
 	import org.shoebox.core.BoxObject;
 	import org.shoebox.core.interfaces.IDispose;
 	import org.shoebox.patterns.frontcontroller.FrontController;
@@ -56,8 +56,10 @@ package org.shoebox.patterns.mvc.abstracts;
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
+	#if reporterror
 	@:autoBuild( ShortCuts.errorReport( ) )
-	class AView extends MovieClip, implements IView {
+	#end
+	class AView extends MovieClip implements IView {
 
 		public var container : DisplayObjectContainer;
 
@@ -170,7 +172,7 @@ package org.shoebox.patterns.mvc.abstracts;
 						BoxObject.purge( d );
 						d = null;
 
-					}catch( e : nme.errors.Error ){
+					}catch( e : flash.errors.Error ){
 
 					}
 				}

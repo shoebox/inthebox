@@ -29,12 +29,12 @@
 */
 package org.shoebox.ui.gestures;
 
-import nme.display.Graphics;
-import nme.display.InteractiveObject;
-import nme.events.Event;
-import nme.system.Capabilities;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
+import flash.display.Graphics;
+import flash.display.InteractiveObject;
+import flash.events.Event;
+import flash.system.Capabilities;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 
 import org.shoebox.patterns.commands.AbstractCommand;
 import org.shoebox.patterns.commands.ICommand;
@@ -44,7 +44,7 @@ import org.shoebox.geom.FPoint;
  * ...
  * @author shoe[box]
  */
-class GestureBase extends AbstractCommand , implements ICommand{
+class GestureBase extends AbstractCommand  implements ICommand{
 
 	public var MIN_MOVE : Float;
 
@@ -54,7 +54,7 @@ class GestureBase extends AbstractCommand , implements ICommand{
 
 	private var _iCount   : Int;
 	private var _fCentral : FPoint;
-	private var _hPoints  : IntHash<TouchPoint2>;
+	private var _hPoints  : IntMap<String,TouchPoint2>;
 
 	// -------o constructor
 
@@ -66,7 +66,7 @@ class GestureBase extends AbstractCommand , implements ICommand{
 		*/
 		public function new() {
 			super( );
-			_hPoints = new IntHash<TouchPoint2>( );
+			_hPoints = new IntMap<String,TouchPoint2>( );
 			MIN_MOVE = 50 / 254 * Capabilities.screenDPI;
 		}
 

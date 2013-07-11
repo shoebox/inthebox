@@ -1,10 +1,10 @@
 package org.shoebox.medias;
 
-import com.eclecticdesignstudio.motion.Actuate;
-import com.eclecticdesignstudio.motion.easing.Linear;
+import motion.Actuate;
+import motion.easing.Linear;
 
-import nme.media.Sound;
-import nme.media.SoundTransform;
+import flash.media.Sound;
+import flash.media.SoundTransform;
 
 import org.shoebox.medias.BoxSound;
 import org.shoebox.utils.system.Signal;
@@ -16,19 +16,24 @@ import org.shoebox.utils.system.Signal;
 
 class SoundTrack{
 
-	public var transform	( _get_transform , _set_transform ) : SoundTransform;
-	public var volume		( _get_volume , _set_volume )     : Float;
-	public var mute			( default , _set_mute ) : Bool;
-	
+	@:isVar
+	public var transform	( get_transform , set_transform ) : SoundTransform;
+
+	@:isVar
+	public var volume		( get_volume , set_volume )     : Float;
+
+	@:isVar
+	public var mute			( default , set_mute ) : Bool;
+
 	public var sName	: String;
 	public var update	: Signal;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( sName : String ) {
@@ -37,12 +42,12 @@ class SoundTrack{
 			this.mute	= false;
 			this.sName	= sName;
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -54,8 +59,8 @@ class SoundTrack{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -66,60 +71,60 @@ class SoundTrack{
 	// -------o protected
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _get_transform( ) : SoundTransform{
+		private function get_transform( ) : SoundTransform{
 			if( mute )
-				this.transform.volume = 0.0;
+				get_transform( ).volume = 0.0;
 
 			return this.transform;
 
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_transform( t : SoundTransform ) : SoundTransform{
+		private function set_transform( t : SoundTransform ) : SoundTransform{
 			return this.transform = t;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_mute( b : Bool ) : Bool{
+		private function set_mute( b : Bool ) : Bool{
 			this.mute = b;
 			update.emit( );
 			return b;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _set_volume( v : Float ) : Float{
+		private function set_volume( v : Float ) : Float{
 			transform.volume = this.volume = v;
 			update.emit( );
 			return v;
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _get_volume( ) : Float{
+		private function get_volume( ) : Float{
 			if( mute )
 				return 0.0;
 
@@ -127,5 +132,5 @@ class SoundTrack{
 		}
 
 	// -------o misc
-	
+
 }

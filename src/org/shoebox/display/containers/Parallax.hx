@@ -32,13 +32,13 @@ package org.shoebox.display.containers;
 	import org.shoebox.geom.AABB;
 
 	import org.shoebox.core.Vector2D;
-	import nme.display.BitmapData;
-	import nme.display.IBitmapDrawable;
-	import nme.display.Sprite;
-	import nme.filters.BitmapFilter;
-	import nme.geom.Matrix;
-	import nme.errors.Error;
-	import nme.Lib;
+	import flash.display.BitmapData;
+	import flash.display.IBitmapDrawable;
+	import flash.display.Sprite;
+	import flash.filters.BitmapFilter;
+	import flash.geom.Matrix;
+	import flash.errors.Error;
+	import flash.Lib;
 	import org.shoebox.geom.FPoint;
 	
 	/**

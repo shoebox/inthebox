@@ -1,10 +1,10 @@
 package org.shoebox.display.tile;
 
 import haxe.Json;
-import nme.geom.Point;
-import nme.geom.Rectangle;
-import nme.display.BitmapData;
-import nme.display.Tilesheet;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.display.BitmapData;
+import openfl.display.Tilesheet;
 
 /**
  * ...
@@ -13,7 +13,7 @@ import nme.display.Tilesheet;
 
 class TilesMap extends Tilesheet{
 
-	private var _hContent		: Hash<Int>;
+	private var _hContent		: Map<String,Int>;
 	private var _iIncContent	: Int;
 
 	// -------o constructor
@@ -37,7 +37,7 @@ class TilesMap extends Tilesheet{
 		* @return	void
 		*/
 		public function parse( content : String , format : Format  ) : Void {
-			_hContent		= new Hash<Int>( );
+			_hContent		= new Map<String,Int>( );
 			_iIncContent	= 0;
 			var p = _getParser( format );
 				p.parse( content , this );
@@ -50,7 +50,7 @@ class TilesMap extends Tilesheet{
 		* @return	void
 		*/
 		public function parseCustom( content : String , parser : IFormat ) : Void {
-			_hContent		= new Hash<Int>( );
+			_hContent		= new Map<String,Int>( );
 			_iIncContent	= 0;
 			parser.parse( content , this );		
 		}
@@ -76,7 +76,7 @@ class TilesMap extends Tilesheet{
 		*/
 		public function get_TileId_by_name( s : String ) : Int {
 			if( !_hContent.exists( s ) )
-				throw new nme.errors.Error( Std.format('Tile name $s is unknow') );
+				throw new flash.errors.Error( Std.format('Tile name $s is unknow') );
 			return _hContent.get( s );
 		}
 

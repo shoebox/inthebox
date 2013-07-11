@@ -29,14 +29,14 @@
 */
 package org.shoebox.ui.gestures;
 
-import nme.Lib;
-import nme.display.Graphics;
-import nme.display.InteractiveObject;
-import nme.events.Event;
-import nme.events.TouchEvent;
-import nme.system.Capabilities;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
+import flash.Lib;
+import flash.display.Graphics;
+import flash.display.InteractiveObject;
+import flash.events.Event;
+import flash.events.TouchEvent;
+import flash.system.Capabilities;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 
 import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
@@ -50,7 +50,7 @@ using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
  * ...
  * @author shoe[box]
  */
-class TapGesture extends GestureBase , implements ICommand{
+class TapGesture extends GestureBase  implements ICommand{
 
 	public var duration ( default , default ) : Int;
 	public var onTap : Signal1<TouchEvent>;

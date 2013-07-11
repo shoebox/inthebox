@@ -1,24 +1,24 @@
 /**
 *  HomeMade by shoe[box]
 *
-*  Redistribution and use in source and binary forms, with or without 
+*  Redistribution and use in source and binary forms, with or without
 *  modification, are permitted provided that the following conditions are
 *  met:
 *
-* Redistributions of source code must retain the above copyright notice, 
+* Redistributions of source code must retain the above copyright notice,
 *   this list of conditions and the following disclaimer.
-*  
+*
 * Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in the 
+*    notice, this list of conditions and the following disclaimer in the
 *    documentation and/or other materials provided with the distribution.
-*  
-* Neither the name of shoe[box] nor the names of its 
-* contributors may be used to endorse or promote products derived from 
+*
+* Neither the name of shoe[box] nor the names of its
+* contributors may be used to endorse or promote products derived from
 * this software without specific prior written permission.
 * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
 * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+* PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
 * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
 * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
 * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
@@ -29,9 +29,9 @@
 */
 package org.shoebox.utils.system;
 
-import nme.display.DisplayObject;
-import nme.events.Event;
-import nme.events.EventDispatcher;
+import flash.display.DisplayObject;
+import flash.events.Event;
+import flash.events.EventDispatcher;
 import org.shoebox.utils.system.Signal1;
 
 /**
@@ -41,66 +41,66 @@ import org.shoebox.utils.system.Signal1;
 
 class SignalEvent<T:Event> extends Signal1<T>{
 
-	public var eventType	( default , _setEvent ) 	: String;
-	public var target		( default , _setTarget ) 	: EventDispatcher;
+	@:isVar public var eventType	( default , set ) 	: String;
+	@:isVar public var target		( default , set ) 	: EventDispatcher;
 
 	private var _bBubbling: Bool;
-	
+
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( target : EventDispatcher , sType : String , bBubbling : Bool = false ) {
 			_bBubbling = bBubbling;
-			_setTarget( target );
-			_setEvent( sType );
+			set_target( target );
+			set_eventType( sType );
 			super( );
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function connect( f : T->Void , prio : Int = 0 , count : Int = -1 ) : Void {
-			super.connect( f , prio , count );		
+			super.connect( f , prio , count );
 			if( !enabled )
-				_setEnabled( true );
+				set_enabled( true );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function disconnect( f : T->Void , prio : Int = 0 ) : Void {
 			super.disconnect( f , prio );
 			if( _oQueue.length == 0 )
-				_setEnabled( false );
+				set_enabled( false );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		override public function dispose( ) : Void {
 			enabled = false;
-			super.dispose( );		
+			super.dispose( );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -109,15 +109,15 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setTarget( target : EventDispatcher ) : EventDispatcher{
-		
+		private function set_target( target : EventDispatcher ) : EventDispatcher{
+
 			_removeListener( );
 
 			this.target = target;
@@ -129,32 +129,32 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		override private function _setEnabled( b : Bool ) : Bool{
-			
+		override private function set_enabled( b : Bool ) : Bool{
+
 			if( b )
 				_addListener( );
 			else
 				_removeListener( );
 
-			return super._setEnabled( b );
+			return super.set_enabled( b );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		private function _setEvent( s : String ) : String{
-			
+		private function set_eventType( s : String ) : String{
+
 			if( enabled )
 				_removeListener( );
-				
+
 			this.eventType = s;
 
 			if( enabled )
@@ -164,8 +164,8 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -175,8 +175,8 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -186,8 +186,8 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -197,5 +197,5 @@ class SignalEvent<T:Event> extends Signal1<T>{
 		}
 
 	// -------o misc
-	
+
 }

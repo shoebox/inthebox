@@ -29,12 +29,12 @@
 */
 package org.shoebox.display;
 
-import nme.display.DisplayObjectContainer;
-import nme.Lib;
-import nme.display.DisplayObject;
-import nme.display.StageAlign;
-import nme.geom.Rectangle;
-import nme.text.TextField;
+import flash.display.DisplayObjectContainer;
+import flash.Lib;
+import flash.display.DisplayObject;
+import flash.display.StageAlign;
+import flash.geom.Rectangle;
+import flash.text.TextField;
 import org.shoebox.geom.AABB;
 
 /**

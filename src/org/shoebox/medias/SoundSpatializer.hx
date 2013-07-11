@@ -1,9 +1,9 @@
 package org.shoebox.medias;
 
-import nme.errors.Error;
-import nme.media.Sound;
-import nme.media.SoundChannel;
-import nme.media.SoundTransform;
+import flash.errors.Error;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.media.SoundTransform;
 import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
 import org.shoebox.medias.BoxSound;
@@ -15,7 +15,7 @@ import org.shoebox.medias.BoxSound;
 
 class SoundSpatializer{
 
-	private var _hContent : Hash<SpatialSound>;
+	private var _hContent : Map<String,SpatialSound>;
 
 	// -------o constructor
 		
@@ -26,7 +26,7 @@ class SoundSpatializer{
 		* @return	void
 		*/
 		public function new() {
-			_hContent = new Hash<SpatialSound>( );
+			_hContent = new Map<String,SpatialSound>( );
 		}
 	
 	// -------o public

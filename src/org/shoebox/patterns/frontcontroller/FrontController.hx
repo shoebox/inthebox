@@ -31,20 +31,17 @@ package org.shoebox.patterns.frontcontroller;
 
 import haxe.rtti.Meta;
 
-import nme.display.DisplayObjectContainer;
+import flash.display.DisplayObjectContainer;
 
 import org.shoebox.core.BoxArray;
 import org.shoebox.core.BoxObject;
 import org.shoebox.core.interfaces.IDispose;
-import org.shoebox.patterns.frontcontroller.Injector;
+import org.shoebox.patterns.commands.AbstractCommand;
+import org.shoebox.patterns.commands.ICommand;
 import org.shoebox.patterns.frontcontroller.plugins.AFCPlugin;
-import org.shoebox.patterns.mvc.abstracts.AController;
-import org.shoebox.patterns.mvc.abstracts.AModel;
-import org.shoebox.patterns.mvc.abstracts.AView;
-import org.shoebox.patterns.mvc.interfaces.IController;
-import org.shoebox.patterns.mvc.interfaces.IInit;
-import org.shoebox.patterns.mvc.interfaces.IModel;
-import org.shoebox.patterns.mvc.interfaces.IView;
+import org.shoebox.patterns.mvc.*;
+import org.shoebox.patterns.mvc.abstracts.*;
+import org.shoebox.patterns.mvc.interfaces.*;
 import org.shoebox.utils.system.Signal2;
 
 /**
@@ -55,13 +52,12 @@ import org.shoebox.utils.system.Signal2;
 class FrontController{
 
 	public var owner ( default , default ) : DisplayObjectContainer;
-	public var state ( default , _setState) : String;
+	public var state ( default , set_state) : String;
 	public var onStateChange : Signal2<String,String>;
 
 	private var _aCurrent	: Array<String>;
-	private var _hStates	: Hash<Array<String>>;
-	private var _hTriads	: Hash<MVCTriad>;
-	private var _injector	: Injector;
+	private var _hStates	: Map<String,Array<String>>;
+	private var _hTriads	: Map<String,MVCTriad>;
 
 	// -------o constructor
 
@@ -73,9 +69,8 @@ class FrontController{
 		*/
 		public function new() {
 			_aCurrent	= [ ];
-			_injector		= new Injector( );
-			_hStates		= new Hash<Array<String>>( );
-			_hTriads		= new Hash<MVCTriad>( );
+			_hStates		= new Map<String,Array<String>>( );
+			_hTriads		= new Map<String,MVCTriad>( );
 			onStateChange	= new Signal2<String,String>( );
 		}
 
@@ -105,7 +100,7 @@ class FrontController{
 							) : String {
 
 			if( owner == null )
-				throw new nme.errors.Error('Owner is not defined');
+				throw new flash.errors.Error('Owner is not defined');
 
 			if( s == null )
 				s = cMod + '|' + cView + ' | '+cController;
@@ -113,7 +108,7 @@ class FrontController{
 			//
 				#if debug
 					if( _hTriads.exists( s ) )
-						throw new nme.errors.Error( Std.format('Error : The Triad mod : $cMod | view : $cView | controller : $cController already exists' ));
+						throw new flash.errors.Error( 'Error : The Triad mod : $cMod | view : $cView | controller : $cController already exists' );
 				#end
 
 			//
@@ -167,37 +162,6 @@ class FrontController{
 		* @public
 		* @return	void
 		*/
-		public function register_dependency<T>( for_type : Class<T> , ?value : T , ?optional_name : String ) : Void {
-			_injector.register_dependency( for_type , value , optional_name );
-		}
-
-		/**
-		*
-		*
-		* @public
-		* @return	void
-		*/
-		public function inject_dependencies_on<T>( instance : T , ?typ : Class<T> ) : Void {
-			//trace("inject_dependencies_on ::: "+instance);
-			_injector.inject_dependencies_on( instance , typ );
-		}
-
-		/**
-		*
-		*
-		* @public
-		* @return	void
-		*/
-		public function set_dependency_value<T>( for_type : Class<T> , value : T , ?optional_name : String ) : Void {
-			_injector.set_dependency_value( for_type , value , optional_name );
-		}
-
-		/**
-		*
-		*
-		* @public
-		* @return	void
-		*/
 		public function setAppVariables( target_app_name : String , variables : Array<Dynamic> ) : Void {
 			getApp( target_app_name ).variables = variables;
 		}
@@ -233,8 +197,8 @@ class FrontController{
 		* @private
 		* @return	void
 		*/
-		private function _setState( s : String ) : String{
-			//trace("_setState ::: "+s);
+		private function set_state( s : String ) : String{
+			//trace("set_state ::: "+s);
 			if( this.state == s || !_hStates.exists( s ) )
 				return s;
 
@@ -289,7 +253,7 @@ class FrontController{
 			#if cpp
 			cpp.vm.Gc.run( true );
 			#else
-			nme.system.System.gc( );
+			flash.system.System.gc( );
 			#end
 
 		}
@@ -308,8 +272,7 @@ class FrontController{
 
 }
 
-import org.shoebox.patterns.commands.AbstractCommand;
-import org.shoebox.patterns.commands.ICommand;
+
 
 /**
  * ...
@@ -521,10 +484,8 @@ class MVCTriadInstance implements IDispose{
 			if( model != null )
 				model.cancel( );
 
-
 			if( controller != null )
 				controller.cancel( );
-
 
 			if( view != null ){
 
@@ -548,10 +509,9 @@ class MVCTriadInstance implements IDispose{
 											_purge( model );
 											_purge( view );
 											_purge( controller );
-
-											model = null;
-											view = null;
-											controller = null;
+											model		= null;
+											view		= null;
+											controller	= null;
 											},100);
 		}
 

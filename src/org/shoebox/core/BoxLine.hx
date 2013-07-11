@@ -29,8 +29,8 @@
 */
 package org.shoebox.core;
 
-import nme.Lib;
-import nme.display.Sprite;
+import flash.Lib;
+import flash.display.Sprite;
 import org.shoebox.core.Vector2D;
 
 /**

@@ -29,10 +29,10 @@
 */
 package org.shoebox.display;
 
-import nme.display.BitmapData;
-import nme.display.Tilesheet;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import openfl.display.Tilesheet;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import org.shoebox.core.interfaces.IDispose;
 import org.shoebox.geom.FPoint;
 
@@ -41,12 +41,12 @@ import org.shoebox.geom.FPoint;
  * @author shoe[box]
  */
 
-class TilesMap extends Tilesheet , implements IDispose{
+class TilesMap extends Tilesheet  implements IDispose{
 
-	private var _hCycles  : Hash<Int>;
-	private var _hNames   : Hash<Int>;
-	private var _hCenters : Hash<Point>;
-	private var _hBounds  : Hash<Rectangle>;
+	private var _hCycles  : Map<String,Int>;
+	private var _hNames   : Map<String,Int>;
+	private var _hCenters : Map<String,Point>;
+	private var _hBounds  : Map<String,Rectangle>;
 	private var _iInc     : Int;
 
 	// -------o constructor
@@ -59,9 +59,9 @@ class TilesMap extends Tilesheet , implements IDispose{
 		*/
 		public function new( bmp : BitmapData ) {
 			super( bmp );	
-			_hNames   = new Hash<Int>( );
-			_hBounds  = new Hash<Rectangle>( );
-			_hCenters = new Hash<Point>( );
+			_hNames   = new Map<String,Int>( );
+			_hBounds  = new Map<String,Rectangle>( );
+			_hCenters = new Map<String,Point>( );
 			_iInc     = 0;
 		}
 	
@@ -114,7 +114,7 @@ class TilesMap extends Tilesheet , implements IDispose{
 		public function getIdByName( s : String ) : Int {
 
 			if( !_hNames.exists( s ) )
-				throw new nme.errors.Error('Unknow id');
+				throw new flash.errors.Error('Unknow id');
 
 			return _hNames.get( s );
 		}

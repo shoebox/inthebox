@@ -29,12 +29,12 @@
 */
 package org.shoebox.ui;
 
-import nme.display.Graphics;
-import nme.display.InteractiveObject;
-import nme.events.Event;
-import nme.events.TouchEvent;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
+import flash.display.Graphics;
+import flash.display.InteractiveObject;
+import flash.events.Event;
+import flash.events.TouchEvent;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 
 import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
@@ -49,7 +49,7 @@ using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
  * @author shoe[box]
  */
 
-class PinchZoom extends AbstractCommand , implements ICommand{
+class PinchZoom extends AbstractCommand  implements ICommand{
 
 	public var active( _getActive , never ) : Bool;
 	public var onZoom : Signal1<Float>;

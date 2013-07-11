@@ -29,9 +29,9 @@
 */
 package org.shoebox.utils;
 
-import nme.events.TimerEvent;
-import nme.Lib;
-import nme.utils.Timer;
+import flash.events.TimerEvent;
+import flash.Lib;
+import flash.utils.Timer;
 
 /**
  * ...

@@ -29,17 +29,17 @@
 */
 package org.shoebox.display.containers;
 
-	import nme.display.DisplayObject;
-	import nme.display.BitmapData;
-	import nme.display.Bitmap;
-	import nme.display.IBitmapDrawable;
-	import nme.display.Sprite;
-	import nme.filters.BitmapFilter;
-	import nme.filters.BlurFilter;
-	import nme.geom.Matrix;
-	import nme.geom.Point;
-	import nme.geom.Rectangle;
-	import nme.Lib;
+	import flash.display.DisplayObject;
+	import flash.display.BitmapData;
+	import flash.display.Bitmap;
+	import flash.display.IBitmapDrawable;
+	import flash.display.Sprite;
+	import flash.filters.BitmapFilter;
+	import flash.filters.BlurFilter;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.Lib;
 	
 	import org.shoebox.geom.AABB;
 	import org.shoebox.core.BoxMath;

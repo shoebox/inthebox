@@ -29,9 +29,9 @@
 */
 package org.shoebox.events.seq;
 
-	import nme.utils.Timer;
-	import nme.events.EventDispatcher;
-	import nme.events.Event;
+	import flash.utils.Timer;
+	import flash.events.EventDispatcher;
+	import flash.events.Event;
 
 	/**
 	* fr.hyperfiction.events.seq.SeqDelayer

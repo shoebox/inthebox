@@ -29,7 +29,7 @@
 */
 package org.shoebox.events.seq;
 
-	import nme.events.Event;
+	import flash.events.Event;
 	
 	class EventSequenceEvent extends Event{
 		

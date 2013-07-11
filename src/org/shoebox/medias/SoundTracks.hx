@@ -1,6 +1,6 @@
 package org.shoebox.medias;
 
-import nme.errors.Error;
+import flash.errors.Error;
 import org.shoebox.medias.SoundTrack;
 
 /**
@@ -10,7 +10,7 @@ import org.shoebox.medias.SoundTrack;
 
 class SoundTracks{
 
-	private var _hGroup : Hash<SoundTrack>;
+	private var _hGroup : Map<String,SoundTrack>;
 
 	// -------o constructor
 		
@@ -21,7 +21,7 @@ class SoundTracks{
 		* @return	void
 		*/
 		private function new() {
-			_hGroup = new Hash<SoundTrack>( );
+			_hGroup = new Map<String,SoundTrack>( );
 		}
 	
 	// -------o public

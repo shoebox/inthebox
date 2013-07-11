@@ -1,7 +1,7 @@
 package org.shoebox.utils.system.flashevents;
 
-import nme.events.EventDispatcher;
-import nme.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.Event;
 import org.shoebox.utils.system.SignalEvent;
 
 /**
@@ -11,25 +11,25 @@ import org.shoebox.utils.system.SignalEvent;
 
 class FlashEventsCache{
 
-	private var _cache : IntHash<Hash<Array<CacheDesc>>>;
+	private var _cache : Map<Int,Map<String,Array<CacheDesc>>>;
 
 	// -------o constructor
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		private function new( ) : Void {
-			_cache = new IntHash<Hash<Array<CacheDesc>>>( );
+			_cache = new Map<Int,Map<String,Array<CacheDesc>>>( );
 		}
 
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -59,19 +59,19 @@ class FlashEventsCache{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function get<T:Event>( c : Class<T> , chan : Int , target : EventDispatcher , sType : String , bBub : Bool = false ) : SignalEvent<Event>{
-			
+
 			// Type
-				var hTypes : Hash<Array<CacheDesc>>;
+				var hTypes : Map<String,Array<CacheDesc>>;
 				if( _cache.exists( chan ) )
 					hTypes = _cache.get( chan );
 				else
-					_cache.set( chan , hTypes = new Hash<Array<CacheDesc>>( ) );
+					_cache.set( chan , hTypes = new Map<String,Array<CacheDesc>>( ) );
 
 			// Array
 				var aSubs  : Array<CacheDesc>;
@@ -79,7 +79,7 @@ class FlashEventsCache{
 					aSubs = hTypes.get( sType );
 				else
 					hTypes.set( sType , aSubs = new Array<CacheDesc>( ) );
-			
+
 			//
 				var b = false;
 				var res = null;
@@ -100,12 +100,12 @@ class FlashEventsCache{
 		}
 
 	// -------o protected
-		
+
 	// -------o misc
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -113,7 +113,7 @@ class FlashEventsCache{
 			if( __instance == null )
 				__instance = new FlashEventsCache( );
 
-			return __instance;	
+			return __instance;
 		}
 
 		private static var __instance : FlashEventsCache = null;
@@ -132,11 +132,11 @@ class CacheDesc{
 	public var signal : SignalEvent<Event>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( target : EventDispatcher , b : Bool , signal : SignalEvent<Event> ) : Void {
@@ -144,11 +144,11 @@ class CacheDesc{
 			this.bBub	= b;
 			this.signal	= signal;
 		}
-	
+
 	// -------o public
-	
+
 	// -------o protected
-	
+
 	// -------o misc
-	
+
 }

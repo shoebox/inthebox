@@ -29,10 +29,10 @@
 */
 package org.shoebox.events.seq;
 
-	import nme.events.EventDispatcher;
-	import nme.events.Event;
-	import nme.events.TimerEvent;
-	import nme.events.TouchEvent;
+	import flash.events.EventDispatcher;
+	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.events.TouchEvent;
 
 	import org.shoebox.events.seq.ISeq;
 	import org.shoebox.events.seq.SeqEvent;
@@ -46,7 +46,7 @@ package org.shoebox.events.seq;
 	* org.shoebox.events.seq.EventSequence
 	* @author shoebox
 	*/
-	class EventSequence extends AbstractCommand , implements ICommand{
+	class EventSequence extends AbstractCommand  implements ICommand{
 		
 		public var monoTouchId : Bool;
 

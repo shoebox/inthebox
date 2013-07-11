@@ -1,16 +1,16 @@
 package org.shoebox.utils;
 
 import haxe.Timer;
-import nme.Assets;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.events.Event;
-import nme.Lib;
-import nme.display.Sprite;
-import nme.system.System;
-import nme.text.TextField;
-import nme.text.TextFieldAutoSize;
-import nme.text.TextFormat;
+import flash.Assets;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.events.Event;
+import flash.Lib;
+import flash.display.Sprite;
+import flash.system.System;
+import flash.text.TextField;
+import flash.text.TextFieldAutoSize;
+import flash.text.TextFormat;
 import org.shoebox.utils.FrameTimer;
 
 using org.shoebox.utils.system.flashevents.InteractiveObjectEv;
@@ -98,7 +98,7 @@ class Perf extends Sprite{
 				_tfFps = new TextField ();
 		
 			//
-				_tfFps.autoSize          = nme.text.TextFieldAutoSize.LEFT;
+				_tfFps.autoSize          = flash.text.TextFieldAutoSize.LEFT;
 				#if( android || ios )
 				_tfFps.defaultTextFormat = new TextFormat(null,12,0xFFFFFF);
 				#else
@@ -127,7 +127,7 @@ class Perf extends Sprite{
 			while( _aTimes[ 0 ] < now - 1)
 				_aTimes.shift();
 			
-			var mem : Float = nme.system.System.totalMemory;
+			var mem : Float = flash.system.System.totalMemory;
 				mem = Math.round( mem * 0.000000954 * 1000 ) / 1000;
 
 

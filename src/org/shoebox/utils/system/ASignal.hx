@@ -38,7 +38,7 @@ import org.shoebox.collections.PriorityQueue;
 
 class ASignal<T>{
 
-	public var enabled( default , _setEnabled ) : Bool;
+	public var enabled( default , set_enabled ) : Bool;
 
 	private var _oQueue : PriorityQueue<SignalListener<T>>;
 
@@ -167,7 +167,7 @@ class ASignal<T>{
 		* @private
 		* @return	void
 		*/
-		private function _setEnabled( b : Bool ) : Bool{
+		private function set_enabled( b : Bool ) : Bool{
 			this.enabled = b;
 			return b;
 		}

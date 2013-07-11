@@ -34,8 +34,8 @@ package org.shoebox.patterns.mvc.abstracts;
 	import org.shoebox.patterns.mvc.abstracts.AController;
 	import org.shoebox.patterns.frontcontroller.FrontController;
 	import org.shoebox.patterns.mvc.interfaces.IView;
-	import nme.events.Event;
-	import nme.events.EventDispatcher;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
 
 	/**
 	 * ABSTRACT MODEL (MVC PACKAGE)
@@ -50,7 +50,7 @@ package org.shoebox.patterns.mvc.abstracts;
 	* @date:26 janv. 09
 	* @author shoe[box]
 	*/
-	#if !debug
+	#if reporterror
 	@:autoBuild( ShortCuts.errorReport( ) )
 	#end
 	class AModel {

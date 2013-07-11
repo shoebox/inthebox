@@ -1,6 +1,6 @@
 package org.shoebox.patterns.frontcontroller.plugins;
 
-import nme.events.KeyboardEvent;
+import flash.events.KeyboardEvent;
 import org.shoebox.patterns.frontcontroller.FrontController;
 import org.shoebox.patterns.frontcontroller.plugins.AFCPlugin;
 
@@ -17,11 +17,11 @@ class FCHistory extends AFCPlugin{
 	private var _a_history : Array<String>;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( bAuto : Bool = false ) {
@@ -30,23 +30,23 @@ class FCHistory extends AFCPlugin{
 			if( bAuto )
 				_init( );
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		public function clear_history( ) : Void {
 			if( _a_history != null )
-				_a_history.splice( 0 , _a_history.length );		
+				_a_history.splice( 0 , _a_history.length );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -54,19 +54,19 @@ class FCHistory extends AFCPlugin{
 
 			#if debug
 				if( _a_ignore != null && Lambda.has( _a_ignore , sState ) )
-					throw new nme.errors.Error( Std.format( "The state $sState is already ignored"));
+					throw new flash.errors.Error( 'The state $sState is already ignored' );
 			#end
 
 			//
 				if( _a_ignore == null )
 					_a_ignore = [ ];
 					_a_ignore.push( sState );
-			
+
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -83,7 +83,7 @@ class FCHistory extends AFCPlugin{
 			//
 				var s = _a_history.pop( );
 				trace("s ::: "+s);
-				
+
 			//
 				fc_instance.onStateChange.disconnect( _on_state_change );
 				fc_instance.state = s;
@@ -93,8 +93,8 @@ class FCHistory extends AFCPlugin{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -103,25 +103,25 @@ class FCHistory extends AFCPlugin{
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _init( ) : Void{
-			nme.Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP , _onKey_up , false );
+			flash.Lib.current.stage.addEventListener( KeyboardEvent.KEY_UP , _onKey_up , false );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
 		private function _onKey_up( e : KeyboardEvent ) : Void{
-			
+
 			if( e.keyCode == 8 || e.keyCode == 27 ){
 				e.stopImmediatePropagation();
 				e.stopPropagation();
@@ -130,24 +130,24 @@ class FCHistory extends AFCPlugin{
 				#end
 				go_back( );
 			}
-			
+
 
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
-		override private function _set_fc_instance( fc : FrontController ) : FrontController{
+		override private function set_fc_instance( fc : FrontController ) : FrontController{
 			fc.onStateChange.connect( _on_state_change );
-			return super._set_fc_instance( fc );
-		}	
+			return super.set_fc_instance( fc );
+		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -155,13 +155,13 @@ class FCHistory extends AFCPlugin{
 			if( sPrev != null && !_is_ignored( sPrev ) ){
 				if( _a_history == null )
 					_a_history = [ ];
-					_a_history.push( sPrev );					
+					_a_history.push( sPrev );
 			}
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -170,10 +170,10 @@ class FCHistory extends AFCPlugin{
 			var bRes = false;
 			if( _a_ignore != null )
 				bRes = Lambda.has( _a_ignore , sToTest );
-			
+
 			return bRes;
-		}	
+		}
 
 	// -------o misc
-	
+
 }

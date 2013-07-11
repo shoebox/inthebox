@@ -14,7 +14,7 @@ class Paths{
 	static private var _aConstants : Array<Constant>;
 	static private var _aDomains   : Array<Domain>;
 	static private var _aPaths     : Array<Path>;
-	static private var _hPaths     : Hash<String>;
+	static private var _hPaths     : Map<String,String>;
 
 	// -------o constructor
 		
@@ -79,7 +79,7 @@ class Paths{
 		static public function get( sName : String ) : String {
 
 			if( !_hPaths.exists( sName ) )
-				throw new nme.errors.Error('The path '+sName+' is not defined for the current domain : '+domain);
+				throw new flash.errors.Error('The path '+sName+' is not defined for the current domain : '+domain);
 
 			return _hPaths.get( sName );
 		}
@@ -94,7 +94,7 @@ class Paths{
 		*/
 		static private function _test( ) : Void{
 			#if flash
-			var sUrl = nme.Lib.current.stage.loaderInfo.url;
+			var sUrl = flash.Lib.current.stage.loaderInfo.url;
 			#else
 			var sUrl = 'DEFAULT';
 			#end
@@ -120,7 +120,7 @@ class Paths{
 
 					// Parsing paths linked to the domains
 						_aPaths = dom.paths;
-						_hPaths = new Hash<String>( );
+						_hPaths = new Map<String,String>( );
 						for( p in _aPaths ){
 							_hPaths.set( p.name , p.value );
 						}

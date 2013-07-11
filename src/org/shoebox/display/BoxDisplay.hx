@@ -1,14 +1,14 @@
 package org.shoebox.display;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Stage;
-import nme.display.DisplayObject;
-import nme.display.DisplayObjectContainer;
-import nme.display.StageAlign;
-import nme.geom.Rectangle;
-import nme.Lib;
-import nme.text.TextField;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Stage;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+import flash.display.StageAlign;
+import flash.geom.Rectangle;
+import flash.Lib;
+import flash.text.TextField;
 
 import org.shoebox.geom.AABB;
 
@@ -39,8 +39,8 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
-		static public function haxeStage( d : DisplayObject ) : nme.display.Stage {
-			return nme.Lib.current.stage;
+		static public function haxeStage( d : DisplayObject ) : flash.display.Stage {
+			return flash.Lib.current.stage;
 		}
 
 		/**
@@ -50,7 +50,7 @@ class BoxDisplay{
 		* @return	void
 		*/
 		static public function getStageW( d : DisplayObject ) : Int {
-			return nme.Lib.current.stage.stageWidth;
+			return flash.Lib.current.stage.stageWidth;
 		}
 
 		/**
@@ -60,7 +60,7 @@ class BoxDisplay{
 		* @return	void
 		*/
 		static public function getStageH( d : DisplayObject ) : Int {
-			return nme.Lib.current.stage.stageHeight;
+			return flash.Lib.current.stage.stageHeight;
 		}
 
 		/**
@@ -235,7 +235,7 @@ class BoxDisplay{
 			var w = Std.int( target.width + iMarginX * 2 );
 			var h = Std.int( target.height + iMarginY * 2 );
 
-			var mat = new nme.geom.Matrix( );
+			var mat = new flash.geom.Matrix( );
 				mat.tx = iMarginX;
 				mat.ty = iMarginY;
 

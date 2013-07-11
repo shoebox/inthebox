@@ -29,8 +29,8 @@
 */
 package org.shoebox.geom;
 
-import com.eclecticdesignstudio.motion.Actuate;
-import nme.geom.Matrix;
+import motion.Actuate;
+import flash.geom.Matrix;
 import org.shoebox.core.BoxMath;
 import org.shoebox.geom.FPoint;
 

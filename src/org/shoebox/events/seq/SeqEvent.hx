@@ -29,8 +29,8 @@
 */
 package org.shoebox.events.seq;
 
-	import nme.events.EventDispatcher;
-	import nme.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.Event;
 	import org.shoebox.utils.system.Signal1;
 
 	/**

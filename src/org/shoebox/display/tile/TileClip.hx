@@ -30,7 +30,7 @@ class TileClip extends TileDesc{
 			super( );
 			_bInvalidate = true;
 			_iTimeElapsed = 0;
-			loopTime = Std.int( 1000 / nme.Lib.current.stage.frameRate );
+			loopTime = Std.int( 1000 / flash.Lib.current.stage.frameRate );
 		}
 	
 	// -------o public

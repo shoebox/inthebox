@@ -1,7 +1,7 @@
 package org.shoebox.patterns.commands;
 
-import nme.errors.Error;
-import nme.events.EventDispatcher;
+import flash.errors.Error;
+import flash.events.EventDispatcher;
 import org.shoebox.patterns.commands.ICommand;
 import org.shoebox.patterns.frontcontroller.FrontController;
 import org.shoebox.utils.system.Signal;
@@ -11,7 +11,7 @@ import org.shoebox.utils.system.Signal;
  * @author shoe[box]
  */
 
-class AbstractCommand extends EventDispatcher , implements ICommand{
+class AbstractCommand extends EventDispatcher  implements ICommand{
 
 	public var frontController : FrontController;
 	public var isRunning : Bool;

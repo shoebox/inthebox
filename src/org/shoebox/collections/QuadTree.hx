@@ -31,7 +31,7 @@ package org.shoebox.collections;
 
 import Lambda;
 import haxe.Md5;
-import nme.display.Graphics;
+import flash.display.Graphics;
 import org.shoebox.geom.AABB;
 import org.shoebox.geom.FPoint;
 

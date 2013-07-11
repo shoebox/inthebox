@@ -29,11 +29,11 @@
 */
 package org.shoebox.display.particles;
 
-import nme.errors.Error;
-import nme.display.Sprite;
-import nme.display.Sprite;
-import nme.display.Tilesheet;
-import nme.display.Graphics;
+import flash.errors.Error;
+import flash.display.Sprite;
+import flash.display.Sprite;
+import openfl.display.Tilesheet;
+import flash.display.Graphics;
 import org.shoebox.display.tile.TileDesc;
 import org.shoebox.libs.nevermind.behaviors.Wander;
 import org.shoebox.libs.nevermind.entity.SteeringEntity;

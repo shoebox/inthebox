@@ -1,10 +1,10 @@
 package org.shoebox.display.tile;
 
 import haxe.Json;
-import nme.display.BitmapData;
-import nme.errors.Error;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.errors.Error;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import org.shoebox.core.BoxMath;
 import org.shoebox.display.tile.TilesMap;
 
@@ -15,7 +15,7 @@ import org.shoebox.display.tile.TilesMap;
 
 class TilesMapAnimated extends TilesMap{
 
-	private var _hCycles : Hash<Int>;
+	private var _hCycles : Map<String,Int>;
 
 	// -------o constructor
 		
@@ -39,8 +39,8 @@ class TilesMapAnimated extends TilesMap{
 		*/
 		override public function parse( content : String , format : Format  ) : Void {
 
-			_hCycles		= new Hash<Int>( );
-			_hContent		= new Hash<Int>( );
+			_hCycles		= new Map<String,Int>( );
+			_hContent		= new Map<String,Int>( );
 			_iIncContent	= 0;
 			var p = _getParser( format );
 				p.parse( content , this );
@@ -119,7 +119,7 @@ class TilesMapAnimated extends TilesMap{
  * @author shoe[box]
  */
 
-class AnimsJSONArrayParser extends JSONArrayParser, implements IFormat{
+class AnimsJSONArrayParser extends JSONArrayParser implements IFormat{
 
 	public var map ( default , default ) : TilesMapAnimated;
 
