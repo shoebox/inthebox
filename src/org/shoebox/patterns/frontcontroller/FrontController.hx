@@ -198,7 +198,7 @@ class FrontController{
 		* @return	void
 		*/
 		private function set_state( s : String ) : String{
-			//trace("set_state ::: "+s);
+			// trace("set_state ::: "+s);
 			if( this.state == s || !_hStates.exists( s ) )
 				return s;
 

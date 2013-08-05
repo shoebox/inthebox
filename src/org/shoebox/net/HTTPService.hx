@@ -55,13 +55,13 @@ class HTTPService extends URLLoader  implements IDispose{
 		* @return	void
 		*/
 		override public function load( req : URLRequest ) : Void {
-
+			//trace("load ::: "+req);
 			try{
 				close( );
 			}catch( e : flash.errors.Error ){
 
 			}
-
+			//trace("_oVariables ::: "+_oVariables);
 			if( _oVariables != null )
 				req.data   = _oVariables;
 				req.method = method == GET ? URLRequestMethod.GET : URLRequestMethod.POST;
@@ -81,7 +81,7 @@ class HTTPService extends URLLoader  implements IDispose{
 			try{
 				super.load( req );
 			}catch( e : flash.errors.Error ){
-				trace('e ::: '+e);
+				//trace('e ::: '+e);
 			}
 		}
 
@@ -175,7 +175,7 @@ class HTTPService extends URLLoader  implements IDispose{
 		*/
 		private function _onIoError( e : IOErrorEvent ) : Void{
 			#if debug
-			trace( e );
+			//trace( e );
 			#end
 			throw e;
 		}

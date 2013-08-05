@@ -22,11 +22,11 @@ class MemoryGraph{
 	private var _iMaxNodes			: Int;
 
 	// -------o constructor
-		
+
 		/**
 		* constructor
 		*if
-		* @param	
+		* @param
 		* @return	void
 		*/
 		public function new( iMax_node_links : Int , iMaxNodes : Int , offset : Int = 0 ) {
@@ -34,12 +34,12 @@ class MemoryGraph{
 			_iMax_node_links	= iMax_node_links;
 			this.offset			= offset;
 		}
-	
+
 	// -------o public
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -55,8 +55,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -66,17 +66,17 @@ class MemoryGraph{
 
 			var count = _getCount( from );
 			raw.set( _getPosition( from , count ) , to );
-			_setCount( from , count + 1 );			
+			_setCount( from , count + 1 );
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
 		inline public function hasLink( from : Int , to : Int ) : Bool {
-			var count = _getCount( from );		
+			var count = _getCount( from );
 			var bRes = false;
 			for( i in 0...count ){
 				if( raw.get( _getPosition( from , i ) ) == to ){
@@ -89,8 +89,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -127,8 +127,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -138,12 +138,12 @@ class MemoryGraph{
 			for( z in 0...count )
 				trace( z+" === "+_getValue( id , z ) );
 
-						
+
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -152,8 +152,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @public
 		* @return	void
 		*/
@@ -165,16 +165,16 @@ class MemoryGraph{
 			var iCount	: Int;
 			var iPos	: Int;
 			var iTo		: Int;
-			var res		: Array<Int> = [ ];	
-			var t		: Int;		
+			var res		: Array<Int> = [ ];
+			var t		: Int;
 			while( queue.length > 0 ){
 
 				t = queue.pop( );
-				if( t == to ) 
+				if( t == to )
 					return true;
 
 				iCount	= _getCount( t );
-				
+
 				for( i in 0...iCount ){
 					iTo = _getValue( t , i );
 					if( !visited[ iTo ] ){
@@ -183,16 +183,16 @@ class MemoryGraph{
 
 					}
 				}
-			
+
 			}
 			return false;
 		}
 
 	// -------o protected
-		
+
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -201,8 +201,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -211,8 +211,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -221,8 +221,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -231,8 +231,8 @@ class MemoryGraph{
 		}
 
 		/**
-		* 
-		* 
+		*
+		*
 		* @private
 		* @return	void
 		*/
@@ -241,5 +241,5 @@ class MemoryGraph{
 		}
 
 	// -------o misc
-	
+
 }
