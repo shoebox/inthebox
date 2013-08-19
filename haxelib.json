@@ -1,0 +1,13 @@
+{
+  "name": "inthebox",
+  "url" : "https://github.com/shoebox/inthebox",
+  "license": "BSD",
+  "tags": ["hyperfiction","shoebox","openfl"],
+  "description": "",
+  "version": "1.0.0",
+  "releasenote": "Initial release",
+  "contributors": ["shoe[box]"],
+  "dependencies": {
+   "openfl": "1.0.4"
+  }
+}
