@@ -53,8 +53,6 @@ class InjectMacro{
 							break;
 						}
 					}
-
-					//trace( f );
 					bStatic = Lambda.has( f.access , AStatic );
 
 				//Pas de meta
@@ -131,6 +129,7 @@ class InjectMacro{
 				//The new Getter func
 					var funcGet : Function = { args : [] , expr : null , params : [] , ret : oType };
 						funcGet.expr = macro {
+												//trace("get ::: "+$(sModule));
 												return org.shoebox.patterns.injector.Injector.getInstance( ).get(
 																															Type.resolveClass( $(sModule) ),
 																															$(sOptionalName)
@@ -141,7 +140,7 @@ class InjectMacro{
 											name : sGet ,
 											doc : null,
 											meta : [],
-											access : [APublic],
+											access : f.access,
 											kind : FFun( funcGet ),
 											pos : haxe.macro.Context.currentPos()
 										};
@@ -168,7 +167,7 @@ class InjectMacro{
 												name : sSet ,
 												doc : null,
 												meta : [],
-												access : [APublic],
+												access : f.access,
 												kind : FFun( funcSet ),
 												pos : haxe.macro.Context.currentPos()
 											};
@@ -267,7 +266,7 @@ class InjectMacro{
 			var newField : Field = { 	name : f.name ,
 										doc : null,
 										meta : [],
-										access : [APublic],
+										access : f.access,
 										kind : type,
 										pos : haxe.macro.Context.currentPos()
 									};

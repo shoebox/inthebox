@@ -76,7 +76,7 @@ class MacroErrReport{
 							//
 							var 	expr : Expr = func.expr;
 								expr = macro {
-									//trace("call ::: "+$sModule);
+									trace("call ::: "+$sModule);
 									try{
 										$expr;
 									}catch( e : nme.errors.ArgumentError ){
@@ -96,7 +96,7 @@ class MacroErrReport{
 										);
 										trace("Unknow error ::: "+$sModule);
 										trace( unknown );
-										//trace( haxe.Stack.exceptionStack( ) );
+										trace( haxe.Stack.exceptionStack( ) );
 										trace( haxe.Stack.toString( haxe.Stack.callStack( ) ) );
 										fr.hyperfiction.HypSystem.reportError( $sModule , "Unknown exception : "+Std.string(unknown) , haxe.Stack.toString( haxe.Stack.exceptionStack( ) )+"\n"+haxe.Stack.toString( haxe.Stack.callStack( ) ) );
 									}

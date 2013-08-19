@@ -28,6 +28,7 @@ class ShortCuts{
 		}
 
 	// -------o public
+
 		#if macro
 
 		/**

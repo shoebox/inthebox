@@ -34,7 +34,7 @@ class Injector{
 		* @return	void
 		*/
 		public function get<T>( type : Class<T> , ?sName : String ) : T {
-
+			
 			var inj = _has( type , sName );
 			//trace("inj :::: "+inj);
 			if( inj == null )
@@ -48,9 +48,9 @@ class Injector{
 					#end
 				}
 			}catch( e : nme.errors.Error ){
-				//trace( sName );
-				//trace( type );
-				//trace( e );
+				trace( sName );
+				trace( type );
+				trace( e );
 			}
 			return inj.value;
 		}
