@@ -41,8 +41,7 @@ class ASignal<T>{
 	public var enabled( default , _setEnabled ) : Bool;
 
 	private var _oQueue : PriorityQueue<SignalListener<T>>;
-
-	// -------o constructor
+ // -------o constructor
 
 		/**
 		* constructor

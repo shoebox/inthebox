@@ -158,7 +158,6 @@ class Camera2D{
 		* @return	void
 		*/
 		private function _invalidate( ) : Void{
-			trace('invalidate ---- '+x+' - '+y);
 			_mMatrixProj.identity( );
 			_mMatrixProj.translate( -x , -y );// - _fHalfViewport.x , -y - _fHalfViewport.y );
 			_mMatrixProj.scale( zoom , zoom );

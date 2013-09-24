@@ -25,6 +25,7 @@ class HTTPService extends URLLoader , implements IDispose{
 
 	public var onDatas : String->Void;
 	public var onBinaryDatas : ByteArray->Void;
+	public var fOnError : String->Void;
 
 	//public var onDatas			: Signal1<String>;
 	//public var onBinaryDatas	: Signal1<ByteArray>;
@@ -174,10 +175,13 @@ class HTTPService extends URLLoader , implements IDispose{
 		* @return	void
 		*/
 		private function _onIoError( e : IOErrorEvent ) : Void{
+
+
 			#if debug
 			trace( e );
 			#end
-			throw e;
+			if( fOnError != null )
+				fOnError( e.toString( ) );
 		}
 
 		#end
@@ -190,11 +194,9 @@ class HTTPService extends URLLoader , implements IDispose{
 		*/
 		private function _onStatus( e : HTTPStatusEvent ) : Void{
 
-			if( e.status > 400 ){
-				#if debug
-				trace( e );
-				#end
-				throw e;
+			if ( e.status > 400 ) {
+				if( fOnError != null )
+				fOnError( e.toString( ) );
 			}
 
 		}

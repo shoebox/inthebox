@@ -188,6 +188,18 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
+		inline static public function yAlignIn( target : DisplayObject , container : DisplayObject ) : Void {
+			var bnds_container	= container.getRect( container );
+			var bnds_target		= target.getRect( container );
+			target.y = Math.round(( bnds_container.height - bnds_target.height ) / 2);
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
 		inline static public function xAlignChilds( target : DisplayObjectContainer ) : Void {
 
 			var l = target.numChildren;
@@ -255,20 +267,53 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
-		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float  ) : Float {
+		static public function fontSize( tf : TextField , i : Int ) : Void {
+			var f = tf.defaultTextFormat;
+				f.size = i;
+			tf.setTextFormat( tf.defaultTextFormat = f );
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
+		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float , ?step : Int = -1  ) : Float {
+
+
 
 			var i = 0;
 			var f;
 			var size = tf.defaultTextFormat.size;
+
+			if( step == -1 )
+				step = Std.int( Math.ceil( size / 10 ) );
+
 			while( tf.textWidth > w || tf.textHeight > h ){
 
 				f = tf.defaultTextFormat;
-				size = f.size --;
+				size = f.size -= step;
 				tf.setTextFormat( tf.defaultTextFormat = f );
 
 			}
 
 			return size;
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
+		static public function setColor( tf : TextField , c : Int ) : Void {
+
+			var f = tf.defaultTextFormat;
+				f.color = c;
+			tf.defaultTextFormat = f;
+			tf.text = tf.text;
+
 		}
 
 		/**

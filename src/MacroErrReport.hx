@@ -37,7 +37,7 @@ class MacroErrReport{
 			var eName : Expr;
 			//
 				for( f in a ){
-
+					//trace( Context.getLocalClass( )+" = "+f.name );
 					switch( f.kind ){
 
 						case FFun( func ):
@@ -76,7 +76,7 @@ class MacroErrReport{
 							//
 							var 	expr : Expr = func.expr;
 								expr = macro {
-									trace("call ::: "+$sModule);
+
 									try{
 										$expr;
 									}catch( e : nme.errors.ArgumentError ){
@@ -104,9 +104,15 @@ class MacroErrReport{
 								};
 
 								if( eRet != null ){
+
 									expr = macro {
 										$expr;
 										$eRet;
+									}
+								}else{
+									expr = macro {
+										$expr;
+										return null;
 									}
 								}
 
