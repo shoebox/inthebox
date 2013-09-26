@@ -54,6 +54,16 @@ class BoxSound implements IDispose{
 		* @public
 		* @return	void
 		*/
+		public function getPosition( ) : Float {
+			return _oChannel.position;
+		}
+
+		/**
+		*
+		*
+		* @public
+		* @return	void
+		*/
 		public function play( ?startTime : Float = 0 , ?iLoops : Int = -1 ) : Bool {
 
 			if( media == null )
@@ -66,7 +76,7 @@ class BoxSound implements IDispose{
 				//startTime = _fPos;
 				_bPaused = false;
 			}
-
+			trace("play ::: "+startTime);
 			_oChannel = media.play( startTime , iLoops , _oTransform );
 			if( _oChannel != null )
 				_oChannel.addEventListener( Event.SOUND_COMPLETE , _onSound_Complete , false );
