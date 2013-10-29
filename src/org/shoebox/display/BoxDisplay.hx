@@ -96,8 +96,8 @@ class BoxDisplay{
 		* @public
 		* @return	void
 		*/
-		static public function align( o : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign , ?bounds : AABB ) : Void {
-			var aabb = bounds != null ? bounds : new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
+		static public function align( o : DisplayObject , ?dx : Int, ?dy : Int , ?where : StageAlign , ?bounds : AABB<Float> ) : Void {
+			var aabb = bounds != null ? bounds : new AABB<Float>( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
 
 			var centerX : Float = aabb.min.x + ( aabb.max.x - aabb.min.x - o.getRect( Lib.current.stage ).width ) / 2;
 			var centerY : Float = aabb.min.y + ( aabb.max.y - aabb.min.y - o.getRect( Lib.current.stage ).height ) / 2;
@@ -247,28 +247,6 @@ class BoxDisplay{
 
 			return bmp;
 
-		}
-
-		/**
-		*
-		*
-		* @public
-		* @return	void
-		*/
-		static public function fit( tf : TextField , w : Float , h : Float , ?size : Float  ) : Float {
-
-			var i = 0;
-			var f;
-			var size = tf.defaultTextFormat.size;
-			while( tf.textWidth > w || tf.textHeight > h ){
-
-				f = tf.defaultTextFormat;
-				size = f.size --;
-				tf.setTextFormat( tf.defaultTextFormat = f );
-
-			}
-
-			return size;
 		}
 
 		/**

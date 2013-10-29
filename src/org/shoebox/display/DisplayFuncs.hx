@@ -107,10 +107,10 @@ class DisplayFuncs{
 		* @param
 		* @return
 		*/
-		static public function align( o : DisplayObject , aabb : AABB = null , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
+		static public function align( o : DisplayObject , aabb : AABB<Float> = null , sAlign : StageAlign = null , dx : Int = 0 , dy : Int = 0 ) : Void {
 
 			if( aabb == null )
-				aabb = new AABB( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
+				aabb = new AABB<Float>( 0 , 0 , Lib.current.stage.stageWidth , Lib.current.stage.stageHeight );
 
 			var centerX : Float = aabb.min.x + ( aabb.max.x - aabb.min.x - o.width ) / 2;
 			var centerY : Float = aabb.min.y + ( aabb.max.y - aabb.min.y - o.height ) / 2;
